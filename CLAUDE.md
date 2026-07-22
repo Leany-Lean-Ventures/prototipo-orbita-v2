@@ -40,6 +40,14 @@ Guia de direção de design para evitar telas "genéricas de IA". Use ao desenha
 ### `web-design-guidelines`
 Skill de revisão (Vercel Web Interface Guidelines). Use **depois** de implementar uma tela, para auditar o código contra boas práticas de interface (acessibilidade, estados, responsividade). Busca as regras mais recentes via rede antes de cada revisão.
 
+### `webapp-testing`
+Toolkit Playwright para testar a aplicação rodando de verdade no navegador: screenshots, interação com elementos, logs do console. Use **depois** de implementar uma tela para validar visualmente (golden path + estados/erros) com o servidor de dev (`npm run dev`) ativo — fecha o loop que a revisão estática de código (`web-design-guidelines`) não cobre.
+
+Scripts em `.claude/skills/webapp-testing/scripts/with_server.py` (gerencia o ciclo de vida do servidor) e exemplos em `.claude/skills/webapp-testing/examples/`. Rodar `--help` antes de usar qualquer script.
+
+### `skill-creator`
+Meta-skill para criar/editar/otimizar skills do projeto. Use quando surgir uma necessidade recorrente que as skills atuais não cobrem bem (ex.: um fluxo específico de leitura de PRD + design-system que vale empacotar como skill própria do Órbita) — não para o dia a dia de construção de tela.
+
 ## Fluxo de trabalho para construir uma tela
 
 1. Ler o `PRD-XX` do módulo correspondente + `data-schema.json`/`form-schemas.json` se houver formulário ou dado envolvido.
@@ -48,7 +56,8 @@ Skill de revisão (Vercel Web Interface Guidelines). Use **depois** de implement
 4. Aplicar os princípios de `frontend-design` para a composição e hierarquia da tela, sempre respeitando os tokens de marca.
 5. Implementar em `src/pages` (ou `src/components`), reutilizando/estendendo os componentes de `src/components/ui`.
 6. Rodar `web-design-guidelines` para revisar o resultado antes de considerar a tela pronta.
-7. Validar com `npm run lint`, `npm test` e, quando fizer sentido, `npm run build`.
+7. Rodar `webapp-testing` para validar a tela no navegador (golden path + estados/erros) com o servidor de dev ativo.
+8. Validar com `npm run lint`, `npm test` e, quando fizer sentido, `npm run build`.
 
 ## Comandos
 
