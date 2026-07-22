@@ -161,6 +161,22 @@
 }
 
 /*
+ * Canvas nível 0 (design-system §3, "Canvas") — radiais sutis de marca a
+ * 3% de opacidade, medidas do protótipo V1 (orbita-v1-paginas-exportadas).
+ * Aplicar no wrapper de fundo de qualquer tela de página inteira.
+ */
+@layer utilities {
+  .bg-mesh {
+    background-image: radial-gradient(
+        at 0% 0%,
+        hsl(var(--primary) / 0.03) 0px,
+        transparent 50%
+      ),
+      radial-gradient(at 100% 100%, hsl(var(--secondary) / 0.03) 0px, transparent 50%);
+  }
+}
+
+/*
  * Movimento reduzido (design-system §7.5) — cobre as transições CSS puras
  * (hover/focus/press em botão, input, card). O lado GSAP (entrada de
  * página, timelines) é tratado separadamente em src/lib/motion.ts e

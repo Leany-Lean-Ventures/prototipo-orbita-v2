@@ -5,7 +5,6 @@ import { Bell, LogOut, User } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { alerts } from "@/lib/mock-data/alerts";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -33,7 +32,7 @@ export function AppHeader() {
 
   return (
     <>
-      <header className="flex h-14 shrink-0 items-center justify-between border-b border-border bg-card px-6">
+      <header className="flex h-16 shrink-0 items-center justify-between rounded-2xl border border-white/50 bg-card/80 px-6 shadow-soft backdrop-blur-md dark:border-white/5">
         <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
           <span className="font-medium text-foreground">{breadcrumbLabel}</span>
         </nav>
@@ -48,23 +47,22 @@ export function AppHeader() {
           >
             <Bell className="h-5 w-5" />
             {alerts.length > 0 && (
-              <Badge
-                variant="destructive"
-                className="absolute -right-1 -top-1 h-5 min-w-5 items-center justify-center rounded-full p-0 text-[10px]"
-              >
+              <span className="absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full border-2 border-card bg-primary text-[10px] text-primary-foreground">
                 {alerts.length}
-              </Badge>
+              </span>
             )}
           </Button>
+
+          <div className="mx-1 h-8 w-px bg-border" aria-hidden="true" />
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button
                 type="button"
-                className="ml-1 rounded-full transition-shadow duration-micro ease-micro focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                className="rounded-full transition-shadow duration-micro ease-micro focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 aria-label="Menu do usuário"
               >
-                <Avatar className="h-8 w-8">
+                <Avatar className="h-9 w-9 border-2 border-card shadow-md">
                   <AvatarFallback>{user?.avatar}</AvatarFallback>
                 </Avatar>
               </button>

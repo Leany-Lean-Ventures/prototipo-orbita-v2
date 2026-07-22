@@ -19,6 +19,17 @@ Registro de decisões, definições e aprendizados acumulados ao longo do projet
 
 ## Decisões
 
+### 2026-07-22 — Redesign do App Shell para o padrão "flutuante" do protótipo V1
+**Decisão:** `orbita-v1-paginas-exportadas/` (HTML + PNG do primeiro protótipo, pasta do usuário fora do controle de versão deste repo) passa a ser referência visual oficial, complementar ao `design-system/`. Inspecionei o HTML exportado diretamente (não só os prints) e extraí valores exatos:
+- Fundo de página: `.bg-mesh` — gradiente radial `hsl(var(--primary)/0.03)` + `hsl(var(--secondary)/0.03)` nos cantos opostos. Implementado como utility em `src/index.css`, usando os tokens do projeto em vez dos valores fixos do V1 (dark-mode-safe).
+- Header: **não** era só "arredondado" — era vidro fosco: `bg-card/80 backdrop-blur-md rounded-2xl shadow-soft border border-white/50`, dentro de um wrapper com `padding: 16px` que cria o vão até a borda da tela.
+- Cards de conteúdo: a classe `.soft-card` do V1 (`border-radius: 1.5rem`, `border-color: white/50`, `shadow-soft`, hover `translateY(-2px)` 200ms) **já batia exatamente** com o que tínhamos implementado no componente `Card` desde a etapa 0/0.5 — validação cruzada da fundação visual.
+- V1 não tinha sidebar (nav em pílulas dentro do próprio header, só 4 abas). Como o PRD-00 exige sidebar com 9 itens, perguntei ao usuário como adaptar o padrão flutuante a uma peça que não existia no V1 — decisão: **sidebar como painel flutuante independente**, mesmo tratamento visual do header (`rounded-2xl bg-card/80 backdrop-blur-md shadow-soft border-white/50`), com vão visível entre sidebar e header (não union num único shape).
+
+Mudanças aplicadas: `AppShell.tsx` (layout com `p-4 gap-4 bg-mesh` no wrapper externo, sidebar e header como peças soltas), `AppSidebar.tsx` e `AppHeader.tsx` (glass + rounded-2xl), `Card` (agora aplica `.soft-card` — raio 24px, borda white/50, shadow-soft — **por padrão**, sem precisar repetir `rounded-card shadow-soft` em cada uso; `Index.tsx` limpo dessas classes redundantes), `Login.tsx` (bg-mesh + borda do card corrigida para white/50). Badge do sino e avatar do header ajustados para o detalhe exato do V1 (`border-2 border-card`, cutout).
+**Motivo:** pedido explícito do usuário — os componentes já construídos (etapa 2) não refletiam a identidade visual "flutuante" do primeiro protótipo, que ele quer usar como referência para "impressionar visualmente o cliente" (objetivo já registrado). Uma divergência deliberada do V1: mantive `transition-[transform,box-shadow]` em vez do `transition: all` literal do V1 no `.soft-card` — já era regra dura nossa (`CLAUDE.md`) evitar `transition-all` por risco de animar propriedades não intencionais; o resultado visual é idêntico.
+**Status:** vigente. Precedente para telas futuras: qualquer `<Card>` novo já nasce com o visual correto; não reintroduzir `border border-border` genérico em cards de conteúdo.
+
 ### 2026-07-22 — Etapa 2 concluída: App Shell, sem busca global, módulos pendentes como "Em construção"
 **Decisão:** implementado o App Shell (`src/components/shell/`: `AppSidebar`, `AppHeader`, `AlertsPanel`, `AppShell`) conforme PRD-00 §4, com duas divergências deliberadas do PRD:
 1. **Busca global removida do escopo** — o PRD-00 §4.2 lista um campo de busca no header, mas o usuário decidiu explicitamente que não faz sentido tê-lo agora (nenhum módulo com dados existe ainda). Não implementada; se for retomada no futuro, plugar quando os módulos com dados mock existirem (etapa 4+).

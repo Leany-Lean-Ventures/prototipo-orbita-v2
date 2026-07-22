@@ -78,7 +78,7 @@ const Login = () => {
   return (
     <div
       ref={entranceRef}
-      className="flex min-h-screen items-center justify-center bg-background p-6"
+      className="flex min-h-screen items-center justify-center bg-background bg-mesh p-6"
     >
       <div className="w-full max-w-sm space-y-8">
         <div className="login-brand flex flex-col items-center gap-6">
@@ -99,7 +99,7 @@ const Login = () => {
           </div>
         </div>
 
-        <div className="login-card rounded-card border border-border bg-card p-6 shadow-soft">
+        <div className="login-card rounded-card border border-white/50 bg-card p-6 shadow-soft dark:border-white/5">
           {authError && (
             <div
               role="alert"

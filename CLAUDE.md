@@ -16,6 +16,7 @@ Protótipo de interface web do projeto Órbita para a Ademicon. Stack: Vite + Re
    - `design-system/system/kit.html` / `kit.dark.html` — showcase de componentes já estilizados
    - `design-system/logos/` — marca oficial (não recolorir/distorcer)
    - `design-system/DESIGN.md`, `SKILL.md`, `guide.md`, `context/input-DESIGN.md` — princípios, receitas e spec profunda (elevação, motion GSAP, z-index, dataviz)
+3. **`orbita-v1-paginas-exportadas/`** — HTML + PNG do primeiro protótipo (não versionado). Referência visual do padrão "flutuante": telas completas (Painel, Unidades, Consultores, Relatórios) com o layout, hierarquia e microcopy reais. Ao construir uma tela nova cujo módulo exista no V1, abrir o PNG/HTML correspondente antes de desenhar do zero — inspecionar o HTML exportado direto (classes Tailwind reais), não só o print, quando precisar de um valor exato (raio, opacidade, espaçamento). V1 não tinha sidebar (nav em pílulas no header, só 4 módulos) — nosso shell tem 9 itens via sidebar (PRD-00), então nem toda estrutura do V1 se aplica 1:1; ver `MEMORY.md` para as adaptações já decididas.
 
 **Regra geral:** tokens do `design-system/` sempre têm prioridade sobre sugestões genéricas de qualquer skill abaixo. Skills preenchem lacunas (padrões de UX, motion, gráficos) que o design system não cobre — não substituem os tokens de marca já definidos.
 
@@ -80,15 +81,17 @@ O objetivo do protótipo inclui impressionar visualmente — toda tela nova deve
 
 ## App Shell (`src/components/shell/`)
 
-Layout persistente que envolve todas as páginas autenticadas (PRD-00 §4). Estrutura:
+Layout persistente que envolve todas as páginas autenticadas (PRD-00 §4), no padrão "flutuante" do protótipo V1 (`orbita-v1-paginas-exportadas/`, decisão em `MEMORY.md`): sidebar e header são painéis soltos sobre o canvas `bg-mesh`, não barras coladas nas bordas.
 
-- **`nav-items.ts`** — fonte única dos 9 itens do menu principal (`{ label, path, icon }`). Usada pelo `AppSidebar` **e** pelo breadcrumb do `AppHeader` (`resolveNavLabel(pathname)`). Ao adicionar uma rota nova (etapas 4+), registrar aqui ou o breadcrumb cai no fallback `"Órbita"`.
-- **`AppSidebar.tsx`** — 236px fixos, tokens `sidebar-*` (claro, pill vermelho no item ativo — decisão em `MEMORY.md`), rodapé com `useAuth().user`.
-- **`AppHeader.tsx`** — 56px, breadcrumb dinâmico, sino de alertas (`Badge` com contagem) e avatar com `DropdownMenu` (inclui "Sair" → `logout()`). **Sem busca global** — removida do escopo, ver `MEMORY.md`.
+- **`AppShell.tsx`** — wrapper externo `p-4 gap-4 bg-background bg-mesh`; sidebar e a coluna (header + `<Outlet/>`) como peças flex separadas, com vão de 16px entre elas e até a borda da tela.
+- **`AppSidebar.tsx`** — 236px, painel próprio `rounded-2xl bg-card/80 backdrop-blur-md shadow-soft border-white/50` (vidro fosco, mesmo tratamento do header). Tokens `sidebar-*` para o estado dos itens (claro, pill vermelho no ativo — decisão em `MEMORY.md`), rodapé com `useAuth().user`.
+- **`AppHeader.tsx`** — mesmo tratamento glass, 64px. Breadcrumb dinâmico, sino de alertas (badge estilo V1: `border-2 border-card` criando efeito de recorte) e avatar (`border-2 border-card shadow-md`) com `DropdownMenu` (inclui "Sair" → `logout()`). **Sem busca global** — removida do escopo, ver `MEMORY.md`.
 - **`AlertsPanel.tsx`** — `Sheet` lateral com os alertas mockados (`src/lib/mock-data/alerts.ts`); "Resolver" navega para a rota do alerta e fecha o painel.
-- **`AppShell.tsx`** — compõe sidebar + header + `<Outlet/>` (área `.view`, `overflow-y-auto`, padding 26px).
+- **`nav-items.ts`** — fonte única dos 9 itens do menu principal (`{ label, path, icon }`). Usada pelo `AppSidebar` **e** pelo breadcrumb do `AppHeader` (`resolveNavLabel(pathname)`). Ao adicionar uma rota nova (etapas 4+), registrar aqui ou o breadcrumb cai no fallback `"Órbita"`.
 
 `src/App.tsx` usa uma rota de layout: `<Route element={<RequireAuth><AppShell /></RequireAuth>}>` com as páginas como filhas. Toda página nova protegida entra como filha dessa rota, não precisa de `RequireAuth` individual.
+
+**`Card` (`src/components/ui/card.tsx`) já aplica `.soft-card` por padrão** — `rounded-card` (24px), borda `white/50`, `shadow-soft`. Não repetir essas classes ao usar `<Card>`; usar a prop `interactive` só em cards clicáveis (hover lift). `.bg-mesh` (utility em `src/index.css`) vai no wrapper de fundo de qualquer tela de página inteira (já aplicado em `AppShell` e `Login.tsx`).
 
 **Módulos ainda não construídos** (Unidades, Consultores, PVs, Prévias, Ocorrências, Visitas, Relatórios, Configurações) apontam para `src/pages/ComingSoon.tsx` — um placeholder consistente com o design-system (§8.1 "empty"), não um 404. Ao construir o módulo de verdade (sua etapa em `PRD/ordem-desenvolvimento.md`), troque o `element` da rota em `App.tsx` de `<ComingSoon />` para a página real — `ComingSoon` não precisa ser removida de lugar nenhum além dali.
 

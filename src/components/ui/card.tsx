@@ -16,7 +16,8 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
     <div
       ref={ref}
       className={cn(
-        "rounded-lg border bg-card text-card-foreground shadow-sm",
+        // .soft-card (design-system §4/§8.2, medido em orbita-v1-paginas-exportadas)
+        "rounded-card border border-white/50 bg-card text-card-foreground shadow-soft dark:border-white/5",
         interactive &&
           "cursor-pointer transition-[transform,box-shadow] duration-base ease-micro hover:-translate-y-0.5 hover:shadow-elevated",
         className

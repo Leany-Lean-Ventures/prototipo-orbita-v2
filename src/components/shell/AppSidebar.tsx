@@ -8,8 +8,8 @@ export function AppSidebar() {
   const { user } = useAuth();
 
   return (
-    <aside className="flex h-screen w-[236px] shrink-0 flex-col border-r border-sidebar-border bg-sidebar">
-      <div className="flex h-14 items-center px-5">
+    <aside className="flex w-[236px] shrink-0 flex-col overflow-hidden rounded-2xl border border-white/50 bg-card/80 shadow-soft backdrop-blur-md dark:border-white/5">
+      <div className="flex h-16 items-center px-5">
         <span className="font-display text-lg font-bold text-sidebar-foreground">
           Órbita
         </span>
@@ -25,9 +25,9 @@ export function AppSidebar() {
               end={item.path === "/"}
               className={({ isActive }) =>
                 [
-                  "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors duration-micro ease-micro",
+                  "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors duration-micro ease-micro",
                   isActive
-                    ? "bg-sidebar-primary text-sidebar-primary-foreground"
+                    ? "bg-sidebar-primary text-sidebar-primary-foreground shadow-sm"
                     : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
                 ].join(" ")
               }
@@ -41,7 +41,7 @@ export function AppSidebar() {
 
       {user && (
         <div className="flex items-center gap-3 border-t border-sidebar-border p-4">
-          <Avatar className="h-8 w-8">
+          <Avatar className="h-8 w-8 border-2 border-card shadow-md">
             <AvatarFallback>{user.avatar}</AvatarFallback>
           </Avatar>
           <div className="min-w-0">

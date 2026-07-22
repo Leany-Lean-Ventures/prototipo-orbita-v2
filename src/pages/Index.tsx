@@ -52,7 +52,7 @@ const Index = () => {
       </div>
 
       <div className="mx-auto mt-12 grid max-w-3xl gap-6">
-        <Card className="index-card rounded-card shadow-soft">
+        <Card className="index-card">
           <CardHeader>
             <CardTitle>Paleta de marca</CardTitle>
             <CardDescription>
@@ -71,7 +71,7 @@ const Index = () => {
           </CardContent>
         </Card>
 
-        <Card className="index-card rounded-card shadow-soft">
+        <Card className="index-card">
           <CardHeader>
             <CardTitle>Paleta de gráficos</CardTitle>
             <CardDescription>chart-1 a chart-5 — ordem fixa</CardDescription>
@@ -89,7 +89,7 @@ const Index = () => {
         </Card>
 
         <div className="index-card grid gap-4 sm:grid-cols-3">
-          <Card className="rounded-card shadow-soft">
+          <Card>
             <CardHeader>
               <CardTitle className="text-base">shadow-soft</CardTitle>
             </CardHeader>
@@ -97,7 +97,7 @@ const Index = () => {
               Nível 1 — Card
             </CardContent>
           </Card>
-          <Card className="rounded-card shadow-elevated">
+          <Card className="shadow-elevated">
             <CardHeader>
               <CardTitle className="text-base">shadow-elevated</CardTitle>
             </CardHeader>
@@ -105,7 +105,7 @@ const Index = () => {
               Nível 2 — Raised
             </CardContent>
           </Card>
-          <Card className="rounded-card shadow-overlay">
+          <Card className="shadow-overlay">
             <CardHeader>
               <CardTitle className="text-base">shadow-overlay</CardTitle>
             </CardHeader>
@@ -115,7 +115,7 @@ const Index = () => {
           </Card>
         </div>
 
-        <Card className="index-card rounded-card shadow-soft">
+        <Card className="index-card">
           <CardHeader>
             <CardTitle>Tipografia</CardTitle>
             <CardDescription>Montserrat (display) + IBM Plex Sans (corpo)</CardDescription>
