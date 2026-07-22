@@ -2,85 +2,145 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+ * Tokens de marca — Design System Ademicon (ORBITA) v2.1.
+ * Fonte: design-system/brand.json (colors[]) + design-system/README.md.
+ * Não editar valores aqui sem atualizar a origem no design-system/.
+ */
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222 47% 11%;
+    --background: 0 0% 95%;        /* Canvas #f2f2f2 */
+    --foreground: 215 25% 27%;     /* Foreground #344256 (~9.4:1 sobre canvas — AAA) */
 
-    --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card: 0 0% 100%;             /* Surface #ffffff — .soft-card: KPIs, gráficos, tabelas, modais */
+    --card-foreground: 215 25% 27%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover-foreground: 215 25% 27%;
 
-    --primary: 221 83% 53%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 0 72% 51%;          /* Ademicon Red (accent) #dc2626 — cor de ação, uso parcimonioso */
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222 47% 11%;
+    --secondary: 88 50% 53%;       /* Brand Green (accent-secondary) #8bc34b — decorativo, recebe texto escuro */
+    --secondary-foreground: 215 25% 27%;
 
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
+    --muted: 214 32% 91%;          /* tom neutro sobre border para fundos suaves */
+    --muted-foreground: 215 16% 40%; /* Muted foreground #566376 (≥4.5:1) */
 
-    --accent: 210 40% 96%;
-    --accent-foreground: 222 47% 11%;
+    --accent: 214 32% 95%;         /* hover/seleção sutil sobre superfícies neutras */
+    --accent-foreground: 215 25% 27%;
 
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 84% 60%;      /* Error #ef4343 (AA-escurecido) */
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 214 32% 91%;
+    --success: 88 55% 31%;         /* Success #527b24 (AA-escurecido) */
+    --success-foreground: 0 0% 100%;
+
+    --warning: 26 90% 37%;         /* Warning #b35309 (AA-escurecido) */
+    --warning-foreground: 0 0% 100%;
+
+    --info: 221 83% 53%;           /* Info #2463eb */
+    --info-foreground: 0 0% 100%;
+
+    --border: 214 32% 91%;         /* Border #e1e7ef */
     --input: 214 32% 91%;
-    --ring: 221 83% 53%;
+    --ring: 0 72% 51%;             /* anel de foco = accent */
 
-    --radius: 0.5rem;
+    --radius: 1rem;                /* base shadcn (controles ~14px via calc) */
+    --radius-card: 1.5rem;         /* 24px — cards, painéis, modais, header flutuante (.soft-card) */
 
-    --sidebar-background: 222 47% 11%;
-    --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 221 83% 53%;
-    --sidebar-primary-foreground: 210 40% 98%;
-    --sidebar-accent: 217 33% 17%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 217 33% 17%;
-    --sidebar-ring: 221 83% 53%;
+    /* Paleta de gráficos — ordem fixa, nunca reordenar */
+    --chart-1: 0 72% 51%;          /* marca — série principal */
+    --chart-2: 88 50% 53%;         /* verde */
+    --chart-3: 45 93% 47%;         /* âmbar */
+    --chart-4: 221 83% 53%;        /* azul */
+    --chart-5: 272 72% 47%;        /* roxo */
+
+    /* Elevação — 5 níveis: 0 Canvas · 1 Card (soft) · 2 Raised (elevated) · 3 Overlay · 4 Glass */
+    --shadow-soft: 0 10px 25px -5px rgba(0, 0, 0, 0.04), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+    --shadow-elevated: 0 6px 16px -4px rgba(0, 0, 0, 0.1), 0 3px 6px -3px rgba(0, 0, 0, 0.06);
+    --shadow-overlay: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    --shadow-glow-primary: 0 0 20px hsla(0, 72%, 51%, 0.35); /* só série principal do gráfico-herói */
+
+    /* Motion (GSAP) */
+    --duration-micro: 0.175s;
+    --duration-base: 0.275s;
+    --duration-enter: 0.45s;
+
+    /*
+     * Sidebar — claro, alinhado ao canvas (decisão de 2026-07-22, MEMORY.md).
+     * Não especificado no design-system oficial: menu lateral não existia como
+     * superfície no PRD-00 (paleta obsoleta) nem em brand.json/kit.html.
+     */
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 215 25% 27%;
+    --sidebar-primary: 0 72% 51%;             /* item ativo = pill vermelho da marca */
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 214 32% 95%;            /* hover de item */
+    --sidebar-accent-foreground: 215 25% 27%;
+    --sidebar-border: 214 32% 91%;
+    --sidebar-ring: 0 72% 51%;
   }
 
+  /*
+   * Dark mode — provisório. O design-system oficial não documenta uma paleta
+   * de produto medida para dark (só o princípio: "elevação = luminosidade da
+   * superfície, não sombra"). Valores abaixo derivados do tema genérico
+   * (design-system/system/variables.css .dark), não das telas reais do Órbita.
+   * Revisar se/quando o protótipo precisar de dark mode de fato.
+   */
   .dark {
-    --background: 222 47% 11%;
-    --foreground: 210 40% 98%;
+    --background: 0 0% 11%;
+    --foreground: 0 0% 86%;
 
-    --card: 222 47% 11%;
-    --card-foreground: 210 40% 98%;
+    --card: 0 0% 8%;
+    --card-foreground: 0 0% 86%;
 
-    --popover: 222 47% 11%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 0 0% 8%;
+    --popover-foreground: 0 0% 86%;
 
-    --primary: 217 91% 60%;
-    --primary-foreground: 222 47% 11%;
+    --primary: 4 51% 55%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 217 33% 17%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 88 30% 40%;
+    --secondary-foreground: 0 0% 95%;
 
-    --muted: 217 33% 17%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 0 0% 24%;
+    --muted-foreground: 0 0% 68%;
 
-    --accent: 217 33% 17%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 0 0% 19%;
+    --accent-foreground: 0 0% 86%;
 
-    --destructive: 0 63% 31%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 4 62% 65%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 217 33% 17%;
-    --input: 217 33% 17%;
-    --ring: 217 91% 60%;
+    --success: 88 35% 40%;
+    --success-foreground: 0 0% 100%;
 
-    --sidebar-background: 222 47% 8%;
-    --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 217 91% 60%;
-    --sidebar-primary-foreground: 222 47% 11%;
-    --sidebar-accent: 217 33% 17%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 217 33% 17%;
-    --sidebar-ring: 217 91% 60%;
+    --warning: 28 62% 44%;
+    --warning-foreground: 0 0% 100%;
+
+    --info: 221 61% 55%;
+    --info-foreground: 0 0% 100%;
+
+    --border: 0 0% 24%;
+    --input: 0 0% 24%;
+    --ring: 4 51% 55%;
+
+    --chart-1: 4 51% 55%;
+    --chart-2: 88 35% 45%;
+    --chart-3: 40 70% 50%;
+    --chart-4: 221 61% 55%;
+    --chart-5: 272 50% 55%;
+
+    --sidebar-background: 0 0% 8%;
+    --sidebar-foreground: 0 0% 86%;
+    --sidebar-primary: 4 51% 55%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 19%;
+    --sidebar-accent-foreground: 0 0% 86%;
+    --sidebar-border: 0 0% 24%;
+    --sidebar-ring: 4 51% 55%;
   }
 }
 
@@ -89,6 +149,13 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display tracking-tight;
   }
 }

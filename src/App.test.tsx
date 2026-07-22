@@ -6,7 +6,7 @@ describe("App", () => {
   it("renderiza a página inicial", () => {
     render(<App />);
     expect(
-      screen.getByRole("heading", { name: /protótipo órbita/i })
+      screen.getByRole("heading", { name: /fundação visual/i })
     ).toBeInTheDocument();
   });
 });
