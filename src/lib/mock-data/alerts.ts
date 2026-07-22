@@ -1,14 +1,19 @@
+import { Clock, MapPin, ClipboardList, RefreshCw, type LucideIcon } from "lucide-react";
+
 /**
  * Mock de alertas — schema em PRD/data-schema.json (Alert), dados de
  * PRD/PRD-01-Dashboard.md §3 (conjunto de 4, mais completo que o exemplo
  * de PRD-00 §6). Compartilhado entre o painel de alertas do header e,
  * na etapa 3, o card "Alertas que exigem ação" do Dashboard.
+ *
+ * `icon` é sempre um componente Lucide (nunca emoji/glifo unicode usado
+ * como ícone) — ver MEMORY.md.
  */
 export type AlertColorTheme = "red" | "amber" | "gray" | "green" | "blue" | "violet";
 
 export interface Alert {
   id: string;
-  icon: string;
+  icon: LucideIcon;
   colorTheme: AlertColorTheme;
   label: string;
   count: number;
@@ -18,7 +23,7 @@ export interface Alert {
 export const alerts: Alert[] = [
   {
     id: "a1",
-    icon: "⏱",
+    icon: Clock,
     colorTheme: "red",
     label: "Consultores em 4 meses sem venda",
     count: 12,
@@ -26,7 +31,7 @@ export const alerts: Alert[] = [
   },
   {
     id: "a2",
-    icon: "🔄",
+    icon: RefreshCw,
     colorTheme: "amber",
     label: "Mudança societária não comunicada",
     count: 3,
@@ -34,7 +39,7 @@ export const alerts: Alert[] = [
   },
   {
     id: "a3",
-    icon: "📋",
+    icon: ClipboardList,
     colorTheme: "amber",
     label: "Prévias com SLA vencido",
     count: 5,
@@ -42,7 +47,7 @@ export const alerts: Alert[] = [
   },
   {
     id: "a4",
-    icon: "📍",
+    icon: MapPin,
     colorTheme: "gray",
     label: "Lojas sem visita há +180 dias",
     count: 18,

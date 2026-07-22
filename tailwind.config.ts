@@ -17,7 +17,7 @@ export default {
     extend: {
       fontFamily: {
         sans: [
-          "IBM Plex Sans",
+          "Lato",
           "ui-sans-serif",
           "system-ui",
           "-apple-system",

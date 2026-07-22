@@ -1,3 +1,14 @@
+import {
+  Store,
+  Users,
+  ClipboardList,
+  Building2,
+  TriangleAlert,
+  Handshake,
+  Flag,
+  type LucideIcon,
+} from "lucide-react";
+
 /**
  * Mock do Dashboard — schema e dados de PRD/PRD-01-Dashboard.md §3.
  * `alertas` não é duplicado aqui — reaproveita src/lib/mock-data/alerts.ts,
@@ -6,6 +17,9 @@
  * `evolucaoSerie` não vem do PRD (a seção 2 não especifica um gráfico,
  * só o subtítulo menciona "evolução") — mock adicional para o card de
  * evolução com ApexCharts, decisão registrada em MEMORY.md.
+ *
+ * `icon` é sempre um componente Lucide (nunca emoji/glifo unicode usado
+ * como ícone) — ver MEMORY.md.
  */
 
 export type KpiColorTheme = "maroon" | "green" | "amber" | "violet" | "red";
@@ -13,10 +27,11 @@ export type KpiColorTheme = "maroon" | "green" | "amber" | "violet" | "red";
 export interface Kpi {
   id: string;
   label: string;
-  icon: string;
+  icon: LucideIcon;
   colorTheme: KpiColorTheme;
   value: number;
   goalText: string;
+  hasTrendUp?: boolean;
   progressPct: number;
   route: string;
   isAlert: boolean;
@@ -26,7 +41,7 @@ export interface DashboardOcorrencia {
   id: string;
   tipo: string;
   colorTheme: "red" | "green" | "violet" | "amber" | "blue";
-  icon: string;
+  icon: LucideIcon;
   titulo: string;
   unidade: string;
   pessoa: string;
@@ -47,7 +62,7 @@ export const kpis: Kpi[] = [
   {
     id: "k1",
     label: "Lojas ativas",
-    icon: "🏪",
+    icon: Store,
     colorTheme: "maroon",
     value: 312,
     goalText: "meta 320",
@@ -58,10 +73,11 @@ export const kpis: Kpi[] = [
   {
     id: "k2",
     label: "Consultores",
-    icon: "👥",
+    icon: Users,
     colorTheme: "green",
     value: 8420,
-    goalText: "▲ +142 mês",
+    goalText: "+142 no mês",
+    hasTrendUp: true,
     progressPct: 82,
     route: "/consultores",
     isAlert: false,
@@ -69,7 +85,7 @@ export const kpis: Kpi[] = [
   {
     id: "k3",
     label: "Em prévia",
-    icon: "📋",
+    icon: ClipboardList,
     colorTheme: "amber",
     value: 1847,
     goalText: "SLA 2,1d · meta 3d",
@@ -80,10 +96,11 @@ export const kpis: Kpi[] = [
   {
     id: "k4",
     label: "CNPJs",
-    icon: "🏢",
+    icon: Building2,
     colorTheme: "violet",
     value: 7103,
-    goalText: "▲ +34 mês",
+    goalText: "+34 no mês",
+    hasTrendUp: true,
     progressPct: 60,
     route: "/consultores",
     isAlert: false,
@@ -91,7 +108,7 @@ export const kpis: Kpi[] = [
   {
     id: "k5",
     label: "Alertas críticos",
-    icon: "⚠️",
+    icon: TriangleAlert,
     colorTheme: "red",
     value: 23,
     goalText: "requer ação",
@@ -106,7 +123,7 @@ export const ocorrenciasRecentes: DashboardOcorrencia[] = [
     id: "o1",
     tipo: "Conflito",
     colorTheme: "red",
-    icon: "⚠️",
+    icon: TriangleAlert,
     titulo: "Disputa de território entre lojas",
     unidade: "Unidade SP-Centro",
     pessoa: "Ana Lima",
@@ -117,7 +134,7 @@ export const ocorrenciasRecentes: DashboardOcorrencia[] = [
     id: "o2",
     tipo: "Visita",
     colorTheme: "green",
-    icon: "🤝",
+    icon: Handshake,
     titulo: "Visita técnica de acompanhamento",
     unidade: "Unidade Campinas",
     pessoa: "Pedro Costa",
@@ -128,7 +145,7 @@ export const ocorrenciasRecentes: DashboardOcorrencia[] = [
     id: "o3",
     tipo: "Penalidade",
     colorTheme: "violet",
-    icon: "🚩",
+    icon: Flag,
     titulo: "Mudança societária não comunicada",
     unidade: "Unidade Brasília",
     pessoa: "Roberto Alves",

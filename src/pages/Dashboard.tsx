@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, BarChart3, CircleCheck } from "lucide-react";
 
 import { usePageEntrance } from "@/hooks/use-page-entrance";
 import { useAlertsPanel } from "@/lib/alerts-panel-context";
@@ -17,12 +17,12 @@ import { Badge } from "@/components/ui/badge";
 import { KpiCard } from "@/components/dashboard/KpiCard";
 import { EvolutionChart } from "@/components/dashboard/EvolutionChart";
 
-const OCORRENCIA_BORDER: Record<DashboardOcorrencia["colorTheme"], string> = {
-  red: "border-destructive",
-  green: "border-success",
-  violet: "border-violet-500",
-  amber: "border-warning",
-  blue: "border-info",
+const OCORRENCIA_COLOR: Record<DashboardOcorrencia["colorTheme"], string> = {
+  red: "bg-destructive/10 text-destructive",
+  green: "bg-success/10 text-success",
+  violet: "bg-violet-100 text-violet-600 dark:bg-violet-900/30 dark:text-violet-400",
+  amber: "bg-warning/10 text-warning",
+  blue: "bg-info/10 text-info",
 };
 
 const Dashboard = () => {
@@ -81,14 +81,24 @@ const Dashboard = () => {
             Visão geral da rede — KPIs, evolução, alertas e ocorrências.
           </p>
         </div>
-        <Badge variant="outline" className="border-success/30 bg-success/10 text-success">
-          🟢 Atualizado há 2h · fonte: Data Lake (Gold)
+        <Badge
+          variant="outline"
+          className="flex items-center gap-1.5 border-success/30 bg-success/10 text-success"
+        >
+          <CircleCheck className="h-3.5 w-3.5" aria-hidden="true" />
+          Atualizado há 2h · fonte: Data Lake (Gold)
         </Badge>
       </div>
 
-      <div className="dashboard-resumo rounded-card border-l-4 border-primary bg-gradient-to-r from-primary/5 to-transparent p-6 shadow-soft">
+      <div className="dashboard-resumo flex items-start gap-4 rounded-card border border-primary/20 bg-gradient-to-r from-primary/5 to-transparent p-6 shadow-soft">
+        <div
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary"
+          aria-hidden="true"
+        >
+          <BarChart3 className="h-5 w-5" />
+        </div>
         <p className="text-sm leading-relaxed text-foreground">
-          📊 A rede conta com{" "}
+          A rede conta com{" "}
           <strong className="font-semibold">
             {resumoExecutivo.unidadesAtivas} unidades ativas
           </strong>
@@ -118,34 +128,37 @@ const Dashboard = () => {
             Alertas que exigem ação
           </h3>
           <div className="space-y-3">
-            {alerts.map((alert) => (
-              <div
-                key={alert.id}
-                className="flex items-center gap-3 rounded-lg border border-border p-3"
-              >
-                <span
-                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-muted text-lg"
-                  aria-hidden="true"
+            {alerts.map((alert) => {
+              const Icon = alert.icon;
+              return (
+                <div
+                  key={alert.id}
+                  className="flex items-center gap-3 rounded-lg border border-border p-3"
                 >
-                  {alert.icon}
-                </span>
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium text-foreground">
-                    {alert.label}
-                  </p>
+                  <span
+                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-muted text-muted-foreground"
+                    aria-hidden="true"
+                  >
+                    <Icon className="h-4 w-4" />
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-medium text-foreground">
+                      {alert.label}
+                    </p>
+                  </div>
+                  <span className="font-display text-lg font-bold text-foreground">
+                    {alert.count}
+                  </span>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => navigate(alert.actionRoute)}
+                  >
+                    Resolver
+                  </Button>
                 </div>
-                <span className="font-display text-lg font-bold text-foreground">
-                  {alert.count}
-                </span>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => navigate(alert.actionRoute)}
-                >
-                  Resolver
-                </Button>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </Card>
 
@@ -165,35 +178,41 @@ const Dashboard = () => {
             </Button>
           </div>
           <div className="space-y-3">
-            {ocorrenciasRecentes.map((occ) => (
-              <div
-                key={occ.id}
-                className={`flex items-start gap-3 border-l-4 py-1 pl-3 ${OCORRENCIA_BORDER[occ.colorTheme]}`}
-              >
-                <span className="text-lg" aria-hidden="true">
-                  {occ.icon}
-                </span>
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium text-foreground">
-                    {occ.titulo}
-                  </p>
-                  <p className="truncate text-xs text-muted-foreground">
-                    {occ.unidade} · {occ.pessoa}
-                  </p>
-                </div>
-                <div className="flex shrink-0 flex-col items-end gap-1">
-                  <Badge
-                    variant={occ.status === "Resolvido" ? "success" : "destructive"}
-                    className="text-[10px]"
+            {ocorrenciasRecentes.map((occ) => {
+              const Icon = occ.icon;
+              return (
+                <div
+                  key={occ.id}
+                  className="flex items-start gap-3 rounded-lg border border-border p-3"
+                >
+                  <span
+                    className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${OCORRENCIA_COLOR[occ.colorTheme]}`}
+                    aria-hidden="true"
                   >
-                    {occ.status}
-                  </Badge>
-                  <span className="text-[10px] text-muted-foreground">
-                    {occ.tempo}
+                    <Icon className="h-4 w-4" />
                   </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-medium text-foreground">
+                      {occ.titulo}
+                    </p>
+                    <p className="truncate text-xs text-muted-foreground">
+                      {occ.unidade} · {occ.pessoa}
+                    </p>
+                  </div>
+                  <div className="flex shrink-0 flex-col items-end gap-1">
+                    <Badge
+                      variant={occ.status === "Resolvido" ? "success" : "destructive"}
+                      className="text-[10px]"
+                    >
+                      {occ.status}
+                    </Badge>
+                    <span className="text-[10px] text-muted-foreground">
+                      {occ.tempo}
+                    </span>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </Card>
       </div>

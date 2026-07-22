@@ -43,16 +43,18 @@ export function AlertsPanel({ open, onOpenChange }: AlertsPanelProps) {
         </SheetHeader>
 
         <div className="mt-4 flex-1 space-y-3 overflow-y-auto">
-          {alerts.map((alert) => (
+          {alerts.map((alert) => {
+            const Icon = alert.icon;
+            return (
             <div
               key={alert.id}
               className="flex items-center gap-3 rounded-lg border border-border bg-card p-3"
             >
               <span
-                className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-lg ${colorClasses[alert.colorTheme]}`}
+                className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${colorClasses[alert.colorTheme]}`}
                 aria-hidden="true"
               >
-                {alert.icon}
+                <Icon className="h-4 w-4" />
               </span>
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-medium text-foreground">
@@ -70,7 +72,8 @@ export function AlertsPanel({ open, onOpenChange }: AlertsPanelProps) {
                 Resolver
               </Button>
             </div>
-          ))}
+            );
+          })}
         </div>
       </SheetContent>
     </Sheet>

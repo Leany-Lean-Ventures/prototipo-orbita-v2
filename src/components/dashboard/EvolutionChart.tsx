@@ -13,7 +13,7 @@ const options: ApexOptions = {
   chart: {
     type: "area",
     toolbar: { show: false },
-    fontFamily: "'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif",
+    fontFamily: "'Lato', ui-sans-serif, system-ui, sans-serif",
     animations: {
       enabled: !prefersReducedMotion(),
       speed: 600, // design-system §7.4: reduzir de ~1s padrão para 600ms
@@ -37,7 +37,7 @@ const options: ApexOptions = {
   dataLabels: { enabled: false },
   legend: {
     position: "bottom",
-    fontFamily: "'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif",
+    fontFamily: "'Lato', ui-sans-serif, system-ui, sans-serif",
     fontSize: "13px",
     markers: { size: 5 },
   },

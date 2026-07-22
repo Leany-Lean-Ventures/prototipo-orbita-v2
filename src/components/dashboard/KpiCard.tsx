@@ -1,3 +1,5 @@
+import { TrendingUp } from "lucide-react";
+
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { useCountUp } from "@/hooks/use-count-up";
@@ -42,6 +44,7 @@ interface KpiCardProps {
 export function KpiCard({ kpi, onClick }: KpiCardProps) {
   const valueRef = useCountUp(kpi.value);
   const theme = THEME[kpi.colorTheme];
+  const Icon = kpi.icon;
 
   return (
     <Card
@@ -49,8 +52,8 @@ export function KpiCard({ kpi, onClick }: KpiCardProps) {
       onClick={onClick}
       className={
         kpi.isAlert
-          ? "kpi-card flex min-h-36 flex-col justify-between p-5 !border-primary !bg-primary text-primary-foreground"
-          : "kpi-card flex min-h-36 flex-col justify-between p-5"
+          ? "kpi-card flex min-h-36 flex-col justify-between p-6 !border-primary !bg-primary text-primary-foreground"
+          : "kpi-card flex min-h-36 flex-col justify-between p-6"
       }
     >
       <div className="flex items-start justify-between">
@@ -71,12 +74,12 @@ export function KpiCard({ kpi, onClick }: KpiCardProps) {
         <div
           className={
             kpi.isAlert
-              ? "flex h-9 w-9 items-center justify-center rounded-xl bg-primary-foreground/20 text-lg"
-              : `flex h-9 w-9 items-center justify-center rounded-xl text-lg ${theme.iconBg} ${theme.iconText}`
+              ? "flex h-9 w-9 items-center justify-center rounded-xl bg-primary-foreground/20"
+              : `flex h-9 w-9 items-center justify-center rounded-xl ${theme.iconBg} ${theme.iconText}`
           }
           aria-hidden="true"
         >
-          {kpi.icon}
+          <Icon className="h-4 w-4" />
         </div>
       </div>
 
@@ -84,10 +87,11 @@ export function KpiCard({ kpi, onClick }: KpiCardProps) {
         <p
           className={
             kpi.isAlert
-              ? "text-xs font-medium text-primary-foreground/70"
-              : "text-xs font-medium text-muted-foreground"
+              ? "flex items-center gap-1 text-xs font-medium text-primary-foreground/70"
+              : "flex items-center gap-1 text-xs font-medium text-muted-foreground"
           }
         >
+          {kpi.hasTrendUp && <TrendingUp className="h-3 w-3" aria-hidden="true" />}
           {kpi.goalText}
         </p>
         <Progress
