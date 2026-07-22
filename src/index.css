@@ -173,6 +173,10 @@
         transparent 50%
       ),
       radial-gradient(at 100% 100%, hsl(var(--secondary) / 0.03) 0px, transparent 50%);
+    /* Ancora o gradiente ao viewport, não ao documento — sem isso, os
+       cantos "0% 0%"/"100% 100%" ficariam no topo/fim da página inteira
+       (que agora rola nativamente) em vez de no canto da tela visível. */
+    background-attachment: fixed;
   }
 }
 

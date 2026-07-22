@@ -8,7 +8,7 @@ export function AppSidebar() {
   const { user } = useAuth();
 
   return (
-    <aside className="flex w-[236px] shrink-0 flex-col overflow-hidden rounded-2xl border border-white/50 bg-card/80 shadow-soft backdrop-blur-md dark:border-white/5">
+    <aside className="sticky top-4 flex h-[calc(100vh-2rem)] w-[236px] shrink-0 flex-col overflow-hidden rounded-2xl border border-white/50 bg-card/80 shadow-soft backdrop-blur-md dark:border-white/5">
       <div className="flex h-16 items-center px-5">
         <span className="font-display text-lg font-bold text-sidebar-foreground">
           Órbita

@@ -5,16 +5,18 @@ import { AppHeader } from "./AppHeader";
 
 export function AppShell() {
   return (
-    <div className="flex h-screen gap-4 overflow-hidden bg-background bg-mesh p-4">
-      <AppSidebar />
+    <div className="flex min-h-screen gap-4 bg-background bg-mesh p-4">
       {/*
-        min-w-0 + overflow-y-auto: este div é o container de scroll. O
-        header vive dentro dele como sticky (não como irmão separado do
-        <main>), para que o conteúdo role por baixo dele e apareça,
-        borrado, através do backdrop-blur — em vez de só empilhar header
-        e conteúdo com um gap fixo entre os dois.
+        Sem overflow-y-auto num container interno: a página inteira rola
+        pelo scroll nativo do navegador (barra na borda real da janela,
+        como no V1). Sidebar e header ficam parados via position: sticky
+        (não via um container de scroll isolado) — AppSidebar.tsx tem
+        `sticky top-4 h-[calc(100vh-2rem)]`, AppHeader.tsx tem
+        `sticky top-4`. Não reintroduzir overflow-y-auto aqui: já
+        aconteceu de quebrar isso (ver MEMORY.md).
       */}
-      <div className="min-w-0 flex-1 overflow-y-auto">
+      <AppSidebar />
+      <div className="min-w-0 flex-1">
         <AppHeader />
         <main>
           <div className="mx-auto max-w-[1440px] px-6 pb-6">
