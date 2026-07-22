@@ -10,6 +10,7 @@ Detalhamento completo de cada página (abas, filtros, overlays, dados, dependên
 |---|---|---|---|---|---|
 | 0 | Fundação visual | — | — | ✅ | Aplicar os tokens do `design-system/` no `tailwind.config.ts` e `src/index.css` (cores, Montserrat + IBM Plex Sans, raios, sombras, motion) e disponibilizar os logos. Feito antes, evita retrabalho de estilo em todas as telas |
 | 1 | Login | `/login` | — | ✅ | Superfície pequena e isolada, fora do shell. Valida os tokens na prática antes de comprometer o layout inteiro e define o estado de usuário logado |
+| 0.5 | Fundação de motion (GSAP) | — | — | ✅ | Instalar GSAP + `@gsap/react`, registrar plugins, criar `usePageEntrance` e aplicar microinterações CSS (hover/foco/press) em `Button`/`Input`/`Card`. Feito logo após o Login (única tela real) para provar a infraestrutura antes do App Shell, sem precisar retrofit depois |
 | 2 | App Shell | — | PRD-00 | ⬜ | Sidebar, topbar, painel de alertas e guard de rota. Todas as páginas seguintes dependem dele |
 | 3 | Dashboard | `/` | PRD-01 | ⬜ | Home do sistema. Valida os componentes de card, pill e KPI e a navegação para as listas |
 | 4 | Unidades (lista + detalhe) | `/unidades`, `/unidades/:id` | PRD-02 | ⬜ | ⭐ Etapa mais pesada e de maior retorno: cria abas, timeline, tabela de carteiras com toggle de órfãs, comissionamento e societária |
@@ -36,9 +37,10 @@ Cada etapa só é considerada concluída após passar pelo fluxo definido no [`C
 
 1. PRD do módulo e `MEMORY.md` lidos
 2. Tokens do `design-system/` aplicados (nunca valores arbitrários)
-3. Revisão com `web-design-guidelines`
-4. Validação visual no navegador com `webapp-testing`
-5. `npm run lint` e `npm test` passando
+3. Motion aplicado — microinterações CSS via componentes base e `usePageEntrance` na entrada (ver "Motion e microinterações" no `CLAUDE.md`)
+4. Revisão com `web-design-guidelines`
+5. Validação visual no navegador com `webapp-testing`, incluindo hover/foco/entrada e `prefers-reduced-motion`
+6. `npm run lint` e `npm test` passando
 
 ## Questões em aberto
 

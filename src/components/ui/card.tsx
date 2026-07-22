@@ -2,12 +2,23 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
-const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => (
+export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
+  /**
+   * Marca o card como clicável: aplica hover lift + sombra elevada
+   * (design-system §8.2 — "Clicável usa a variante interativa; estático
+   * não tem hover"). Não usar em cards puramente informativos.
+   */
+  interactive?: boolean;
+}
+
+const Card = React.forwardRef<HTMLDivElement, CardProps>(
+  ({ className, interactive, ...props }, ref) => (
     <div
       ref={ref}
       className={cn(
         "rounded-lg border bg-card text-card-foreground shadow-sm",
+        interactive &&
+          "cursor-pointer transition-[transform,box-shadow] duration-base ease-micro hover:-translate-y-0.5 hover:shadow-elevated",
         className
       )}
       {...props}

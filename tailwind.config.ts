@@ -126,6 +126,10 @@ export default {
         base: "var(--duration-base)",
         enter: "var(--duration-enter)",
       },
+      transitionTimingFunction: {
+        // Aproximação CSS do easing GSAP "power1.out" (design-system §7.1 ease-micro)
+        micro: "cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+      },
       zIndex: {
         "card-decoration": "10",
         "table-header-sticky": "40",

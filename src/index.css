@@ -159,3 +159,20 @@
     @apply font-display tracking-tight;
   }
 }
+
+/*
+ * Movimento reduzido (design-system §7.5) — cobre as transições CSS puras
+ * (hover/focus/press em botão, input, card). O lado GSAP (entrada de
+ * página, timelines) é tratado separadamente em src/lib/motion.ts e
+ * src/hooks/use-page-entrance.ts.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

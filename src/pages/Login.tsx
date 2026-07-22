@@ -7,6 +7,7 @@ import { AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 
 import { useAuth } from "@/lib/auth-context";
+import { usePageEntrance } from "@/hooks/use-page-entrance";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -47,6 +48,15 @@ const Login = () => {
     defaultValues: { email: "", senha: "" },
   });
 
+  const entranceRef = usePageEntrance<HTMLDivElement>([
+    { selector: ".login-brand", vars: { y: -16, opacity: 0 } },
+    {
+      selector: ".login-card",
+      vars: { y: 16, opacity: 0, duration: 0.45 },
+      position: "-=0.2",
+    },
+  ]);
+
   if (isAuthenticated) {
     return <Navigate to="/" replace />;
   }
@@ -66,9 +76,12 @@ const Login = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background p-6">
+    <div
+      ref={entranceRef}
+      className="flex min-h-screen items-center justify-center bg-background p-6"
+    >
       <div className="w-full max-w-sm space-y-8">
-        <div className="flex flex-col items-center gap-6">
+        <div className="login-brand flex flex-col items-center gap-6">
           <img
             src={logoAdemicon}
             alt="Ademicon"
@@ -86,7 +99,7 @@ const Login = () => {
           </div>
         </div>
 
-        <div className="rounded-card border border-border bg-card p-6 shadow-soft">
+        <div className="login-card rounded-card border border-border bg-card p-6 shadow-soft">
           {authError && (
             <div
               role="alert"
