@@ -7,7 +7,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { toast } from "sonner";
-import logoAdemicon from "@/assets/brand/ademicon-logo-horizontal-color.svg";
+import { usePageEntrance } from "@/hooks/use-page-entrance";
 
 const swatches = [
   { label: "Primary (accent)", className: "bg-primary" },
@@ -27,115 +27,109 @@ const chartSwatches = [
 ];
 
 const Index = () => {
+  const entranceRef = usePageEntrance<HTMLDivElement>([
+    { selector: ".index-intro", vars: { y: -16, opacity: 0 } },
+    {
+      selector: ".index-card",
+      vars: { y: 16, opacity: 0, duration: 0.45 },
+      position: "-=0.2",
+    },
+  ]);
+
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b border-border bg-card">
-        <div className="container flex h-16 items-center justify-between">
-          <img
-            src={logoAdemicon}
-            alt="Ademicon"
-            width={129}
-            height={28}
-            className="h-7 w-auto"
-          />
-          <span className="text-sm text-muted-foreground">Órbita — Protótipo</span>
-        </div>
-      </header>
+    <div ref={entranceRef}>
+      <div className="index-intro mx-auto max-w-2xl text-center">
+        <h1 className="mb-4 font-display text-4xl font-bold tracking-tight text-foreground">
+          Fundação Visual
+        </h1>
+        <p className="mb-8 text-muted-foreground">
+          Tokens do design-system oficial aplicados: cores de marca, tipografia
+          (Montserrat + IBM Plex Sans), sombras e raios.
+        </p>
+        <Button onClick={() => toast.success("Tokens aplicados com sucesso!")}>
+          Testar toast
+        </Button>
+      </div>
 
-      <main className="container py-12">
-        <div className="mx-auto max-w-2xl text-center">
-          <h1 className="mb-4 font-display text-4xl font-bold tracking-tight text-foreground">
-            Fundação Visual
-          </h1>
-          <p className="mb-8 text-muted-foreground">
-            Tokens do design-system oficial aplicados: cores de marca, tipografia
-            (Montserrat + IBM Plex Sans), sombras e raios.
-          </p>
-          <Button onClick={() => toast.success("Tokens aplicados com sucesso!")}>
-            Testar toast
-          </Button>
-        </div>
+      <div className="mx-auto mt-12 grid max-w-3xl gap-6">
+        <Card className="index-card rounded-card shadow-soft">
+          <CardHeader>
+            <CardTitle>Paleta de marca</CardTitle>
+            <CardDescription>
+              accent, accent-secondary e cores funcionais (AA-escurecidas)
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+              {swatches.map((s) => (
+                <div key={s.label} className="space-y-1.5">
+                  <div className={`h-12 rounded-md ${s.className}`} />
+                  <p className="text-xs text-muted-foreground">{s.label}</p>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
 
-        <div className="mx-auto mt-12 grid max-w-3xl gap-6">
+        <Card className="index-card rounded-card shadow-soft">
+          <CardHeader>
+            <CardTitle>Paleta de gráficos</CardTitle>
+            <CardDescription>chart-1 a chart-5 — ordem fixa</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-5 gap-3">
+              {chartSwatches.map((s) => (
+                <div key={s.label} className="space-y-1.5">
+                  <div className={`h-12 rounded-md ${s.className}`} />
+                  <p className="text-xs text-muted-foreground">{s.label}</p>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        <div className="index-card grid gap-4 sm:grid-cols-3">
           <Card className="rounded-card shadow-soft">
             <CardHeader>
-              <CardTitle>Paleta de marca</CardTitle>
-              <CardDescription>
-                accent, accent-secondary e cores funcionais (AA-escurecidas)
-              </CardDescription>
+              <CardTitle className="text-base">shadow-soft</CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                {swatches.map((s) => (
-                  <div key={s.label} className="space-y-1.5">
-                    <div className={`h-12 rounded-md ${s.className}`} />
-                    <p className="text-xs text-muted-foreground">{s.label}</p>
-                  </div>
-                ))}
-              </div>
+            <CardContent className="text-sm text-muted-foreground">
+              Nível 1 — Card
             </CardContent>
           </Card>
-
-          <Card className="rounded-card shadow-soft">
+          <Card className="rounded-card shadow-elevated">
             <CardHeader>
-              <CardTitle>Paleta de gráficos</CardTitle>
-              <CardDescription>chart-1 a chart-5 — ordem fixa</CardDescription>
+              <CardTitle className="text-base">shadow-elevated</CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-5 gap-3">
-                {chartSwatches.map((s) => (
-                  <div key={s.label} className="space-y-1.5">
-                    <div className={`h-12 rounded-md ${s.className}`} />
-                    <p className="text-xs text-muted-foreground">{s.label}</p>
-                  </div>
-                ))}
-              </div>
+            <CardContent className="text-sm text-muted-foreground">
+              Nível 2 — Raised
             </CardContent>
           </Card>
-
-          <div className="grid gap-4 sm:grid-cols-3">
-            <Card className="rounded-card shadow-soft">
-              <CardHeader>
-                <CardTitle className="text-base">shadow-soft</CardTitle>
-              </CardHeader>
-              <CardContent className="text-sm text-muted-foreground">
-                Nível 1 — Card
-              </CardContent>
-            </Card>
-            <Card className="rounded-card shadow-elevated">
-              <CardHeader>
-                <CardTitle className="text-base">shadow-elevated</CardTitle>
-              </CardHeader>
-              <CardContent className="text-sm text-muted-foreground">
-                Nível 2 — Raised
-              </CardContent>
-            </Card>
-            <Card className="rounded-card shadow-overlay">
-              <CardHeader>
-                <CardTitle className="text-base">shadow-overlay</CardTitle>
-              </CardHeader>
-              <CardContent className="text-sm text-muted-foreground">
-                Nível 3 — Overlay
-              </CardContent>
-            </Card>
-          </div>
-
-          <Card className="rounded-card shadow-soft">
+          <Card className="rounded-card shadow-overlay">
             <CardHeader>
-              <CardTitle>Tipografia</CardTitle>
-              <CardDescription>Montserrat (display) + IBM Plex Sans (corpo)</CardDescription>
+              <CardTitle className="text-base">shadow-overlay</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-2">
-              <p className="font-display text-2xl font-bold text-foreground">
-                Montserrat 700 — títulos e valores de KPI
-              </p>
-              <p className="font-sans text-base text-foreground">
-                IBM Plex Sans 400 — corpo de texto e dados tabulares (1.234,56)
-              </p>
+            <CardContent className="text-sm text-muted-foreground">
+              Nível 3 — Overlay
             </CardContent>
           </Card>
         </div>
-      </main>
+
+        <Card className="index-card rounded-card shadow-soft">
+          <CardHeader>
+            <CardTitle>Tipografia</CardTitle>
+            <CardDescription>Montserrat (display) + IBM Plex Sans (corpo)</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <p className="font-display text-2xl font-bold text-foreground">
+              Montserrat 700 — títulos e valores de KPI
+            </p>
+            <p className="font-sans text-base text-foreground">
+              IBM Plex Sans 400 — corpo de texto e dados tabulares (1.234,56)
+            </p>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };

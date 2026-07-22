@@ -4,8 +4,10 @@ import { Toaster } from "sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/lib/auth-context";
 import { RequireAuth } from "@/components/RequireAuth";
+import { AppShell } from "@/components/shell/AppShell";
 import Index from "@/pages/Index";
 import Login from "@/pages/Login";
+import ComingSoon from "@/pages/ComingSoon";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -19,13 +21,22 @@ const App = () => (
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route
-              path="/"
               element={
                 <RequireAuth>
-                  <Index />
+                  <AppShell />
                 </RequireAuth>
               }
-            />
+            >
+              <Route path="/" element={<Index />} />
+              <Route path="/unidades" element={<ComingSoon />} />
+              <Route path="/consultores" element={<ComingSoon />} />
+              <Route path="/pvs" element={<ComingSoon />} />
+              <Route path="/previas" element={<ComingSoon />} />
+              <Route path="/ocorrencias" element={<ComingSoon />} />
+              <Route path="/visitas" element={<ComingSoon />} />
+              <Route path="/relatorios" element={<ComingSoon />} />
+              <Route path="/configuracoes" element={<ComingSoon />} />
+            </Route>
             {/* ADICIONE TODAS AS ROTAS PERSONALIZADAS ACIMA DA ROTA CATCH-ALL "*" */}
             <Route path="*" element={<NotFound />} />
           </Routes>

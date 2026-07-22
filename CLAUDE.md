@@ -78,6 +78,20 @@ O objetivo do protótipo inclui impressionar visualmente — toda tela nova deve
 
 `Button` (press + hover lift + sombra), `Input` (fade de borda no foco) e `Card` (prop `interactive` — só ativar em cards clicáveis, nunca em cards estáticos, conforme §8.2). Reutilizar esses componentes em vez de recriar hover/focus/press do zero.
 
+## App Shell (`src/components/shell/`)
+
+Layout persistente que envolve todas as páginas autenticadas (PRD-00 §4). Estrutura:
+
+- **`nav-items.ts`** — fonte única dos 9 itens do menu principal (`{ label, path, icon }`). Usada pelo `AppSidebar` **e** pelo breadcrumb do `AppHeader` (`resolveNavLabel(pathname)`). Ao adicionar uma rota nova (etapas 4+), registrar aqui ou o breadcrumb cai no fallback `"Órbita"`.
+- **`AppSidebar.tsx`** — 236px fixos, tokens `sidebar-*` (claro, pill vermelho no item ativo — decisão em `MEMORY.md`), rodapé com `useAuth().user`.
+- **`AppHeader.tsx`** — 56px, breadcrumb dinâmico, sino de alertas (`Badge` com contagem) e avatar com `DropdownMenu` (inclui "Sair" → `logout()`). **Sem busca global** — removida do escopo, ver `MEMORY.md`.
+- **`AlertsPanel.tsx`** — `Sheet` lateral com os alertas mockados (`src/lib/mock-data/alerts.ts`); "Resolver" navega para a rota do alerta e fecha o painel.
+- **`AppShell.tsx`** — compõe sidebar + header + `<Outlet/>` (área `.view`, `overflow-y-auto`, padding 26px).
+
+`src/App.tsx` usa uma rota de layout: `<Route element={<RequireAuth><AppShell /></RequireAuth>}>` com as páginas como filhas. Toda página nova protegida entra como filha dessa rota, não precisa de `RequireAuth` individual.
+
+**Módulos ainda não construídos** (Unidades, Consultores, PVs, Prévias, Ocorrências, Visitas, Relatórios, Configurações) apontam para `src/pages/ComingSoon.tsx` — um placeholder consistente com o design-system (§8.1 "empty"), não um 404. Ao construir o módulo de verdade (sua etapa em `PRD/ordem-desenvolvimento.md`), troque o `element` da rota em `App.tsx` de `<ComingSoon />` para a página real — `ComingSoon` não precisa ser removida de lugar nenhum além dali.
+
 ## Fluxo de trabalho para construir uma tela
 
 1. Ler `MEMORY.md` + o `PRD-XX` do módulo correspondente + `data-schema.json`/`form-schemas.json` se houver formulário ou dado envolvido.
