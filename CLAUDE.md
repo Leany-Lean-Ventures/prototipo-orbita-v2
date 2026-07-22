@@ -4,6 +4,7 @@ Protótipo de interface web do projeto Órbita para a Ademicon. Stack: Vite + Re
 
 ## Fontes de verdade (leia antes de construir qualquer tela)
 
+0. **`MEMORY.md`** — decisões, definições e aprendizados do projeto (stack, arquitetura, processo, ferramentas, convenções). Leia antes de iniciar qualquer trabalho novo e adicione uma entrada sempre que uma decisão relevante for tomada, revertida ou substituída.
 1. **`PRD/`** — especificação funcional, módulo por módulo. Antes de implementar uma tela, leia o PRD correspondente:
    - `PRD-00-Visao-Geral.md` — contexto geral do produto
    - `PRD-01-Dashboard.md`, `PRD-02-Unidades.md`, `PRD-03-Consultores.md`, `PRD-04-PVs.md`, `PRD-05-Previas.md`, `PRD-06-Ocorrencias.md`, `PRD-07-Visitas.md`, `PRD-08-Relatorios.md`, `PRD-09-Configuracoes.md` — um por módulo/tela
