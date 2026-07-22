@@ -19,6 +19,21 @@ Registro de decisões, definições e aprendizados acumulados ao longo do projet
 
 ## Decisões
 
+### 2026-07-22 — Sitemap como guia de desenvolvimento e ordem de construção
+**Decisão:** `PRD/sitemap.json` é o documento que guia o pedido de desenvolvimento das páginas — 14 páginas mapeadas (13 dos PRDs + Login), com rotas, abas, overlays, componentes compartilhados, ordem sugerida e questões em aberto. Ordem de construção acordada: (0) fundação visual com tokens do design-system, (1) Login, (2) App Shell, (3) Dashboard, (4) Unidades lista+detalhe, (5) PVs, (6) Consultores, (7) Ocorrências, (8) Visitas, (9) Prévias, (10) Relatórios, (11) Configurações, (12) 404 e polimento.
+**Motivo:** a ordem não segue a numeração dos PRDs de propósito — Unidades vem antes de PVs e Consultores porque cria os componentes reutilizáveis (abas, timeline, carteiras, comissionamento, societária) que os outros dois reaproveitam quase inteiros; Login vem antes do Shell por ser uma superfície pequena e isolada, ideal para validar os tokens do design system antes de comprometer o layout inteiro.
+**Status:** vigente.
+
+### 2026-07-22 — Design system oficial vence a paleta do PRD-00 (questão Q01)
+**Decisão:** seguir **sempre** os tokens do `design-system/` oficial (accent `#dc2626`, background `#f2f2f2`, Montserrat + IBM Plex Sans, base 15px, raio 24px em cards). A paleta e a tipografia definidas no PRD-00 §3.1 (`--maroon #C43C30`, `--paper #F4EFE9`, Segoe UI, base 14px) estão **obsoletas**.
+**Motivo:** o PRD-00 antecede a formalização do design system. Confirmado explicitamente pelo usuário. As classes utilitárias descritas no PRD-00 §3.3 (`.card`, `.pill`, `.btn`, `.tabs`, `table.t`) seguem valendo como *estrutura* de componente — o que muda são os valores visuais, que vêm do design system.
+**Status:** vigente.
+
+### 2026-07-22 — Página de Login adicionada ao escopo
+**Decisão:** incluir uma página `/login` fora do App Shell (sem sidebar/topbar), com autenticação mockada — qualquer credencial entra como Roberto Almeida (Gerente BU). Link de "esqueci minha senha" apenas visual.
+**Motivo:** solicitada pelo usuário; não consta em nenhum PRD. Fica registrada como questão Q07 no sitemap a definição pendente: se o protótipo precisa demonstrar múltiplos perfis de acesso (a matriz RBAC do PRD-09 prevê Diretoria, Gerente BU, Backoffice e Lojista), o login pode oferecer seleção de perfil.
+**Status:** vigente.
+
 ### 2026-07-22 — Criação deste arquivo de memória
 **Decisão:** manter `MEMORY.md` versionado no repositório como registro formal de decisões do projeto, complementar à memória automática interna do Claude (que fica focada em preferências de colaboração, não em decisões técnicas do Órbita).
 **Motivo:** usuário pediu um local único de registro/consulta para não precisar reespecificar contexto a cada interação. Um arquivo no repo é visível, editável, versionado e portável entre máquinas/pessoas — diferente da memória automática, que é interna e não aparece para o time.

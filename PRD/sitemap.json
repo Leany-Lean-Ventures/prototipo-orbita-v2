@@ -1,0 +1,1029 @@
+{
+  "meta": {
+    "projeto": "Órbita — CRM Ademicon (protótipo)",
+    "descricao": "Mapa completo de páginas a serem desenvolvidas, derivado dos PRDs 00 a 09 mais a página de Login solicitada pelo usuário. Este documento guia o pedido de desenvolvimento: cada entrada de `paginas` é uma unidade de trabalho que pode ser solicitada individualmente.",
+    "versao": "1.1",
+    "geradoEm": "2026-07-22",
+    "fonte": "PRD-00 a PRD-09, data-schema.json, form-schemas.json",
+    "totalPaginas": 14,
+    "convencaoRotas": "SPA com react-router-dom. Rotas de detalhe recebem o id da entidade como parâmetro.",
+    "atualizadoEm": "2026-07-22"
+  },
+  "shell": {
+    "id": "app-shell",
+    "nome": "App Shell (layout global)",
+    "prd": "PRD-00-Visao-Geral.md",
+    "descricao": "Não é uma página: é o layout que envolve todas as rotas. Deve ser construído antes de qualquer página.",
+    "componentes": [
+      {
+        "nome": "Sidebar",
+        "detalhe": "Largura fixa 236px, fundo gradiente da marca. 9 itens de menu na ordem: Dashboard, Unidades, Consultores, PVs, Prévias, Ocorrências, Visitas, Relatórios, Configurações. Rodapé com perfil do usuário logado (nome + papel)."
+      },
+      {
+        "nome": "Topbar",
+        "detalhe": "Altura fixa 56px. Contém breadcrumb dinâmico, busca global, sino de alertas com badge contador e avatar do usuário."
+      },
+      {
+        "nome": "Painel de Alertas (slide-over)",
+        "detalhe": "Aberto pelo sino do topbar, disponível em todas as páginas. Lista alertas ativos com ícone, label, contador e ação de navegação para a lista filtrada correspondente."
+      },
+      {
+        "nome": "Área de conteúdo (.view)",
+        "detalhe": "Container scrollável que recebe as rotas."
+      }
+    ],
+    "dados": {
+      "user": {
+        "name": "string",
+        "role": "string",
+        "avatar": "string"
+      },
+      "alerts": "Alert[] — ver data-schema.json"
+    },
+    "observacao": "O item 'Histórico' NÃO existe no menu lateral por decisão de produto (PRD-00 §5): é uma aba dentro das páginas de entidade.",
+    "observacaoRotas": "Todas as rotas exceto /login vivem dentro do shell e exigem usuário autenticado (guard simples de protótipo, sem backend)."
+  },
+  "paginas": [
+    {
+      "id": "login",
+      "ordem": 1,
+      "rota": "/login",
+      "nome": "Login",
+      "modulo": "Autenticação",
+      "prd": null,
+      "tipo": "autenticacao",
+      "origem": "Solicitada pelo usuário em 2026-07-22 — não consta em nenhum PRD.",
+      "titulo": "Acessar o Órbita",
+      "foraDoShell": true,
+      "observacaoLayout": "Única página sem sidebar/topbar — layout próprio, centrado, com a marca Ademicon em destaque (logos/ do design-system).",
+      "secoes": [
+        "Marca Ademicon (logo oficial do design-system, variação adequada ao fundo)",
+        "Formulário de acesso: e-mail e senha",
+        "Link \"Esqueci minha senha\" (apenas visual no protótipo)",
+        "Mensagem de erro para credenciais inválidas"
+      ],
+      "interacoes": [
+        "Submit autentica de forma mockada e redireciona para / (Dashboard)",
+        "Usuário autenticado é persistido no estado da aplicação e alimenta o rodapé da sidebar e o avatar do topbar"
+      ],
+      "dados": [
+        "user — ver data-schema.json (mock: Roberto Almeida, Gerente BU)"
+      ],
+      "dependencias": [],
+      "escopoProtótipo": "Autenticação simulada — sem backend, sem validação real de credenciais. Serve para estabelecer a identidade visual e o estado de usuário logado que o shell consome."
+    },
+    {
+      "id": "dashboard",
+      "ordem": 2,
+      "rota": "/",
+      "nome": "Dashboard",
+      "modulo": "Dashboard",
+      "prd": "PRD-01-Dashboard.md",
+      "tipo": "home",
+      "titulo": "Dashboard",
+      "subtitulo": "Visão geral da rede — KPIs, evolução, alertas e ocorrências.",
+      "secoes": [
+        "Cabeçalho com badge de frescor dos dados (ex: 'Atualizado há 2h · fonte: Data Lake (Gold)')",
+        "Resumo Executivo — bloco de texto em linguagem natural com números destacados em cor (positivo/negativo)",
+        "Painel de KPIs — grid de 5 cards: Lojas ativas, Consultores, Em prévia, CNPJs, Alertas críticos. Cada card tem ícone, valor, meta/subtítulo, barra de progresso opcional e estado de alerta",
+        "Alertas que exigem ação — lista com ícone, descrição, contador e botão 'Resolver'",
+        "Últimas Ocorrências (Logbook) — feed com ícone, título, unidade/pessoa, status e tempo decorrido; botão 'Ver todas'"
+      ],
+      "interacoes": [
+        "Clique em KPI navega para a lista correspondente (ex: Lojas ativas → /unidades)",
+        "Botão 'Resolver' navega para a lista com filtro pré-aplicado (ex: /consultores?filter=inativos)",
+        "Botão 'Ver todas' navega para /ocorrencias"
+      ],
+      "dados": [
+        "resumoExecutivo",
+        "kpis[]",
+        "alertas[]",
+        "ocorrenciasRecentes[]"
+      ],
+      "dependencias": [
+        "app-shell"
+      ]
+    },
+    {
+      "id": "unidades-lista",
+      "ordem": 3,
+      "rota": "/unidades",
+      "nome": "Unidades da Rede (lista)",
+      "modulo": "Unidades",
+      "prd": "PRD-02-Unidades.md",
+      "tipo": "lista",
+      "titulo": "Unidades da Rede",
+      "subtitulo": "Gestão de lojas (Licenciado Lojista 3.5)",
+      "filtros": [
+        "Busca por nome/código",
+        "Regional/Estado",
+        "Status (Ativo, Inativo, Suspenso)",
+        "Rating (A, B, C)"
+      ],
+      "tabela": {
+        "colunas": [
+          "Código",
+          "Nome",
+          "Localização (Cidade/UF)",
+          "Dono (LL)",
+          "Rating (pill)",
+          "Status (pill)"
+        ],
+        "acaoLinha": "Navega para /unidades/:id"
+      },
+      "dados": [
+        "lista[]"
+      ],
+      "dependencias": [
+        "app-shell"
+      ]
+    },
+    {
+      "id": "unidade-detalhe",
+      "ordem": 4,
+      "rota": "/unidades/:id",
+      "nome": "Detalhe da Unidade",
+      "modulo": "Unidades",
+      "prd": "PRD-02-Unidades.md",
+      "tipo": "detalhe",
+      "prioridadeAlta": true,
+      "motivoPrioridade": "Estabelece os componentes reutilizáveis (abas, timeline, tabela de carteiras com filtro de órfãs, blocos de comissionamento e societária) que PVs e Consultores reaproveitam.",
+      "cabecalho": {
+        "titulo": "Nome da Unidade + status (pill)",
+        "fatos": [
+          "Localização",
+          "Dono (LL)",
+          "Gerente da BU",
+          "Data de Abertura",
+          "Código"
+        ],
+        "acoes": [
+          "Registrar Ocorrência (primário)",
+          "Registrar Visita (secundário)"
+        ],
+        "indicador": "Gráfico de donut com score e letra do Rating no centro"
+      },
+      "abas": [
+        {
+          "nome": "Estrutura Organizacional",
+          "detalhe": "Árvore/tabela indentada mostrando a relação entre a Loja (3.5) e os PVs subordinados (3.0, 2.7, etc.)"
+        },
+        {
+          "nome": "Dados Financeiros",
+          "detalhe": "Faturamento consolidado, ticket médio e gráficos"
+        },
+        {
+          "nome": "Consultores Vinculados",
+          "detalhe": "Lista de consultores que atuam na unidade"
+        },
+        {
+          "nome": "Carteiras Associadas",
+          "detalhe": "Tabela com colunas ID, Cliente, Status, Consultor Responsável e flag de órfã. Toggle 'Exibir apenas carteiras órfãs'"
+        },
+        {
+          "nome": "Comissionamento (M3)",
+          "detalhe": "Comissão base, tabela de cascata por nível hierárquico e bloco de penalidades ativas (motivo, % desconto, vigência)"
+        },
+        {
+          "nome": "Avaliação 360º",
+          "detalhe": "Resultados das avaliações trimestrais/semestrais. Exclusiva de Unidade — não existe em PV"
+        },
+        {
+          "nome": "Estrutura Societária",
+          "detalhe": "Tabela de CNPJs: Razão Social, CNPJ, Papel, % Participação, Status"
+        },
+        {
+          "nome": "Histórico (Linha do Tempo)",
+          "detalhe": "Timeline vertical consolidando ocorrências e eventos de negócio, ordem decrescente. Filtros por tipo e status. Cada item: data, ícone colorido, título e descrição"
+        }
+      ],
+      "dados": [
+        "detalheMock",
+        "carteiras[]",
+        "comissionamento",
+        "societaria[]",
+        "historico[]"
+      ],
+      "dependencias": [
+        "app-shell",
+        "unidades-lista"
+      ]
+    },
+    {
+      "id": "pvs-lista",
+      "ordem": 5,
+      "rota": "/pvs",
+      "nome": "Pontos de Venda (lista)",
+      "modulo": "PVs",
+      "prd": "PRD-04-PVs.md",
+      "tipo": "lista",
+      "titulo": "Pontos de Venda (PVs)",
+      "subtitulo": "Gestão das estruturas comerciais subordinadas.",
+      "filtros": [
+        "Busca por nome/código",
+        "Unidade Mãe",
+        "Nível (3.0 a 2.0)",
+        "Status"
+      ],
+      "tabela": {
+        "colunas": [
+          "Código",
+          "Nome",
+          "Unidade Mãe",
+          "Gestor do PV",
+          "Nível (pill)",
+          "Status (pill)"
+        ],
+        "acaoLinha": "Navega para /pvs/:id"
+      },
+      "filtrosViaURL": [
+        "?filter=orfas — vindo do painel de alertas"
+      ],
+      "dados": [
+        "lista[]"
+      ],
+      "dependencias": [
+        "app-shell"
+      ]
+    },
+    {
+      "id": "pv-detalhe",
+      "ordem": 6,
+      "rota": "/pvs/:id",
+      "nome": "Detalhe do PV",
+      "modulo": "PVs",
+      "prd": "PRD-04-PVs.md",
+      "tipo": "detalhe",
+      "reutiliza": "unidade-detalhe",
+      "cabecalho": {
+        "titulo": "Nome do PV + status (pill)",
+        "fatos": [
+          "Unidade Mãe (link para /unidades/:id)",
+          "Gestor do PV",
+          "Data de Abertura",
+          "Código"
+        ],
+        "acoes": [
+          "Registrar Ocorrência (primário)",
+          "Ver no Grafo (secundário)"
+        ],
+        "indicador": "NÃO possui donut de rating (diferença em relação à Unidade)"
+      },
+      "abas": [
+        {
+          "nome": "Estrutura Organizacional"
+        },
+        {
+          "nome": "Dados Financeiros"
+        },
+        {
+          "nome": "Consultores Vinculados"
+        },
+        {
+          "nome": "Carteiras Associadas",
+          "detalhe": "Mesma tabela com toggle de órfãs"
+        },
+        {
+          "nome": "Comissionamento (M3)"
+        },
+        {
+          "nome": "Estrutura Societária"
+        },
+        {
+          "nome": "Histórico (Linha do Tempo)"
+        }
+      ],
+      "diferencasVsUnidade": [
+        "7 abas em vez de 8 — não possui Avaliação 360º",
+        "Sem gráfico de donut de rating no cabeçalho",
+        "Possui Unidade Mãe obrigatória no bloco de fatos"
+      ],
+      "dados": [
+        "detalheMock",
+        "carteiras[]",
+        "comissionamento",
+        "societaria[]",
+        "historico[]"
+      ],
+      "dependencias": [
+        "app-shell",
+        "pvs-lista",
+        "unidade-detalhe"
+      ]
+    },
+    {
+      "id": "consultores-lista",
+      "ordem": 7,
+      "rota": "/consultores",
+      "nome": "Pessoas & Consultores (lista)",
+      "modulo": "Consultores",
+      "prd": "PRD-03-Consultores.md",
+      "tipo": "lista",
+      "titulo": "Pessoas & Consultores",
+      "subtitulo": "Visão unificada por CPF — Matrículas, nível e empresas.",
+      "filtros": [
+        "Busca por nome, CPF ou matrícula",
+        "Nível (Licenciado, Autorizado, Em Prévia)",
+        "Loja/Unidade",
+        "Status (Ativo, Inativo, Descredenciado)"
+      ],
+      "tabela": {
+        "colunas": [
+          "Avatar (iniciais coloridas por nível)",
+          "Nome e Matrícula",
+          "CPF (mascarado)",
+          "Nível (pill)",
+          "Loja Principal",
+          "Empresas (qtd. CNPJs)",
+          "Status (pill)"
+        ],
+        "acaoLinha": "Navega para o detalhe do consultor"
+      },
+      "filtrosViaURL": [
+        "?filter=inativos — vindo do dashboard e do painel de alertas"
+      ],
+      "dados": [
+        "lista[]"
+      ],
+      "dependencias": [
+        "app-shell"
+      ]
+    },
+    {
+      "id": "consultor-detalhe",
+      "ordem": 8,
+      "rota": "/consultores/:id",
+      "nome": "Detalhe do Consultor",
+      "modulo": "Consultores",
+      "prd": "PRD-03-Consultores.md",
+      "tipo": "detalhe",
+      "reutiliza": "unidade-detalhe",
+      "cabecalho": {
+        "titulo": "Nome + nível (pill)",
+        "avatar": "Circular grande com iniciais, cor por nível",
+        "fatos": [
+          "CPF",
+          "Matrícula Principal",
+          "Loja Principal",
+          "Indicador/Formador (link para outro consultor)",
+          "Data de Ingresso"
+        ],
+        "acoes": [
+          "Registrar Ocorrência (primário)",
+          "Ver no Grafo (secundário)"
+        ]
+      },
+      "abas": [
+        {
+          "nome": "Dados Básicos",
+          "detalhe": "RG, nascimento, endereço, contatos e Indicador/Formador"
+        },
+        {
+          "nome": "Vínculos (Matrículas/PVs)",
+          "detalhe": "Tabela de matrículas ativas e inativas: PV/Unidade, Papel, Data Início, Status"
+        },
+        {
+          "nome": "Visão Econômica",
+          "detalhe": "Score Interno em destaque (simula retorno de API), faturamento consolidado do grupo econômico, total de carteiras, CNPJs vinculados e gráficos de evolução"
+        },
+        {
+          "nome": "Comissionamento (M3)",
+          "detalhe": "Nível atual e % correspondente (comissão atrelada ao nível), histórico de promoção e penalidades ativas"
+        },
+        {
+          "nome": "Carteiras Associadas"
+        },
+        {
+          "nome": "Avaliação 360º"
+        },
+        {
+          "nome": "Ocorrências (Logbook)",
+          "detalhe": "Ocorrências ligadas diretamente a esta pessoa"
+        },
+        {
+          "nome": "Histórico (Linha do Tempo)",
+          "detalhe": "Trajetória de carreira: promoções, transferências, ocorrências, descredenciamentos"
+        }
+      ],
+      "dados": [
+        "detalheMock",
+        "dadosBasicos",
+        "visaoEconomica",
+        "vinculos[]",
+        "comissionamento",
+        "historico[]"
+      ],
+      "dependencias": [
+        "app-shell",
+        "consultores-lista",
+        "unidade-detalhe"
+      ]
+    },
+    {
+      "id": "previas",
+      "ordem": 9,
+      "rota": "/previas",
+      "nome": "Esteira de Prévias (Kanban)",
+      "modulo": "Prévias",
+      "prd": "PRD-05-Previas.md",
+      "tipo": "kanban",
+      "titulo": "Esteira de Prévias",
+      "subtitulo": "Gestão do fluxo de credenciamento de novos parceiros.",
+      "acoes": [
+        "Nova Prévia (botão primário)"
+      ],
+      "filtros": [
+        "Regional/Estado/Cidade/Unidade",
+        "Analista",
+        "Tipo (PF/PJ)"
+      ],
+      "indicadorVolume": "Texto dinâmico com total de prévias no filtro atual",
+      "colunasKanban": [
+        {
+          "nome": "Documental",
+          "cor": "azul",
+          "descricao": "Triagem inicial"
+        },
+        {
+          "nome": "Retificação",
+          "cor": "âmbar",
+          "descricao": "Aguardando correção do candidato"
+        },
+        {
+          "nome": "Jurídico",
+          "cor": "violeta",
+          "descricao": "Análise de contratos e restrições"
+        },
+        {
+          "nome": "Aprovado",
+          "cor": "verde",
+          "descricao": "Processo finalizado com sucesso"
+        },
+        {
+          "nome": "Reprovado",
+          "cor": "vermelho",
+          "descricao": "Prévia negada (inclui retenção por Blacklist)"
+        }
+      ],
+      "cartao": {
+        "conteudo": [
+          "Tag de tipo (PF/PJ)",
+          "Pill de SLA (verde/âmbar/vermelho por dias restantes)",
+          "Nome do candidato",
+          "Unidade de destino",
+          "Analista responsável"
+        ],
+        "acao": "Abre o painel lateral de detalhes"
+      },
+      "overlays": [
+        {
+          "tipo": "slide-over",
+          "nome": "Detalhes da Prévia",
+          "conteudo": [
+            "Cabeçalho: status atual, botão 'Aprovar' e link 'Negar pedido de prévia'",
+            "Dados do candidato: nome, CPF/CNPJ, data de registro e Indicador/Formador",
+            "Dados operacionais: Matrícula AVA, BU, unidade de atuação, empresa lojista, IDs gerados",
+            "Bloco Blacklist: verifica se o CPF/CNPJ consta na blacklist; se constar, bloqueia o botão de aprovação e exige justificativa de recusa"
+          ]
+        },
+        {
+          "tipo": "modal",
+          "nome": "Nova Prévia",
+          "formSchema": "form-schemas.json → forms.novaPrevia",
+          "campos": [
+            "Tipo (PF/PJ)",
+            "Nome Completo / Razão Social",
+            "CPF/CNPJ",
+            "Email e Telefone",
+            "Unidade de Destino",
+            "Indicador/Formador (autocomplete sobre consultores ativos)",
+            "Anexos"
+          ],
+          "regraNegocio": "Apenas uma pessoa já cadastrada pode indicar outra — o autocomplete busca na base de Consultores ativos. Requisito crítico levantado no onboarding."
+        }
+      ],
+      "dados": [
+        "kanban{}",
+        "detalheMock",
+        "formSchema"
+      ],
+      "dependencias": [
+        "app-shell",
+        "consultores-lista"
+      ]
+    },
+    {
+      "id": "ocorrencias",
+      "ordem": 10,
+      "rota": "/ocorrencias",
+      "nome": "Ocorrências & Relacionamento (Logbook)",
+      "modulo": "Ocorrências",
+      "prd": "PRD-06-Ocorrencias.md",
+      "tipo": "lista",
+      "titulo": "Ocorrências & Relacionamento",
+      "subtitulo": "Logbook da rede — conflitos, penalidades e registros.",
+      "acoes": [
+        "Nova Ocorrência (botão primário)"
+      ],
+      "filtros": [
+        "Busca por título, unidade ou pessoa",
+        "Tipo (Conflito, Visita, Notificação, Penalidade, Contrato, Denúncia)",
+        "Status (Aberto, Em andamento, Resolvido)",
+        "Data (período)"
+      ],
+      "tabela": {
+        "colunas": [
+          "Tipo (pill com ícone)",
+          "Título",
+          "Entidade Envolvida",
+          "Data de Abertura (tempo decorrido)",
+          "Responsável",
+          "Status (pill)"
+        ],
+        "acaoLinha": "Abre o modal de detalhes/resolução"
+      },
+      "overlays": [
+        {
+          "tipo": "modal",
+          "nome": "Nova Ocorrência",
+          "formSchema": "form-schemas.json → forms.novaOcorrencia",
+          "campos": [
+            "Tipo",
+            "Título",
+            "Entidade Principal (autocomplete: Unidade, PV ou Consultor)",
+            "Entidade Secundária (opcional)",
+            "Canal de Origem",
+            "Descrição",
+            "Anotação Privada (opcional, restrita à Diretoria)"
+          ]
+        },
+        {
+          "tipo": "modal",
+          "nome": "Detalhes e Resolução",
+          "conteudo": [
+            "Cabeçalho: tipo, título, status, data de criação e criador",
+            "Corpo: descrição completa, entidades vinculadas com links para os perfis",
+            "Bloco de Anotação Privada com design visualmente distinto (fundo diferenciado, ícone de cadeado) deixando óbvio que o conteúdo é restrito",
+            "Área de resolução (só se status for Aberto ou Em andamento): textarea de novo comentário, select de desfecho (Acordo, Penalidade, Transferência, Descredenciamento, Outros), botões 'Adicionar Comentário' e 'Marcar como Resolvido'",
+            "Se status for Resolvido: área de interação oculta, exibe data de resolução e desfecho final"
+          ]
+        }
+      ],
+      "regrasNegocio": [
+        "Anotações privadas ficam registradas permanentemente, mesmo que o gestor saia da empresa",
+        "Este módulo NÃO possui página dedicada de detalhe (/ocorrencias/:id) — todas as interações ocorrem via modais sobre a lista"
+      ],
+      "dados": [
+        "lista[]",
+        "detalheMock",
+        "formSchema"
+      ],
+      "dependencias": [
+        "app-shell"
+      ]
+    },
+    {
+      "id": "visitas",
+      "ordem": 11,
+      "rota": "/visitas",
+      "nome": "Visitas & Alcance de Campo",
+      "modulo": "Visitas",
+      "prd": "PRD-07-Visitas.md",
+      "tipo": "lista",
+      "titulo": "Visitas & Alcance de Campo",
+      "subtitulo": "Planejamento e registro de visitas às unidades.",
+      "acoes": [
+        "Agendar/Registrar Visita (botão primário)",
+        "Toggle entre Visão em Lista e Visão Calendário"
+      ],
+      "filtros": [
+        "Busca por unidade",
+        "Responsável (Gestor BU)",
+        "Status (Agendada, Realizada, Cancelada)",
+        "Tipo (Comercial, Auditoria, Estruturação)"
+      ],
+      "secoes": [
+        "Card de alerta de cobertura no topo (ex: '18 unidades sem visita há mais de 180 dias')",
+        "Tabela de visitas"
+      ],
+      "tabela": {
+        "colunas": [
+          "Data e Hora",
+          "Unidade/PV Visitado",
+          "Tipo",
+          "Responsável",
+          "Status (pill)"
+        ],
+        "acaoLinha": "Abre o modal de detalhes/relatório da visita"
+      },
+      "overlays": [
+        {
+          "tipo": "modal",
+          "nome": "Agendar/Registrar Visita",
+          "formSchema": "form-schemas.json → forms.novaVisita",
+          "campos": [
+            "Unidade/PV de Destino (autocomplete)",
+            "Tipo",
+            "Data e Hora",
+            "Status",
+            "Objetivos"
+          ],
+          "camposCondicionais": {
+            "condicao": "status === 'Realizada'",
+            "campos": [
+              "Relatório da Visita",
+              "Anexos",
+              "Anotação Privada (restrita à Diretoria)",
+              "Checkbox 'Gerar ocorrência no Logbook da unidade?' (default: sim)"
+            ]
+          }
+        }
+      ],
+      "regrasNegocio": [
+        "Visitas registradas alimentam automaticamente o Logbook (Ocorrências) da unidade visitada",
+        "A Visão Calendário pode ser um mockup visual estático ou omitida — a Visão em Lista é a crítica para gestão (PRD-07 §5)"
+      ],
+      "filtrosViaURL": [
+        "Vindo do dashboard: alerta 'Lojas sem visita há +180 dias'"
+      ],
+      "dados": [
+        "lista[]",
+        "alertasCobertura",
+        "detalheMock",
+        "formSchema"
+      ],
+      "dependencias": [
+        "app-shell",
+        "ocorrencias"
+      ]
+    },
+    {
+      "id": "relatorios",
+      "ordem": 12,
+      "rota": "/relatorios",
+      "nome": "Central de Relatórios",
+      "modulo": "Relatórios",
+      "prd": "PRD-08-Relatorios.md",
+      "tipo": "ferramenta",
+      "titulo": "Central de Relatórios",
+      "subtitulo": "Extração de dados consolidados e visões gerenciais.",
+      "secoes": [
+        "Grid de cards de tipos de relatório (grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)))",
+        "Área de parametrização — formulário dinâmico com os filtros do relatório selecionado, botões 'Gerar Visualização' e 'Exportar (CSV/PDF)'",
+        "Área de resultados (preview) — tabela renderizando os dados mockados, com paginação simples"
+      ],
+      "tiposRelatorio": [
+        {
+          "id": "R01",
+          "titulo": "Consultores Inativos",
+          "filtros": [
+            "Range de tempo (+3/+6/+12 meses)",
+            "Nível",
+            "Regional"
+          ]
+        },
+        {
+          "id": "R02",
+          "titulo": "Carteiras Órfãs",
+          "filtros": [
+            "Regional",
+            "Unidade",
+            "Faixa de Faturamento"
+          ]
+        },
+        {
+          "id": "R03",
+          "titulo": "Visão de Grupo Econômico",
+          "filtros": [
+            "CPF específico ou Top 10 maiores grupos"
+          ]
+        },
+        {
+          "id": "R04",
+          "titulo": "Penalidades Ativas",
+          "filtros": [
+            "Unidade",
+            "Tipo de Penalidade"
+          ]
+        },
+        {
+          "id": "R05",
+          "titulo": "Histórico de Mobilidade",
+          "filtros": [
+            "Período",
+            "Regional"
+          ]
+        },
+        {
+          "id": "R06",
+          "titulo": "Relatório de Visitas (Alcance)",
+          "filtros": [
+            "Período",
+            "Gestor BU"
+          ],
+          "opcaoEspecial": "Checkbox 'Incluir anotações privadas' (apenas visual, para perfis autorizados)"
+        }
+      ],
+      "escopoProtótipo": "Não implementar a lógica real de exportação PDF/CSV. Ao clicar em 'Gerar Visualização', exibir o preview com dados mockados (mockResultados).",
+      "dados": [
+        "tiposRelatorio[]",
+        "mockResultados{}"
+      ],
+      "dependencias": [
+        "app-shell"
+      ]
+    },
+    {
+      "id": "configuracoes",
+      "ordem": 13,
+      "rota": "/configuracoes",
+      "nome": "Configurações do Sistema",
+      "modulo": "Configurações",
+      "prd": "PRD-09-Configuracoes.md",
+      "tipo": "configuracao",
+      "titulo": "Configurações do Sistema",
+      "subtitulo": "Gestão de alertas, parâmetros e perfis de acesso.",
+      "abas": [
+        {
+          "nome": "Gestão de Alertas",
+          "detalhe": "Tabela de regras (Nome, Gatilho/Condição, Severidade, Status, Ação). Toggle switch para ligar/desligar o status. Modal de edição com campos: Nome da Regra, Entidade Alvo (Consultor/Unidade/PV/Prévia), Condição, Operador, Valor e Severidade (Alta/Média/Baixa)."
+        },
+        {
+          "nome": "Perfis de Acesso (RBAC)",
+          "detalhe": "Matriz informativa cruzando perfis (Diretoria, Gerente BU, Analista de Backoffice, Consultor/LL) x funcionalidades (Aprovar Prévia, Aplicar Penalidade, Inserir Anotação Privada, Visualizar Anotação Privada, Editar Cascata de Comissão). Cruzamento com ícone de check ou bloqueio. Sem interatividade de edição no protótipo."
+        }
+      ],
+      "dados": [
+        "alertasConfig[]",
+        "rbacMock"
+      ],
+      "dependencias": [
+        "app-shell"
+      ]
+    },
+    {
+      "id": "not-found",
+      "ordem": 14,
+      "rota": "*",
+      "nome": "404 — Página não encontrada",
+      "modulo": "Sistema",
+      "prd": null,
+      "tipo": "sistema",
+      "observacao": "Não especificada nos PRDs, mas necessária para o roteamento. Já implementada no scaffold em src/pages/NotFound.tsx — deve ser reestilizada para o design system quando o shell for construído.",
+      "dependencias": [
+        "app-shell"
+      ]
+    }
+  ],
+  "componentesCompartilhados": [
+    {
+      "nome": "Card",
+      "origem": "PRD-00 §3.3",
+      "usadoEm": [
+        "dashboard",
+        "unidade-detalhe",
+        "pv-detalhe",
+        "consultor-detalhe",
+        "relatorios",
+        "visitas"
+      ]
+    },
+    {
+      "nome": "Pill/Badge",
+      "origem": "PRD-00 §3.3",
+      "usadoEm": [
+        "todas as listas e detalhes"
+      ],
+      "variantes": [
+        "green",
+        "amber",
+        "red",
+        "blue",
+        "violet",
+        "gray",
+        "maroon"
+      ]
+    },
+    {
+      "nome": "Tabela",
+      "origem": "PRD-00 §3.3",
+      "usadoEm": [
+        "unidades-lista",
+        "pvs-lista",
+        "consultores-lista",
+        "ocorrencias",
+        "visitas",
+        "relatorios",
+        "configuracoes"
+      ]
+    },
+    {
+      "nome": "Abas (Tabs)",
+      "origem": "PRD-00 §3.3",
+      "usadoEm": [
+        "unidade-detalhe",
+        "pv-detalhe",
+        "consultor-detalhe",
+        "configuracoes"
+      ]
+    },
+    {
+      "nome": "Timeline (Linha do Tempo)",
+      "origem": "PRD-02 §3.3",
+      "usadoEm": [
+        "unidade-detalhe",
+        "pv-detalhe",
+        "consultor-detalhe"
+      ],
+      "nota": "Estrutura visual idêntica nos três módulos — construir uma vez"
+    },
+    {
+      "nome": "Tabela de Carteiras com toggle de órfãs",
+      "origem": "PRD-02 §3.3",
+      "usadoEm": [
+        "unidade-detalhe",
+        "pv-detalhe",
+        "consultor-detalhe"
+      ]
+    },
+    {
+      "nome": "Bloco de Comissionamento (M3)",
+      "origem": "PRD-02 §3.3",
+      "usadoEm": [
+        "unidade-detalhe",
+        "pv-detalhe",
+        "consultor-detalhe"
+      ]
+    },
+    {
+      "nome": "Bloco de Estrutura Societária",
+      "origem": "PRD-02 §3.3",
+      "usadoEm": [
+        "unidade-detalhe",
+        "pv-detalhe"
+      ]
+    },
+    {
+      "nome": "Bloco de Anotação Privada",
+      "origem": "PRD-06 §4.2",
+      "usadoEm": [
+        "ocorrencias",
+        "visitas"
+      ],
+      "nota": "Design visualmente distinto com ícone de cadeado, sinalizando restrição de acesso"
+    },
+    {
+      "nome": "Slide-over (painel lateral)",
+      "origem": "PRD-00 §4.2 e PRD-05 §3",
+      "usadoEm": [
+        "app-shell (alertas)",
+        "previas (detalhe da prévia)"
+      ]
+    },
+    {
+      "nome": "Autocomplete de entidade",
+      "origem": "PRD-05 §4, PRD-06 §3, PRD-07 §3",
+      "usadoEm": [
+        "previas",
+        "ocorrencias",
+        "visitas",
+        "relatorios"
+      ]
+    },
+    {
+      "nome": "Cabeçalho de entidade (.uhead)",
+      "origem": "PRD-02 §3.1",
+      "usadoEm": [
+        "unidade-detalhe",
+        "pv-detalhe",
+        "consultor-detalhe"
+      ]
+    }
+  ],
+  "ordemDesenvolvimentoSugerida": [
+    {
+      "etapa": 0,
+      "item": "fundacao-visual",
+      "tipo": "infraestrutura",
+      "motivo": "Aplicar os tokens do design-system oficial em tailwind.config.ts e src/index.css (cores, tipografia Montserrat + IBM Plex Sans, raios, sombras, motion) e disponibilizar os logos. Pré-requisito de tudo — evita retrabalho de estilo em todas as telas."
+    },
+    {
+      "etapa": 1,
+      "item": "login",
+      "motivo": "Primeira tela real. Superfície pequena e isolada (sem shell), ideal para validar os tokens do design-system na prática antes de comprometer o layout inteiro. Também define o estado de usuário logado que o shell consome."
+    },
+    {
+      "etapa": 2,
+      "item": "app-shell",
+      "motivo": "Sidebar, topbar, painel de alertas e guard de rota. Todas as páginas seguintes dependem dele."
+    },
+    {
+      "etapa": 3,
+      "item": "dashboard",
+      "motivo": "Home do sistema. Valida os componentes de card, pill e KPI e a navegação para as listas."
+    },
+    {
+      "etapa": 4,
+      "item": "unidades-lista + unidade-detalhe",
+      "motivo": "Estabelece o padrão lista → detalhe e cria os componentes de aba, timeline, carteiras, comissionamento e societária que os demais módulos reutilizam. É a etapa mais pesada e a de maior retorno."
+    },
+    {
+      "etapa": 5,
+      "item": "pvs-lista + pv-detalhe",
+      "motivo": "Reaproveitamento quase total do módulo de Unidades — custo baixo se feito logo na sequência, enquanto o contexto está fresco."
+    },
+    {
+      "etapa": 6,
+      "item": "consultores-lista + consultor-detalhe",
+      "motivo": "Reaproveita abas e timeline; adiciona avatar por nível, visão econômica e vínculos."
+    },
+    {
+      "etapa": 7,
+      "item": "ocorrencias",
+      "motivo": "Logbook central. Cria o bloco de anotação privada e o padrão de modal de detalhe/resolução."
+    },
+    {
+      "etapa": 8,
+      "item": "visitas",
+      "motivo": "Depende do padrão de ocorrências (visitas alimentam o Logbook) e reutiliza o bloco de anotação privada e o formulário condicional."
+    },
+    {
+      "etapa": 9,
+      "item": "previas",
+      "motivo": "Kanban é um padrão visual novo e isolado; depende do autocomplete sobre a base de consultores."
+    },
+    {
+      "etapa": 10,
+      "item": "relatorios",
+      "motivo": "Consome dados já modelados nos módulos anteriores."
+    },
+    {
+      "etapa": 11,
+      "item": "configuracoes",
+      "motivo": "Módulo mais simples, majoritariamente informativo."
+    },
+    {
+      "etapa": 12,
+      "item": "not-found + polimento",
+      "motivo": "Ajuste final de estilo e revisão de consistência entre telas."
+    }
+  ],
+  "questoesEmAberto": [
+    {
+      "id": "Q01",
+      "tema": "Conflito de paleta de cores",
+      "descricao": "O PRD-00 §3.1 define uma paleta própria (--maroon #C43C30, --paper #F4EFE9, fonte Segoe UI, base 14px), enquanto o repositório design-system/ define a marca oficial Ademicon (accent #dc2626, background #f2f2f2, Montserrat + IBM Plex Sans, base 15px, raio 24px em cards).",
+      "impacto": "Alto — afeta todas as páginas.",
+      "status": "resolvida",
+      "decisao": "Seguir SEMPRE o design-system/ oficial. A paleta e a tipografia do PRD-00 §3.1 ficam obsoletas — antecedem a formalização do design system. Decidido pelo usuário em 2026-07-22."
+    },
+    {
+      "id": "Q02",
+      "tema": "KPI 'Alertas críticos' aponta para rota inexistente",
+      "descricao": "PRD-01 define o KPI k5 com route 'alertas', mas não existe página /alertas — alertas são um painel slide-over no shell (PRD-00 §4.2).",
+      "impacto": "Baixo.",
+      "recomendacao": "O clique nesse KPI deve abrir o painel lateral de alertas em vez de navegar para uma rota.",
+      "status": "pendente"
+    },
+    {
+      "id": "Q03",
+      "tema": "Parâmetro da rota de consultor",
+      "descricao": "PRD-03 §3 define a rota como /consultores/:cpf, mas o mock de dados usa id ('C001') como identificador, e o indicador referencia outro consultor por id.",
+      "impacto": "Baixo.",
+      "recomendacao": "Usar /consultores/:id para consistência com o restante do modelo de dados. Registrado no sitemap como :id.",
+      "status": "pendente"
+    },
+    {
+      "id": "Q04",
+      "tema": "Ação 'Ver no Grafo'",
+      "descricao": "PRD-03 e PRD-04 preveem o botão secundário 'Ver no Grafo' no cabeçalho de Consultor e PV, mas nenhum PRD especifica a visualização em grafo (nem existe rota para ela).",
+      "impacto": "Médio — é um botão sem destino definido.",
+      "recomendacao": "Definir se o grafo entra no escopo do protótipo (nova página/modal) ou se o botão fica desabilitado/oculto nesta versão.",
+      "status": "pendente"
+    },
+    {
+      "id": "Q05",
+      "tema": "Abas sem detalhamento no PRD",
+      "descricao": "Algumas abas são apenas nomeadas, sem especificação de conteúdo: 'Dados Financeiros' e 'Consultores Vinculados' (Unidade e PV), 'Avaliação 360º' (Unidade e Consultor), 'Estrutura Organizacional' (PV).",
+      "impacto": "Médio — exigirá decisões de design durante a implementação.",
+      "recomendacao": "Implementar com base nos padrões das abas já detalhadas e validar com o usuário na entrega de cada módulo.",
+      "status": "pendente"
+    },
+    {
+      "id": "Q06",
+      "tema": "Visão Calendário em Visitas",
+      "descricao": "PRD-07 §5 autoriza explicitamente que a Visão Calendário seja um mockup estático ou omitida.",
+      "impacto": "Baixo.",
+      "recomendacao": "Implementar apenas a Visão em Lista na primeira entrega; avaliar o calendário depois.",
+      "status": "pendente"
+    },
+    {
+      "id": "Q07",
+      "tema": "Especificação da página de Login",
+      "descricao": "A página de login foi solicitada pelo usuário mas não consta em nenhum PRD — não há definição de campos, regras de autenticação, recuperação de senha ou perfis.",
+      "impacto": "Baixo para o protótipo.",
+      "recomendacao": "Implementar com e-mail + senha, autenticação mockada (qualquer credencial válida entra como Roberto Almeida / Gerente BU) e link de recuperação apenas visual. Validar com o usuário se o protótipo precisa demonstrar múltiplos perfis de acesso (a matriz RBAC do PRD-09 prevê Diretoria, Gerente BU, Backoffice e Lojista) — se sim, o login pode oferecer seleção de perfil para navegar o protótipo sob diferentes permissões.",
+      "status": "pendente"
+    }
+  ]
+}
