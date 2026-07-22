@@ -1,8 +1,8 @@
-import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Bell, LogOut, User } from "lucide-react";
 
 import { useAuth } from "@/lib/auth-context";
+import { useAlertsPanel } from "@/lib/alerts-panel-context";
 import { alerts } from "@/lib/mock-data/alerts";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -21,7 +21,8 @@ export function AppHeader() {
   const { user, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
-  const [alertsOpen, setAlertsOpen] = useState(false);
+  const { isOpen: alertsOpen, open: openAlertsPanel, setOpen: setAlertsOpen } =
+    useAlertsPanel();
 
   const breadcrumbLabel = resolveNavLabel(location.pathname);
 
@@ -43,7 +44,7 @@ export function AppHeader() {
             size="icon"
             aria-label={`Alertas (${alerts.length} ativos)`}
             className="relative"
-            onClick={() => setAlertsOpen(true)}
+            onClick={openAlertsPanel}
           >
             <Bell className="h-5 w-5" />
             {alerts.length > 0 && (

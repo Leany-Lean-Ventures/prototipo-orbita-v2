@@ -12,14 +12,24 @@ export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const Card = React.forwardRef<HTMLDivElement, CardProps>(
-  ({ className, interactive, ...props }, ref) => (
+  ({ className, interactive, onClick, onKeyDown, ...props }, ref) => (
     <div
       ref={ref}
+      role={interactive && onClick ? "button" : undefined}
+      tabIndex={interactive && onClick ? 0 : undefined}
+      onClick={onClick}
+      onKeyDown={(event) => {
+        if (interactive && onClick && (event.key === "Enter" || event.key === " ")) {
+          event.preventDefault();
+          onClick(event as unknown as React.MouseEvent<HTMLDivElement>);
+        }
+        onKeyDown?.(event);
+      }}
       className={cn(
         // .soft-card (design-system §4/§8.2, medido em orbita-v1-paginas-exportadas)
         "rounded-card border border-white/50 bg-card text-card-foreground shadow-soft dark:border-white/5",
         interactive &&
-          "cursor-pointer transition-[transform,box-shadow] duration-base ease-micro hover:-translate-y-0.5 hover:shadow-elevated",
+          "cursor-pointer transition-[transform,box-shadow] duration-base ease-micro hover:-translate-y-0.5 hover:shadow-elevated focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
         className
       )}
       {...props}

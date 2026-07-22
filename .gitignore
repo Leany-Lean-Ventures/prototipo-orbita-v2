@@ -26,3 +26,7 @@ design-system
 
 # Referência visual do protótipo V1 (material do usuário, fora do controle de versão)
 orbita-v1-paginas-exportadas
+
+# Cache Python (scripts das skills, ex.: ui-ux-pro-max)
+__pycache__
+*.pyc

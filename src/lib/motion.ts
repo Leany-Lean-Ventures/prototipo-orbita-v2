@@ -2,7 +2,17 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 
-gsap.registerPlugin(useGSAP, ScrollTrigger);
+// Em teste (Vitest), não registrar o ScrollTrigger: seu loop interno de
+// sincronização usa requestAnimationFrame e continua rodando em segundo
+// plano após o jsdom de um arquivo de teste ser desmontado, disparando
+// "requestAnimationFrame is not defined" de forma intermitente no arquivo
+// de teste seguinte. Nenhum componente usa ScrollTrigger ainda (reservado
+// para reveals de scroll, etapa 4+) — nada de comportamento real é perdido.
+if (!import.meta.env.TEST) {
+  gsap.registerPlugin(useGSAP, ScrollTrigger);
+} else {
+  gsap.registerPlugin(useGSAP);
+}
 
 /**
  * Tokens de motion — espelham design-system/context/input-DESIGN.md §7.1

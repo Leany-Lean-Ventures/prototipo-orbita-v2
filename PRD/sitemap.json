@@ -983,7 +983,8 @@
       "descricao": "PRD-01 define o KPI k5 com route 'alertas', mas não existe página /alertas — alertas são um painel slide-over no shell (PRD-00 §4.2).",
       "impacto": "Baixo.",
       "recomendacao": "O clique nesse KPI deve abrir o painel lateral de alertas em vez de navegar para uma rota.",
-      "status": "pendente"
+      "status": "resolvida",
+      "decisao": "Implementado: clique no KPI \"Alertas críticos\" chama useAlertsPanel().open() (src/lib/alerts-panel-context.tsx), abrindo o painel lateral do header em vez de navegar. Resolvido na etapa 3 (Dashboard), 2026-07-22."
     },
     {
       "id": "Q03",

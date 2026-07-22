@@ -91,9 +91,20 @@ Layout persistente que envolve todas as páginas autenticadas (PRD-00 §4), no p
 
 `src/App.tsx` usa uma rota de layout: `<Route element={<RequireAuth><AppShell /></RequireAuth>}>` com as páginas como filhas. Toda página nova protegida entra como filha dessa rota, não precisa de `RequireAuth` individual.
 
-**`Card` (`src/components/ui/card.tsx`) já aplica `.soft-card` por padrão** — `rounded-card` (24px), borda `white/50`, `shadow-soft`. Não repetir essas classes ao usar `<Card>`; usar a prop `interactive` só em cards clicáveis (hover lift). `.bg-mesh` (utility em `src/index.css`) vai no wrapper de fundo de qualquer tela de página inteira (já aplicado em `AppShell` e `Login.tsx`).
+**`Card` (`src/components/ui/card.tsx`) já aplica `.soft-card` por padrão** — `rounded-card` (24px), borda `white/50`, `shadow-soft`. Não repetir essas classes ao usar `<Card>`; usar a prop `interactive` só em cards clicáveis (hover lift). Quando `interactive` recebe `onClick`, o próprio componente adiciona `role="button"`, `tabIndex`, `onKeyDown` (Enter/Espaço) e anel de foco — não precisa reimplementar acessibilidade de teclado em cada uso. `.bg-mesh` (utility em `src/index.css`) vai no wrapper de fundo de qualquer tela de página inteira (já aplicado em `AppShell` e `Login.tsx`).
+
+**`src/lib/alerts-panel-context.tsx`** (`AlertsPanelProvider`/`useAlertsPanel`) — estado do painel de alertas (Sheet), envolvendo o `AppShell` inteiro. Qualquer página protegida pode abrir o painel via `useAlertsPanel().open()` (ex.: um KPI de alerta) em vez de navegar para uma rota que não existe.
 
 **Módulos ainda não construídos** (Unidades, Consultores, PVs, Prévias, Ocorrências, Visitas, Relatórios, Configurações) apontam para `src/pages/ComingSoon.tsx` — um placeholder consistente com o design-system (§8.1 "empty"), não um 404. Ao construir o módulo de verdade (sua etapa em `PRD/ordem-desenvolvimento.md`), troque o `element` da rota em `App.tsx` de `<ComingSoon />` para a página real — `ComingSoon` não precisa ser removida de lugar nenhum além dali.
+
+## Gráficos e dados de página (Dashboard e módulos futuros)
+
+- **ApexCharts** (`apexcharts` + `react-apexcharts`) é a biblioteca de gráficos oficial do projeto — não usar outra. Cores das séries sempre a partir de `chart-1`..`chart-5` (hex fixos, ver `design-system/brand.json` — mesma ordem usada em `tailwind.config.ts`/`index.css`). Diferenciar séries por estilo de linha além de cor (`dashArray`), não só cor — acessibilidade (ver `EvolutionChart.tsx`). Reduzir a animação padrão da lib para ~600ms (design-system §7.4) e desabilitar sob `prefersReducedMotion()`.
+- **Dado crítico sempre disponível como texto**, não só no gráfico (design-system §12) — ver o parágrafo `sr-only` em `EvolutionChart.tsx` como padrão a repetir.
+- **`src/lib/mock-data/`** — um arquivo por módulo/domínio (`alerts.ts`, `dashboard.ts`, ...), tipado, comentado com a origem no PRD. Dados compartilhados entre telas (ex.: `alerts` usado tanto no `AlertsPanel` do header quanto no card de alertas do Dashboard) vivem em um único arquivo e são importados, nunca duplicados.
+- **`src/hooks/use-count-up.ts`** — count-up de KPI (design-system §7.2: 0→valor em 0.6s, `snap`, formatado com `Intl.NumberFormat('pt-BR')`). Usar em qualquer número de destaque que mereça entrada animada.
+- **Ao montar a timeline de `usePageEntrance` de uma tela nova, somar as durações + overlaps antes de implementar** — a regra do design-system é "timeline total < 1s" (§7.2), e overlaps padrão (`-=0.15`/`-=0.2`) não bastam quando a página tem muitos grupos (ex.: Dashboard tem 5). Já aconteceu de passar de 1,7s — ver `MEMORY.md`.
+- **Nunca registrar `ScrollTrigger` em ambiente de teste** — `src/lib/motion.ts` já faz o guard (`!import.meta.env.TEST`); se um componente novo precisar de scroll reveal, testar rodando a suíte de testes várias vezes antes de considerar concluído (o erro é intermitente, não determinístico) — ver `MEMORY.md`.
 
 ## Fluxo de trabalho para construir uma tela
 

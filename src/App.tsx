@@ -5,7 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/lib/auth-context";
 import { RequireAuth } from "@/components/RequireAuth";
 import { AppShell } from "@/components/shell/AppShell";
-import Index from "@/pages/Index";
+import Dashboard from "@/pages/Dashboard";
 import Login from "@/pages/Login";
 import ComingSoon from "@/pages/ComingSoon";
 import NotFound from "@/pages/NotFound";
@@ -27,7 +27,7 @@ const App = () => (
                 </RequireAuth>
               }
             >
-              <Route path="/" element={<Index />} />
+              <Route path="/" element={<Dashboard />} />
               <Route path="/unidades" element={<ComingSoon />} />
               <Route path="/consultores" element={<ComingSoon />} />
               <Route path="/pvs" element={<ComingSoon />} />

@@ -12,7 +12,7 @@ Detalhamento completo de cada página (abas, filtros, overlays, dados, dependên
 | 1 | Login | `/login` | — | ✅ | Superfície pequena e isolada, fora do shell. Valida os tokens na prática antes de comprometer o layout inteiro e define o estado de usuário logado |
 | 0.5 | Fundação de motion (GSAP) | — | — | ✅ | Instalar GSAP + `@gsap/react`, registrar plugins, criar `usePageEntrance` e aplicar microinterações CSS (hover/foco/press) em `Button`/`Input`/`Card`. Feito logo após o Login (única tela real) para provar a infraestrutura antes do App Shell, sem precisar retrofit depois |
 | 2 | App Shell | — | PRD-00 | ✅ | Sidebar, topbar, painel de alertas e guard de rota. Todas as páginas seguintes dependem dele. Divergências do PRD (decisão do usuário): sem busca global; módulos 4-11 apontam para `ComingSoon` em vez de rota inexistente |
-| 3 | Dashboard | `/` | PRD-01 | ⬜ | Home do sistema. Valida os componentes de card, pill e KPI e a navegação para as listas |
+| 3 | Dashboard | `/` | PRD-01 | ✅ | Home do sistema. Valida os componentes de card, pill e KPI e a navegação para as listas. Além do PRD: card de evolução com ApexCharts (decisão do usuário — o subtítulo do PRD promete "evolução" mas a spec não detalha) |
 | 4 | Unidades (lista + detalhe) | `/unidades`, `/unidades/:id` | PRD-02 | ⬜ | ⭐ Etapa mais pesada e de maior retorno: cria abas, timeline, tabela de carteiras com toggle de órfãs, comissionamento e societária |
 | 5 | PVs (lista + detalhe) | `/pvs`, `/pvs/:id` | PRD-04 | ⬜ | Reaproveitamento quase total da etapa 4 — custo baixo se feito na sequência, com o contexto fresco |
 | 6 | Consultores (lista + detalhe) | `/consultores`, `/consultores/:id` | PRD-03 | ⬜ | Reaproveita abas e timeline; adiciona avatar por nível, visão econômica e vínculos |
