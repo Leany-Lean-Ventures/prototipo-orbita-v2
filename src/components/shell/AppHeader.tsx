@@ -32,7 +32,7 @@ export function AppHeader() {
 
   return (
     <>
-      <header className="flex h-16 shrink-0 items-center justify-between rounded-2xl border border-white/50 bg-card/80 px-6 shadow-soft backdrop-blur-md dark:border-white/5">
+      <header className="sticky top-0 z-page-header mb-4 flex h-16 shrink-0 items-center justify-between rounded-2xl border border-white/50 bg-card/80 px-6 shadow-soft backdrop-blur-md dark:border-white/5">
         <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
           <span className="font-medium text-foreground">{breadcrumbLabel}</span>
         </nav>

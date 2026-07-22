@@ -19,6 +19,11 @@ Registro de decisões, definições e aprendizados acumulados ao longo do projet
 
 ## Decisões
 
+### 2026-07-22 — Header vira `sticky` de verdade: conteúdo rola por baixo, blur com efeito real
+**Decisão:** corrigido o redesign anterior (mesma etapa): o `AppHeader` estava empilhado como irmão do `<main>` num `flex-col` com `gap-4` — ou seja, "flutuante" só visualmente (cantos arredondados + sombra), mas sem sobrepor conteúdo nenhum, então o `backdrop-blur-md` não tinha nada para borrar. Corrigido em `AppShell.tsx`: o container de scroll agora é o wrapper que envolve header **e** `<main>` juntos (`min-w-0 flex-1 overflow-y-auto`), e o header vira `sticky top-0 z-page-header mb-4` dentro dele — o `z-page-header` já existia como token semântico desde a etapa 0 (zIndex 50, "header de página"), nunca tinha sido usado até agora. Resultado: ao rolar, o conteúdo passa por trás do header e aparece borrado através do vidro fosco, exatamente como pedido.
+**Motivo:** feedback direto do usuário sobre um print — o corte do título "Fundação Visual" era sintoma claro de que o header não sobrepunha nada, só empurrava o conteúdo para baixo com um gap fixo.
+**Status:** vigente. Validado com Playwright rolando o container real (não a página) e lendo `getBoundingClientRect()` do header antes/depois — posição idêntica (sticky confirmado), zero erros de console.
+
 ### 2026-07-22 — Redesign do App Shell para o padrão "flutuante" do protótipo V1
 **Decisão:** `orbita-v1-paginas-exportadas/` (HTML + PNG do primeiro protótipo, pasta do usuário fora do controle de versão deste repo) passa a ser referência visual oficial, complementar ao `design-system/`. Inspecionei o HTML exportado diretamente (não só os prints) e extraí valores exatos:
 - Fundo de página: `.bg-mesh` — gradiente radial `hsl(var(--primary)/0.03)` + `hsl(var(--secondary)/0.03)` nos cantos opostos. Implementado como utility em `src/index.css`, usando os tokens do projeto em vez dos valores fixos do V1 (dark-mode-safe).
