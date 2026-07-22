@@ -1,0 +1,38 @@
+{
+  "forms": {
+    "novaPrevia": {
+      "title": "Nova Prévia",
+      "fields": [
+        { "name": "tipo", "type": "select", "options": ["PF", "PJ"], "required": true },
+        { "name": "nome", "type": "text", "label": "Nome Completo / Razão Social", "required": true },
+        { "name": "documento", "type": "text", "label": "CPF / CNPJ", "required": true },
+        { "name": "unidade", "type": "select", "label": "Unidade de Destino", "required": true },
+        { "name": "indicador", "type": "autocomplete", "label": "Indicador/Formador (Buscar consultor)", "required": true, "dataSource": "consultores" }
+      ]
+    },
+    "novaOcorrencia": {
+      "title": "Registrar Ocorrência",
+      "fields": [
+        { "name": "tipo", "type": "select", "options": ["Conflito", "Visita", "Notificação", "Penalidade", "Contrato", "Denúncia"], "required": true },
+        { "name": "titulo", "type": "text", "label": "Título da Ocorrência", "required": true },
+        { "name": "entidadePrincipal", "type": "autocomplete", "label": "Unidade/Pessoa envolvida", "required": true },
+        { "name": "canal", "type": "select", "options": ["WhatsApp", "E-mail", "Ligação", "Sistema", "Denúncia"], "required": true },
+        { "name": "descricao", "type": "textarea", "label": "Descrição", "required": true },
+        { "name": "anotacaoPrivada", "type": "textarea", "label": "Anotação Privada (Visível apenas para Diretoria)", "required": false }
+      ]
+    },
+    "novaVisita": {
+      "title": "Agendar/Registrar Visita",
+      "fields": [
+        { "name": "unidade", "type": "autocomplete", "label": "Unidade de Destino", "required": true },
+        { "name": "tipo", "type": "select", "options": ["Comercial", "Auditoria", "Avaliação 360", "Estruturação"], "required": true },
+        { "name": "data", "type": "datetime", "label": "Data e Hora", "required": true },
+        { "name": "status", "type": "select", "options": ["Agendada", "Realizada", "Cancelada"], "required": true },
+        { "name": "objetivos", "type": "textarea", "label": "Objetivos da Visita", "required": true },
+        { "name": "relatorio", "type": "textarea", "label": "Relatório da Visita", "required": false, "dependsOn": { "field": "status", "value": "Realizada" } },
+        { "name": "anotacaoPrivada", "type": "textarea", "label": "Anotação Privada (Visível apenas para Diretoria)", "required": false, "dependsOn": { "field": "status", "value": "Realizada" } },
+        { "name": "gerarOcorrencia", "type": "checkbox", "label": "Gerar ocorrência no Logbook da unidade?", "defaultValue": true, "dependsOn": { "field": "status", "value": "Realizada" } }
+      ]
+    }
+  }
+}

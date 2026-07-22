@@ -1,0 +1,86 @@
+{
+  "description": "Esquema central de dados para o Protótipo Órbita",
+  "entities": {
+    "User": {
+      "id": "string",
+      "name": "string",
+      "role": "string",
+      "avatar": "string"
+    },
+    "Alert": {
+      "id": "string",
+      "type": "string",
+      "icon": "string",
+      "color": "string",
+      "label": "string",
+      "count": "number",
+      "actionRoute": "string"
+    },
+    "Unidade": {
+      "id": "string",
+      "nome": "string",
+      "cidade": "string",
+      "dono": "string",
+      "gerente": "string",
+      "abertura": "string",
+      "rating": "string",
+      "ratingScore": "number",
+      "status": "string",
+      "comissionamentoBasePct": "number"
+    },
+    "PV": {
+      "id": "string",
+      "nome": "string",
+      "unidadeMaeId": "string",
+      "gestor": "string",
+      "nivel": "string",
+      "status": "string"
+    },
+    "Consultor": {
+      "id": "string",
+      "nome": "string",
+      "cpf": "string",
+      "matricula": "string",
+      "nivel": "string",
+      "lojaPrincipalId": "string",
+      "indicadorId": "string",
+      "scoreInterno": "number",
+      "status": "string"
+    },
+    "Previa": {
+      "id": "string",
+      "nome": "string",
+      "tipoPessoa": "string",
+      "analista": "string",
+      "lojaDestinoId": "string",
+      "indicadorId": "string",
+      "slaDias": "number",
+      "statusKanban": "string"
+    },
+    "Ocorrencia": {
+      "id": "string",
+      "tipo": "string",
+      "titulo": "string",
+      "entidadeId": "string",
+      "entidadeTipo": "string",
+      "canal": "string",
+      "descricao": "string",
+      "anotacaoPrivada": "string",
+      "dataCriacao": "string",
+      "responsavel": "string",
+      "status": "string",
+      "desfecho": "string"
+    },
+    "Visita": {
+      "id": "string",
+      "unidadeId": "string",
+      "tipo": "string",
+      "data": "string",
+      "responsavel": "string",
+      "status": "string",
+      "objetivos": "string",
+      "relatorio": "string",
+      "anotacaoPrivada": "string"
+    }
+  }
+}
