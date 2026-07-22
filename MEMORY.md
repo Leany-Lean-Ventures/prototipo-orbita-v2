@@ -19,6 +19,16 @@ Registro de decisões, definições e aprendizados acumulados ao longo do projet
 
 ## Decisões
 
+### 2026-07-22 — Etapa 1 concluída: Login com usuário fixo, sem seletor de perfil (Q07 resolvida)
+**Decisão:** página `/login` implementada com autenticação mockada — qualquer e-mail válido + senha não vazia autentica como usuário fixo (Roberto Almeida / Gerente BU, `id: "U001"`), **sem** seletor de perfil RBAC. Estado de auth em `src/lib/auth-context.tsx` (`AuthProvider`/`useAuth`), persistido em `localStorage` (chave `orbita:auth`), lido de forma síncrona na inicialização para não piscar a tela de login em usuário já autenticado. Guarda de rota em `src/components/RequireAuth.tsx`, já aplicada à rota `/` em `App.tsx` (mesmo antes do App Shell existir). Senha de teste `senha-invalida` dispara o estado de erro visual (não há backend real).
+**Motivo:** decisão do usuário durante o planejamento — manter simples agora; a matriz RBAC do PRD-09 (Diretoria, Gerente BU, Backoffice, Lojista) segue só como tabela informativa na etapa 11 (Configurações), sem afetar o que outras telas mostram/escondem. Resolve a questão Q07 do `sitemap.json`.
+**Status:** vigente. Relevante para a etapa 2 (App Shell): reaproveitar `useAuth()` para o rodapé da sidebar/avatar do topbar, e envolver todas as rotas do shell (exceto `/login`) com `RequireAuth`.
+
+### 2026-07-22 — Conflito com generic web-interface-guidelines: sentence case vence Title Case
+**Decisão:** ao revisar `Login.tsx` com a skill `web-design-guidelines`, uma das regras genéricas (Vercel) recomenda Title Case em headings — mas o `design-system/brand.json` (voice.vocabulary.avoid) proíbe explicitamente Title Case em rótulos/títulos/menus, exigindo sentence case. Mantido sentence case ("Acessar o Órbita", "Esqueci minha senha").
+**Motivo:** regra já estabelecida no `CLAUDE.md` — tokens/voz do design-system sempre vencem sugestões genéricas de qualquer skill. Registrado aqui para não reabrir a dúvida em revisões futuras com a mesma skill.
+**Status:** vigente.
+
 ### 2026-07-22 — Sitemap como guia de desenvolvimento e ordem de construção
 **Decisão:** `PRD/sitemap.json` é o documento que guia o pedido de desenvolvimento das páginas — 14 páginas mapeadas (13 dos PRDs + Login), com rotas, abas, overlays, componentes compartilhados, ordem sugerida e questões em aberto. Ordem de construção acordada: (0) fundação visual com tokens do design-system, (1) Login, (2) App Shell, (3) Dashboard, (4) Unidades lista+detalhe, (5) PVs, (6) Consultores, (7) Ocorrências, (8) Visitas, (9) Prévias, (10) Relatórios, (11) Configurações, (12) 404 e polimento.
 **Motivo:** a ordem não segue a numeração dos PRDs de propósito — Unidades vem antes de PVs e Consultores porque cria os componentes reutilizáveis (abas, timeline, carteiras, comissionamento, societária) que os outros dois reaproveitam quase inteiros; Login vem antes do Shell por ser uma superfície pequena e isolada, ideal para validar os tokens do design system antes de comprometer o layout inteiro.

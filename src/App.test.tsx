@@ -1,12 +1,16 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, afterEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import App from "./App";
 
 describe("App", () => {
-  it("renderiza a página inicial", () => {
+  afterEach(() => {
+    localStorage.clear();
+  });
+
+  it("redireciona para o login quando não autenticado", () => {
     render(<App />);
     expect(
-      screen.getByRole("heading", { name: /fundação visual/i })
+      screen.getByRole("heading", { name: /acessar o órbita/i })
     ).toBeInTheDocument();
   });
 });

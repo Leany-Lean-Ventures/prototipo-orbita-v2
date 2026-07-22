@@ -31,7 +31,13 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <header className="border-b border-border bg-card">
         <div className="container flex h-16 items-center justify-between">
-          <img src={logoAdemicon} alt="Ademicon" className="h-7 w-auto" />
+          <img
+            src={logoAdemicon}
+            alt="Ademicon"
+            width={129}
+            height={28}
+            className="h-7 w-auto"
+          />
           <span className="text-sm text-muted-foreground">Órbita — Protótipo</span>
         </div>
       </header>

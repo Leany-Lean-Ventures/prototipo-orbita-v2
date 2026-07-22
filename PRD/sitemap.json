@@ -1023,7 +1023,8 @@
       "descricao": "A página de login foi solicitada pelo usuário mas não consta em nenhum PRD — não há definição de campos, regras de autenticação, recuperação de senha ou perfis.",
       "impacto": "Baixo para o protótipo.",
       "recomendacao": "Implementar com e-mail + senha, autenticação mockada (qualquer credencial válida entra como Roberto Almeida / Gerente BU) e link de recuperação apenas visual. Validar com o usuário se o protótipo precisa demonstrar múltiplos perfis de acesso (a matriz RBAC do PRD-09 prevê Diretoria, Gerente BU, Backoffice e Lojista) — se sim, o login pode oferecer seleção de perfil para navegar o protótipo sob diferentes permissões.",
-      "status": "pendente"
+      "status": "resolvida",
+      "decisao": "Usuário fixo (Roberto Almeida / Gerente BU) — sem seletor de perfil. Decidido pelo usuário em 2026-07-22, durante o planejamento da etapa 1. RBAC segue só como tabela informativa na etapa 11 (Configurações)."
     }
   ]
 }
