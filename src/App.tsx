@@ -7,6 +7,8 @@ import { RequireAuth } from "@/components/RequireAuth";
 import { AppShell } from "@/components/shell/AppShell";
 import Dashboard from "@/pages/Dashboard";
 import Login from "@/pages/Login";
+import UnidadesLista from "@/pages/UnidadesLista";
+import UnidadeDetalhe from "@/pages/UnidadeDetalhe";
 import ComingSoon from "@/pages/ComingSoon";
 import NotFound from "@/pages/NotFound";
 
@@ -28,7 +30,8 @@ const App = () => (
               }
             >
               <Route path="/" element={<Dashboard />} />
-              <Route path="/unidades" element={<ComingSoon />} />
+              <Route path="/unidades" element={<UnidadesLista />} />
+              <Route path="/unidades/:id" element={<UnidadeDetalhe />} />
               <Route path="/consultores" element={<ComingSoon />} />
               <Route path="/pvs" element={<ComingSoon />} />
               <Route path="/previas" element={<ComingSoon />} />

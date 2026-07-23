@@ -1,0 +1,1938 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Novo CRM Ademicon — Protótipo WOW</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"></script>
+<style>
+:root{
+  --maroon:#C43C30; --maroon-2:#E24A3C; --rust:#ED6151; --froly:#FBA39D;
+  --ink:#211A15; --ink-2:#4A3E36; --paper:#F4EFE9; --card:#fff; --line:#E8DFD5; --line-2:#F1E9E0;
+  --muted:#857a70; --muted-2:#A89C92;
+  --green:#15803D; --amber:#B45309; --red:#B91C1C; --blue:#1D4ED8; --violet:#6D28D9; --cyan:#0E7490;
+  --green-bg:#E7F4EC; --amber-bg:#FBF1E0; --red-bg:#FBE9E9; --blue-bg:#E7EDFB; --violet-bg:#F3E8FF; --maroon-bg:#FDF1F0;
+  --shadow:0 12px 32px -20px rgba(153,27,27,.32);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--paper);color:var(--ink);font-family:"Segoe UI",system-ui,-apple-system,sans-serif;font-size:14px;line-height:1.5;overflow:hidden}
+::-webkit-scrollbar{width:9px;height:9px}::-webkit-scrollbar-thumb{background:#d9ccbe;border-radius:6px;border:2px solid var(--paper)}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+.app{display:flex;height:100vh}
+
+/* SIDEBAR */
+.side{width:236px;background:linear-gradient(180deg,var(--maroon),#9E2E24);color:#f4e6df;display:flex;flex-direction:column;flex-shrink:0;padding:16px 12px}
+.brand{display:flex;align-items:center;gap:11px;padding:6px 8px 18px}
+.brand .logo{width:38px;height:38px;border-radius:10px;background:#fff;color:var(--maroon);font-weight:800;font-size:18px;display:flex;align-items:center;justify-content:center}
+.brand b{font-size:15px;font-weight:800;color:#fff;display:block}
+.brand small{font-size:11px;color:#F1DED7}
+.nav{display:flex;flex-direction:column;gap:3px;margin-top:4px}
+.nav a{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:9px;font-size:13.5px;font-weight:600;color:#F4E7E2;transition:.15s}
+.nav a .ic{width:18px;text-align:center;opacity:.9}
+.nav a:hover{background:rgba(255,255,255,.08);color:#fff}
+.nav a.on{background:#fff;color:var(--maroon);box-shadow:var(--shadow)}
+.nav a .tagnew{margin-left:auto;font-size:9px;font-weight:800;background:#FFD37A;color:#6b3b00;padding:2px 6px;border-radius:6px;letter-spacing:.04em}
+.side .spacer{flex:1}
+.side .me{display:flex;align-items:center;gap:10px;padding:10px 8px;border-top:1px solid rgba(255,255,255,.12)}
+.side .me .av{width:32px;height:32px;border-radius:50%;background:#fff;color:var(--maroon);font-weight:800;display:flex;align-items:center;justify-content:center;font-size:12px}
+.side .me b{font-size:12.5px;color:#fff;display:block;line-height:1.2}
+.side .me small{font-size:10.5px;color:#F1DED7}
+
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;min-width:0}
+.top{height:56px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:14px;padding:0 22px;flex-shrink:0}
+.crumb{font-size:13px;color:var(--muted);font-weight:600}.crumb b{color:var(--ink)}
+.top .search{margin-left:auto;display:flex;align-items:center;gap:8px;background:var(--paper);border:1px solid var(--line);border-radius:9px;padding:7px 12px;width:240px;color:var(--muted);font-size:12.5px}
+.top .demo{margin-left:auto;font-size:11px;font-weight:800;color:var(--amber);background:var(--amber-bg);padding:5px 11px;border-radius:99px}
+.top .bell{position:relative;font-size:17px;color:var(--muted)}.top .bell b{position:absolute;top:-5px;right:-6px;background:var(--red);color:#fff;font-size:9px;font-weight:800;width:15px;height:15px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.top .av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--maroon-2),var(--froly));color:#fff;font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center}
+.view{flex:1;overflow-y:auto;padding:26px}
+
+/* generic */
+.page-h{margin-bottom:20px}
+.page-h h1{font-size:25px;font-weight:800;letter-spacing:-.02em;display:flex;align-items:center;gap:10px}
+.page-h p{color:var(--muted);font-size:14px;margin-top:3px}
+.fresh{font-size:11.5px;color:var(--muted);background:#fff;border:1px solid var(--line);padding:4px 11px;border-radius:99px;font-weight:600}
+.row{display:flex;gap:16px;flex-wrap:wrap}
+.between{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:var(--shadow)}
+.card h3{font-size:14.5px;font-weight:700;margin-bottom:2px}
+.card .csub{font-size:12px;color:var(--muted);margin-bottom:14px}
+.grid{display:grid;gap:16px}
+.eyebrow{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--rust)}
+.btn{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;padding:8px 14px;border-radius:9px}
+.btn.p{background:var(--maroon-2);color:#fff}.btn.p:hover{background:var(--maroon)}
+.btn.s{background:#fff;border:1px solid var(--line);color:var(--ink-2)}.btn.s:hover{border-color:var(--muted-2)}
+.pill{display:inline-flex;align-items:center;font-size:11px;font-weight:700;padding:2px 9px;border-radius:99px;white-space:nowrap}
+.p-green{background:var(--green-bg);color:var(--green)}.p-amber{background:var(--amber-bg);color:var(--amber)}.p-red{background:var(--red-bg);color:var(--red)}
+.p-blue{background:var(--blue-bg);color:var(--blue)}.p-violet{background:var(--violet-bg);color:var(--violet)}.p-gray{background:#EFEAE4;color:var(--muted)}.p-maroon{background:var(--maroon-bg);color:var(--maroon-2)}
+table.t{width:100%;border-collapse:collapse}
+table.t th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:700;padding:10px 12px}
+table.t td{padding:11px 12px;border-top:1px solid var(--line);font-size:13.5px}
+table.t tbody tr{cursor:pointer}table.t tbody tr:hover td{background:#FCFAF7}
+.exec{background:linear-gradient(120deg,var(--maroon-bg),#fff);border:1px solid var(--line);border-left:4px solid var(--rust);border-radius:14px;padding:16px 20px;margin-bottom:18px;display:flex;gap:14px}
+.exec .ico{font-size:22px}
+.exec .em{color:var(--ink-2);font-size:14px}.exec .em b{color:var(--ink)} .exec .em .r{color:var(--red);font-weight:700} .exec .em .g{color:var(--green);font-weight:700}
+
+/* KPI */
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:var(--shadow)}
+.kpi .kt{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.kpi .kl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+.kpi .ki{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px}
+.kpi .kn{font-size:27px;font-weight:800;letter-spacing:-.02em}
+.kpi .kgoal{font-size:11px;color:var(--muted);margin-top:5px;display:flex;justify-content:space-between}
+.kpi .kbar{height:4px;border-radius:3px;background:var(--line-2);margin-top:5px;overflow:hidden}.kpi .kbar i{display:block;height:100%;border-radius:3px}
+.kpi.alert{border-color:#F1C9C1;background:#FEF7F5}
+
+/* alerts */
+.alerts .a{display:flex;align-items:center;gap:11px;padding:10px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px}
+.alerts .a .ico{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.alerts .a .at{flex:1;font-size:13px;color:var(--ink-2)}
+.alerts .a .cn{font-weight:800;font-size:15px}
+.alerts .a .go{font-size:11px;font-weight:700;padding:5px 11px;border-radius:7px;background:var(--maroon-2);color:#fff}
+
+/* region health bars */
+.rhb{margin-bottom:11px}
+.rhb .rl{display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:4px}.rhb .rl b{font-weight:700}
+.rhb .bar{height:7px;border-radius:4px;background:var(--line-2);overflow:hidden}.rhb .bar i{display:block;height:100%;border-radius:4px}
+
+/* hbar */
+.hb{margin-bottom:10px}.hb .hl{display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:4px;color:var(--ink-2)}.hb .hl b{color:var(--ink)}
+.hb .bar{height:6px;border-radius:4px;background:var(--line-2);overflow:hidden}.hb .bar i{display:block;height:100%;border-radius:4px}
+
+/* occurrences feed */
+.occ{display:flex;gap:11px;padding:11px;border:1px solid var(--line);border-left:3px solid var(--muted);border-radius:10px;margin-bottom:9px}
+.occ .ot{flex:1}.occ .ott{font-weight:700;font-size:13px}.occ .od{font-size:12px;color:var(--muted);margin-top:2px}.occ .meta{font-size:11px;color:var(--muted-2);margin-top:6px;display:flex;gap:12px;flex-wrap:wrap}
+
+/* tabs */
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:18px}
+.tabs button{padding:10px 16px;font-size:13.5px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;border-radius:8px 8px 0 0}
+.tabs button:hover{color:var(--ink)}
+.tabs button.on{color:var(--maroon-2);border-bottom-color:var(--maroon-2);font-weight:700}
+
+/* unit header */
+.uhead{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px;box-shadow:var(--shadow);margin-bottom:18px}
+.uhead .top2{display:flex;justify-content:space-between;align-items:flex-start;gap:20px}
+.uhead h1{font-size:24px;font-weight:800;display:flex;align-items:center;gap:12px}
+.uhead .facts{display:flex;gap:30px;margin-top:14px;flex-wrap:wrap}
+.uhead .facts .f .fl{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:700}
+.uhead .facts .f .fv{font-size:14px;font-weight:600;margin-top:2px;display:flex;align-items:center;gap:6px}
+.uhead .actions{display:flex;gap:8px;margin-top:18px;flex-wrap:wrap}
+.donut-wrap{text-align:center;flex-shrink:0}.donut-wrap .dl{font-size:11px;color:var(--muted);margin-top:4px}
+
+/* societaria / equipe */
+.soc{display:flex;align-items:center;gap:12px;padding:11px 0;border-top:1px solid var(--line-2)}
+.soc:first-child{border-top:none}
+.soc .si{width:36px;height:36px;border-radius:9px;background:var(--green-bg);display:flex;align-items:center;justify-content:center;font-size:17px}
+.soc .sn{flex:1}.soc .snn{font-weight:700;font-size:13.5px}.soc .snc{font-size:11.5px;color:var(--muted)}
+.tree .tn{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--line-2)}
+.tree .tn:first-child{border-top:none}
+.tree .av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0}
+.tree .nn{flex:1}.tree .nnn{font-weight:700;font-size:13px}.tree .nnm{font-size:11px;color:var(--muted)}
+.tree .branch{color:#cdbcab;margin-right:-4px}
+
+/* commission cascade */
+.casc{display:flex;align-items:stretch;gap:8px;margin-top:6px}
+.casc .seg{flex:1;text-align:center;border-radius:9px;padding:11px 8px;color:#fff}
+.casc .seg .sp{font-size:19px;font-weight:800}.casc .seg .sl{font-size:10.5px;opacity:.9;margin-top:2px}.casc .seg .sq{font-size:11px;font-weight:800;margin-top:6px;background:rgba(255,255,255,.22);border-radius:6px;padding:2px 0}
+
+/* timeline (filme) */
+.tl{position:relative;padding-left:30px}
+.tl::before{content:"";position:absolute;left:9px;top:6px;bottom:6px;width:2px;background:var(--line)}
+.tlitem{position:relative;margin-bottom:16px}
+.tlitem .node{position:absolute;left:-29px;top:0;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;border:2px solid #fff;box-shadow:0 0 0 2px var(--line)}
+.tlitem .box{background:#fff;border:1px solid var(--line);border-radius:11px;padding:11px 14px}
+.tlitem .bh{display:flex;justify-content:space-between;align-items:center}.tlitem .bt{font-weight:700;font-size:13.5px}.tlitem .bd{font-size:11.5px;font-weight:700;color:var(--muted)}
+.tlitem .bx{font-size:12.5px;color:var(--ink-2);margin-top:4px}
+
+/* graph */
+.gcanvas{position:relative;background:#FBF8F5;border:1px solid var(--line);border-radius:12px;overflow:hidden;height:520px}
+.gpanel{position:absolute;top:14px;right:14px;width:230px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px;box-shadow:var(--shadow)}
+.gpanel .gt{font-weight:800;font-size:15px}.gpanel .gs{color:var(--muted);font-size:12px;margin-bottom:10px}
+.gpanel .gr{display:flex;justify-content:space-between;padding:6px 0;border-top:1px solid var(--line-2);font-size:12.5px}.gpanel .gr b{font-weight:700}
+.gpanel .conn{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted-2);margin:12px 0 6px}
+.gpanel .ce{display:flex;align-items:center;gap:7px;padding:6px;border:1px solid var(--line);border-radius:8px;margin-bottom:5px;cursor:pointer;font-size:12px}.gpanel .ce:hover{border-color:var(--maroon-2)}
+.gpanel .ce .cd{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+.gfilters{position:absolute;top:14px;left:14px;display:flex;gap:6px;flex-wrap:wrap}
+.gfilters button{font-size:11.5px;font-weight:700;padding:5px 11px;border-radius:8px;background:#fff;border:1px solid var(--line);color:var(--muted)}
+.gfilters button.on{background:var(--maroon-bg);border-color:var(--maroon-2);color:var(--maroon-2)}
+.glegend{position:absolute;bottom:14px;left:14px;display:flex;gap:14px;background:#fff;border:1px solid var(--line);border-radius:9px;padding:8px 13px;font-size:11.5px}
+.glegend span{display:flex;align-items:center;gap:6px;color:var(--ink-2)}.glegend i{width:10px;height:10px;border-radius:3px}
+.gnode{cursor:pointer;transform-box:fill-box;transform-origin:center;transition:transform .2s cubic-bezier(.34,1.56,.64,1)}
+.gnode:hover{transform:scale(1.14)}
+.gnode text{font-size:9px;font-weight:600;pointer-events:none}
+.gring{transform-box:fill-box;transform-origin:center}
+.gcanvas svg{display:block}
+/* treemap */
+.tmwrap{display:flex;gap:6px;height:520px;background:#FBF8F5;border:1px solid var(--line);border-radius:12px;padding:10px}
+.tmcol{display:flex;flex-direction:column;gap:5px;min-width:0}
+.tmhead{font-size:11.5px;font-weight:800;color:#fff;border-radius:7px;padding:7px 9px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.tmcell{border-radius:7px;padding:8px 9px;color:#fff;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;min-height:0;cursor:pointer;transition:filter .15s}
+.tmcell:hover{filter:brightness(1.1)}
+.tmcell .tn2{font-size:11.5px;font-weight:700;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tmcell .tv2{font-size:10px;opacity:.85}
+/* sunburst */
+.sbseg{cursor:pointer;transition:opacity .15s}.sbseg:hover{opacity:.82}
+/* hierarquia */
+.hrow{display:flex;justify-content:space-between;align-items:center;padding:9px 16px;border-top:1px solid var(--line-2);font-size:13.5px}
+.hrow:first-child{border-top:none}
+
+/* kanban */
+.kanwrap{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;align-items:start}
+.kcol{background:#F7F2ED;border:1px solid var(--line);border-radius:12px;padding:10px}
+.kchead{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:800;padding-bottom:8px;margin-bottom:9px;border-bottom:2px solid}
+.kchead .ct{font-size:11px;background:#fff;border-radius:99px;padding:1px 8px;color:var(--muted)}
+.kcard2{background:#fff;border:1px solid var(--line);border-top:2px solid;border-radius:9px;padding:11px;margin-bottom:8px;box-shadow:0 4px 10px -8px rgba(0,0,0,.3)}
+.kcard2 .kn2{font-weight:700;font-size:13px}
+.kcard2 .kl2{font-size:11px;color:var(--muted);margin:3px 0 7px}
+.kcard2 .kf{display:flex;justify-content:space-between;align-items:center}
+.kcard2 .ka{font-size:10.5px;color:var(--muted-2)}
+.kpi-mini{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.kpi-mini .m{background:#fff;border:1px solid var(--line);border-radius:11px;padding:12px 16px;box-shadow:var(--shadow)}
+.kpi-mini .m .mn{font-size:21px;font-weight:800}.kpi-mini .m .ml{font-size:11px;color:var(--muted)}
+
+/* segmented */
+.seg-ctrl{display:inline-flex;background:#F0EAE3;border-radius:9px;padding:3px}
+.seg-ctrl button{font-size:12.5px;font-weight:600;padding:6px 14px;border-radius:7px;color:var(--muted)}
+.seg-ctrl button.on{background:#fff;color:var(--ink);box-shadow:0 2px 6px -3px rgba(0,0,0,.3)}
+.banner{display:flex;align-items:center;gap:11px;background:#FEF7F5;border:1px solid #F1C9C1;border-radius:11px;padding:11px 14px;margin-bottom:14px;font-size:13px;color:var(--ink-2)}
+.banner b{color:var(--red)}
+.emptybox{padding:40px;text-align:center;color:var(--muted-2);border:1px dashed var(--line);border-radius:12px}
+.chiprow{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px}
+.chip{font-size:12px;font-weight:600;padding:6px 12px;border-radius:8px;background:#fff;border:1px solid var(--line);color:var(--muted)}
+.chip.on{background:var(--maroon-2);color:#fff;border-color:var(--maroon-2)}
+
+/* ===== v2 modules ===== */
+.nav{overflow-y:auto;min-height:0}
+.nav::-webkit-scrollbar{width:6px}.nav::-webkit-scrollbar-thumb{background:rgba(255,255,255,.2)}
+.nav a{padding:9px 12px}
+.pcard{display:flex;gap:12px;padding:12px 0;border-top:1px solid var(--line-2)}
+.pcard:first-of-type{border-top:none}
+.pcard .pi{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.steps{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.steps .dot{width:9px;height:9px;border-radius:50%;background:var(--line);flex-shrink:0}
+.steps .dot.done{background:var(--maroon-2)}
+.steps .dot.cur{box-shadow:0 0 0 3px var(--maroon-bg)}
+.steps .stept{font-size:11px;color:var(--muted);margin-left:6px}
+.chk{display:flex;align-items:center;gap:9px;padding:8px 0;border-top:1px solid var(--line-2);font-size:13px;color:var(--muted)}
+.chk:first-of-type{border-top:none}
+.chk .ck{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--muted-2);flex-shrink:0}
+.chk.ok{color:var(--ink-2)}
+.chk.ok .ck{background:var(--green-bg);border-color:var(--green);color:var(--green)}
+.pnl{padding:12px;border:1px solid var(--line);border-radius:11px;margin-bottom:10px;background:#FCFAF7}
+.mtr{height:8px;border-radius:5px;background:var(--line-2);overflow:hidden}.mtr i{display:block;height:100%;border-radius:5px}
+.sw{width:36px;height:20px;border-radius:99px;background:var(--line);position:relative;flex-shrink:0;transition:.15s;cursor:pointer}
+.sw i{position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:.15s}
+.sw.on{background:var(--green)}.sw.on i{left:18px}
+
+/* ===== growth chart (interativo) ===== */
+.gchart{width:100%;height:auto;display:block;overflow:visible}
+.hcol .rev{opacity:0;transition:opacity .12s;pointer-events:none}
+.hcol:hover .rev{opacity:1}
+.gchart circle{pointer-events:none}
+.cht{background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 12px 26px -12px rgba(70,14,0,.45);padding:9px 12px;font-family:inherit;line-height:1.35}
+.cht .chm{font-weight:800;color:var(--ink);font-size:12.5px;margin-bottom:4px}
+.cht .chr{font-size:12px;font-weight:600;margin-top:1px}.cht .chr b{font-weight:800}
+.glg{display:flex;gap:22px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.glg span{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--muted);font-weight:600}
+.glg i{width:11px;height:11px;border-radius:50%}
+
+/* ===== mapa de status por região ===== */
+.regmap{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px}
+.rcard{text-align:left;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:13px 14px;cursor:pointer;display:block;width:100%;transition:.15s}
+.rcard:hover{border-color:var(--maroon-2);box-shadow:var(--shadow);transform:translateY(-2px)}
+.rcard .rn2{font-size:13px;font-weight:700;color:var(--ink)}
+.rcard .rdot{width:11px;height:11px;border-radius:50%;flex-shrink:0;box-shadow:0 0 0 3px rgba(0,0,0,.05)}
+.rcard .rnum{font-size:26px;font-weight:800;letter-spacing:-.02em;margin:1px 0 4px}
+.rcard.wide{grid-column:1 / -1}
+.spk{width:100%;height:34px;display:block}
+
+/* ===== distribuição por status ===== */
+.distchart{position:relative;margin-top:10px;padding-bottom:2px}
+.dgrid{position:absolute;left:212px;right:66px;top:6px;bottom:26px;display:flex;justify-content:space-between;pointer-events:none;z-index:0}
+.dgrid i{width:1px;background:var(--line-2);display:block}
+.distrow{position:relative;z-index:1;display:grid;grid-template-columns:200px 1fr 54px;align-items:center;gap:12px;width:100%;text-align:left;background:none;padding:8px 0;cursor:pointer}
+.distrow:hover{background:rgba(158,43,18,.03);border-radius:8px}
+.dlabel{display:flex;align-items:center;justify-content:flex-end;gap:8px;font-size:12.5px;font-weight:600;color:var(--ink-2);text-align:right;line-height:1.2}
+.dtick{width:10px;height:3px;border-radius:2px;flex-shrink:0}
+.dtrack{position:relative;height:16px;background:#E5DBCF;border-radius:8px}
+.dbar{position:absolute;left:0;top:0;height:100%;border-radius:8px;transition:filter .15s,transform .15s;transform-origin:left;min-width:8px}
+.distrow:hover .dbar{filter:brightness(1.1)}
+.dmark{position:absolute;right:-4px;top:50%;width:14px;height:14px;border-radius:50%;transform:translateY(-50%) scale(.7);border:2px solid #fff;box-shadow:0 1px 5px rgba(0,0,0,.35);transition:transform .15s}
+.distrow:hover .dmark{transform:translateY(-50%) scale(1.05)}
+.dval{font-size:13px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
+.dtip{position:absolute;bottom:24px;transform:translateX(-50%);background:#fff;border:1px solid var(--line);border-radius:11px;box-shadow:0 14px 30px -12px rgba(70,14,0,.5);padding:10px 13px;white-space:nowrap;opacity:0;visibility:hidden;transition:.15s;pointer-events:none;z-index:8}
+.dtip>b{font-size:13px;font-weight:800;color:var(--ink)}
+.dtip .dtq{display:block;font-size:12px;color:var(--muted);margin-top:4px;font-weight:600}
+.dtip .dtq b{color:var(--ink);font-weight:800}
+.distrow:hover .dtip{opacity:1;visibility:visible}
+.daxis{display:grid;grid-template-columns:200px 1fr 54px;gap:12px;margin-top:6px}
+.daxis .ax{grid-column:2;display:flex;justify-content:space-between;font-size:11px;color:var(--muted-2);font-variant-numeric:tabular-nums}
+
+/* ===== rede: split layout + macro + selection ===== */
+.rede-split{display:grid;grid-template-columns:1fr 252px;gap:16px;align-items:start}
+.gpanel-static{position:static;width:auto;max-height:540px;overflow-y:auto}
+.gphint{font-size:12px;color:var(--muted);line-height:1.45}
+.tmsel{outline:3px solid #fff;outline-offset:-3px;box-shadow:0 0 0 3px var(--maroon-2),0 8px 20px -8px rgba(0,0,0,.4);z-index:2}
+.gpbtn{width:100%;margin-top:10px;justify-content:center}
+
+/* ===== rede: seleção dinâmica ===== */
+.gnode{transition:transform .2s cubic-bezier(.34,1.56,.64,1),opacity .28s}
+.gedge{transition:opacity .28s,stroke-width .28s}
+.gempty{display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px;color:var(--muted);font-size:12.5px;line-height:1.5;padding:26px 4px}
+.gemptyic{font-size:34px;opacity:.5}
+
+/* ===== busca de unidades ===== */
+.usearch{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);border-radius:11px;padding:10px 15px;margin-bottom:14px;box-shadow:var(--shadow)}
+.usearch input{flex:1;border:none;outline:none;background:none;font-family:inherit;font-size:13.5px;color:var(--ink)}
+.usearch input::placeholder{color:var(--muted-2)}
+.usearch .ushint{font-size:11.5px;color:var(--muted);font-weight:600;white-space:nowrap}
+
+/* ===== composição clicável ===== */
+.soclink{cursor:pointer;border-radius:9px;transition:background .15s;margin:0 -8px;padding-left:8px;padding-right:8px}
+.soclink:hover{background:var(--paper)}
+.socchev{color:var(--muted-2);font-weight:700;margin-left:2px}
+
+/* ===== modal ===== */
+.modal-back{position:fixed;inset:0;background:rgba(33,26,21,.5);z-index:100;display:flex;align-items:center;justify-content:center;padding:24px}
+.modal{background:#fff;border-radius:16px;box-shadow:0 30px 60px -20px rgba(0,0,0,.5);width:min(780px,94vw);max-height:86vh;display:flex;flex-direction:column;overflow:hidden;transform-box:border-box;transform-origin:center}
+.modal-inner{display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden}
+.modal-h{display:flex;align-items:center;justify-content:space-between;padding:15px 20px;border-bottom:1px solid var(--line);flex-shrink:0}
+.modal-h h3{font-size:16px;font-weight:800}
+.modal-x{width:30px;height:30px;border-radius:8px;background:var(--paper);color:var(--muted);font-size:14px;font-weight:800}
+.modal-x:hover{background:var(--line)}
+.modal-body{padding:16px 20px;overflow-y:auto;flex:1;min-height:0}
+
+/* ===== filtro de prévias ===== */
+.filterbar{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:12px;box-shadow:var(--shadow)}
+.ff{display:flex;flex-direction:column;gap:5px;min-width:150px;flex:1}
+.ff label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+.ff select{font-family:inherit;font-size:13px;padding:9px 10px;border:1px solid var(--line);border-radius:9px;background:var(--paper);color:var(--ink);cursor:pointer}
+.ff select:disabled{opacity:.5;cursor:not-allowed}
+.filterbar .btn{margin-bottom:1px}
+
+/* ===== modal detalhe da prévia ===== */
+.modal-wide{width:min(1060px,96vw)!important}
+.kcard2{cursor:pointer;transition:box-shadow .15s,transform .15s}
+.kcard2:hover{box-shadow:0 8px 18px -8px rgba(70,14,0,.4);transform:translateY(-2px)}
+.pvwrap{display:grid;grid-template-columns:1fr 290px;gap:22px}
+.pvmain{min-width:0}
+.pvside{border-left:1px solid var(--line);padding-left:20px}
+.mtabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:14px;flex-wrap:wrap}
+.mtabs button{padding:9px 14px;font-size:12.5px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;border-radius:8px 8px 0 0}
+.mtabs button.on{color:var(--maroon-2);border-bottom-color:var(--maroon-2);font-weight:800}
+.mtabs button:hover{color:var(--ink)}
+.mtab-body .msec{font-size:13px;font-weight:800;color:var(--ink);margin:16px 0 8px;display:flex;align-items:center;gap:7px}
+.mtab-body .msec:first-child{margin-top:2px}
+.pvgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px 16px}
+.pvgrid .di{display:flex;flex-direction:column;gap:2px;background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:7px 10px}
+.pvgrid .di .dk{font-size:10px;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);font-weight:700}
+.pvgrid .di .dv{font-size:13px;font-weight:600;color:var(--ink)}
+.doctable td,.doctable th{padding:9px 10px}
+.doctable tbody tr:nth-child(even){background:#FCFAF7}
+.histtable td,.histtable th{padding:8px 10px}
+.histtable tbody tr:nth-child(even){background:#FCFAF7}
+.chkbox{display:inline-block;width:16px;height:16px;border:1.5px solid var(--line);border-radius:4px;vertical-align:middle}
+.chkbox.on{background:#16A34A;border-color:#16A34A}
+.chkbox.rep{background:#DC2626;border-color:#DC2626}
+.sitdot{display:inline-block;width:11px;height:11px;border-radius:50%;background:#16A34A}
+.sitdot.amber{background:#F4B740}.sitdot.pink{background:#F0A6C0}.sitdot.green{background:#16A34A}
+.statusbadge{display:inline-block;font-size:11px;font-weight:800;padding:4px 10px;border-radius:6px;white-space:nowrap}
+.sb-amber{background:#FDECC8;color:#8a5a00}.sb-yellow{background:#FDECC8;color:#8a5a00}.sb-blue{background:#D7E7FA;color:#1a4a8a}.sb-violet{background:var(--violet-bg);color:var(--violet)}.sb-green{background:#C9EFD6;color:#0f7a37}.sb-red{background:#FBD9D9;color:#b31414}.sb-gray{background:#EFEAE4;color:var(--muted)}
+.pvside-h{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);font-weight:600}
+.pvside-name{font-size:15.5px;font-weight:800;margin:6px 0 12px;line-height:1.2}
+.pvside-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.pvside .dk{font-size:9.5px;text-transform:uppercase;color:var(--muted);font-weight:700}
+.pvside .dv{font-size:12px;font-weight:600;color:var(--ink);word-break:break-word}
+.pvside-link{font-size:12.5px;color:var(--muted);padding:8px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:12px}
+.pvside-sec{font-size:11.5px;font-weight:800;color:var(--ink-2);margin:12px 0 8px;display:flex;align-items:center;gap:6px}
+.dot-red{display:inline-block;width:8px;height:8px;border-radius:50%;background:#DC2626;vertical-align:middle;margin-right:4px}
+@media(max-width:720px){.pvwrap{grid-template-columns:1fr}.pvside{border-left:none;border-top:1px solid var(--line);padding-left:0;padding-top:16px}.pvgrid{grid-template-columns:1fr 1fr}}
+
+/* ===== validação por IA ===== */
+.ia-banner{display:flex;gap:11px;align-items:center;background:linear-gradient(120deg,var(--violet-bg),#fff);border:1px solid #ddd0f5;border-left:4px solid var(--violet);border-radius:11px;padding:11px 14px;font-size:12.5px;color:var(--ink-2);margin-bottom:6px}
+.ia-banner .ia-ic{font-size:22px;flex-shrink:0}
+.ia-pulse{animation:iapulse 1s ease-in-out infinite}
+@keyframes iapulse{0%,100%{opacity:1}50%{opacity:.45}}
+.kpi-mini .m.mclick{cursor:pointer;transition:border-color .15s,box-shadow .15s,transform .15s}.kpi-mini .m.mclick:hover{border-color:var(--maroon-2);box-shadow:var(--shadow);transform:translateY(-2px)}
+
+/* ===== sheet (drawer de notificações) ===== */
+.sheet-back{position:fixed;inset:0;background:rgba(33,26,21,.42);z-index:110;display:flex;justify-content:flex-end}
+.sheet{background:#fff;width:min(420px,94vw);height:100%;box-shadow:-24px 0 60px -24px rgba(0,0,0,.5);display:flex;flex-direction:column;animation:sheetin .26s ease}
+@keyframes sheetin{from{transform:translateX(40px);opacity:.5}to{transform:none;opacity:1}}
+.sheet-inner{display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden}
+.sheet-h{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--line);flex-shrink:0}
+.sheet-h h3{font-size:15.5px;font-weight:800}
+.sheet-body{padding:14px 16px;overflow-y:auto;flex:1;min-height:0}
+.bell{cursor:pointer}
+.pcard:hover{background:var(--paper);border-radius:8px}
+.pcard.sel{background:#F7ECE7;border-radius:8px;box-shadow:inset 3px 0 0 var(--maroon-2)}
+.kpi.kclick{cursor:pointer;transition:border-color .15s,box-shadow .15s,transform .15s}.kpi.kclick:hover{border-color:var(--maroon-2);box-shadow:var(--shadow);transform:translateY(-2px)}
+
+/* ===== formulário (modal registrar visita) ===== */
+.frm{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px 16px}
+.frm .fld{display:flex;flex-direction:column;gap:4px}
+.frm .fld label{font-size:10.5px;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);font-weight:700;display:flex;align-items:center}
+.frm input,.frm select,.frm textarea{font-family:inherit;font-size:13px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);width:100%;box-sizing:border-box;resize:vertical}
+.frm input:focus,.frm select:focus,.frm textarea:focus{outline:none;border-color:var(--maroon-2)}
+.frm input[readonly]{background:var(--paper);color:var(--muted)}
+.frm .chkopt{grid-column:span 3;display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-2);padding:3px 0;font-weight:500}
+.frm .chkopt input{width:auto}
+
+/* ===== registrar visita: abas + checklist ===== */
+.mtabs button:disabled{opacity:.4;cursor:not-allowed}
+.chkopt.clbig{grid-column:span 3;font-weight:700;color:var(--ink);border:1px dashed var(--line);border-radius:9px;padding:11px 13px;background:var(--paper)}
+.clitem{padding:11px 0;border-top:1px solid var(--line-2)}
+.clitem:first-child{border-top:none}
+.clitem .clsel{font-family:inherit;font-size:12px;padding:5px 8px;border:1px solid var(--line);border-radius:7px;background:#fff;flex-shrink:0;color:var(--ink)}
+.clitem>input{width:100%;font-family:inherit;font-size:12.5px;padding:7px 9px;border:1px solid var(--line);border-radius:7px;box-sizing:border-box}
+
+/* ===== sidebar recolher/expandir ===== */
+.brand{position:relative}
+.navtoggle{margin-left:auto;width:26px;height:26px;border-radius:7px;background:rgba(255,255,255,.12);color:#f4e6df;font-size:15px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1}
+.navtoggle:hover{background:rgba(255,255,255,.25)}
+.side{transition:width .18s ease}
+.app.nav-collapsed .side{width:66px;padding:16px 9px}
+.app.nav-collapsed .brand{flex-direction:column;gap:10px;padding:6px 0 14px}
+.app.nav-collapsed .brand .txt{display:none}
+.app.nav-collapsed .navtoggle{margin:0}
+.app.nav-collapsed .nav a{justify-content:center;padding:11px 0;font-size:0;gap:0}
+.app.nav-collapsed .nav a .ic{font-size:17px;width:auto}
+.app.nav-collapsed .nav a .tagnew{display:none}
+.app.nav-collapsed .me{justify-content:center}
+.app.nav-collapsed .me .txt{display:none}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <div class="brand"><div class="logo">A</div><div class="txt"><b>Novo CRM</b><small>Ademicon · Rede</small></div><button class="navtoggle" id="navToggle" title="Recolher menu">«</button></div>
+    <nav class="nav" id="nav"></nav>
+    <div class="spacer"></div>
+    <div class="me"><div class="av">LL</div><div class="txt"><b>Leany Lean Ventures</b><small>Administrador</small></div></div>
+  </aside>
+  <main class="main">
+    <header class="top">
+      <div class="crumb" id="crumb"></div>
+      <div class="demo">● Modo Demo</div>
+      <div class="bell" data-sheet="alertas">🔔<b>5</b></div>
+      <div class="av">LL</div>
+    </header>
+    <div class="view" id="view"></div>
+  </main>
+</div>
+<div id="modal" class="modal-back" style="display:none"><div class="modal"><div class="modal-inner"></div></div></div>
+<div id="sheet" class="sheet-back" style="display:none"><div class="sheet"><div class="sheet-inner"></div></div></div>
+
+<script>
+/* ============== DATA ============== */
+const NAV=[
+  {id:"dashboard",ic:"📊",lbl:"Dashboard"},
+  {id:"rede",ic:"🕸",lbl:"Mapa da Rede"},
+  {id:"lojas",ic:"🏪",lbl:"Unidades"},
+  {id:"pessoas",ic:"👥",lbl:"Pessoas & CNPJ"},
+  {id:"previas",ic:"📋",lbl:"Prévias"},
+  {id:"processos",ic:"🔀",lbl:"Processos"},
+  {id:"visitas",ic:"🧭",lbl:"Visitas"},
+  {id:"blacklist",ic:"⛔",lbl:"Blacklist"},
+  {id:"historico",ic:"🗂️",lbl:"Histórico"},
+  {id:"config",ic:"⚙️",lbl:"Configurações"},
+];
+const GROWTH=[ {m:"Jul",l:272,li:143,au:108},{m:"Ago",l:277,li:150,au:114},{m:"Set",l:282,li:156,au:120},{m:"Out",l:287,li:160,au:125},{m:"Nov",l:292,li:163,au:128},{m:"Dez",l:296,li:167,au:132},{m:"Jan",l:299,li:170,au:135},{m:"Fev",l:302,li:172,au:138},{m:"Mar",l:305,li:175,au:140},{m:"Abr",l:308,li:177,au:142},{m:"Mai",l:310,li:179,au:144},{m:"Jun",l:312,li:181,au:146} ];
+const REGIONS=[ {n:"SP Capital",lojas:68,health:94,c:"green"},{n:"Centro-Oeste",lojas:34,health:88,c:"green"},{n:"SP Interior",lojas:54,health:87,c:"green"},{n:"Norte",lojas:36,health:76,c:"amber"},{n:"Sul",lojas:62,health:74,c:"amber"},{n:"Nordeste",lojas:58,health:66,c:"red"} ];
+const ALERTS=[ {ic:"⏱",c:"red",l:"Consultores em 4 meses sem venda",n:12,go:"previas"},{ic:"🔄",c:"amber",l:"Mudança societária não comunicada",n:3,go:"rede"},{ic:"📋",c:"amber",l:"Prévias com SLA vencido",n:5,go:"previas"},{ic:"⚖️",c:"red",l:"Análise jurídica atrasada",n:2,go:"previas"},{ic:"📍",c:"gray",l:"Lojas sem visita há +180 dias",n:18,go:"visitas?pend=1"} ];
+const OCC=[
+ {t:"Conflito",c:"red",ic:"⚠️",titulo:"Disputa de território entre lojas",loja:"Unidade SP-Centro",pessoa:"Ana Lima",tempo:"há 2h",st:"Aberto"},
+ {t:"Visita",c:"green",ic:"🤝",titulo:"Visita técnica de acompanhamento",loja:"Unidade Campinas",pessoa:"Pedro Costa",tempo:"há 5h",st:"Resolvido"},
+ {t:"Notificação",c:"amber",ic:"📄",titulo:"Notificação de prévia vencida",loja:"Unidade Recife",pessoa:"Sistema",tempo:"ontem",st:"Em andamento"},
+ {t:"Penalidade",c:"violet",ic:"🚩",titulo:"Mudança societária não comunicada",loja:"Unidade Brasília",pessoa:"Roberto Alves",tempo:"há 3d",st:"Aberto"},
+ {t:"Contrato",c:"blue",ic:"🏗",titulo:"Abertura aprovada — Fortaleza Leste",loja:"Nova Unidade FOR-Leste",pessoa:"Ana Lima",tempo:"há 4d",st:"Em andamento"},
+];
+const LOJAS=[
+ {id:"L001",nome:"Unidade SP-Centro",cidade:"São Paulo/SP",regiao:"SP Capital",tipo:"Licenciado",rating:94,rl:"A",st:"Ativa",cons:28,cnpjs:3,dono:"João Silva",ger:"Roberto Almeida",desde:"03/2018"},
+ {id:"L002",nome:"Unidade Campinas",cidade:"Campinas/SP",regiao:"SP Interior",tipo:"Licenciado",rating:87,rl:"A",st:"Ativa",cons:19,cnpjs:2,dono:"Marina Reis",ger:"Roberto Almeida",desde:"06/2019"},
+ {id:"L003",nome:"Unidade Curitiba-Norte",cidade:"Curitiba/PR",regiao:"Sul",tipo:"Licenciado",rating:79,rl:"B",st:"Ativa",cons:15,cnpjs:2,dono:"Felipe Neves",ger:"Sandra Lima",desde:"01/2020"},
+ {id:"L004",nome:"Unidade Recife-Sul",cidade:"Recife/PE",regiao:"Nordeste",tipo:"Autorizado",rating:66,rl:"C",st:"Em Alerta",cons:11,cnpjs:1,dono:"José Santos",ger:"Sandra Lima",desde:"07/2020"},
+ {id:"L005",nome:"Unidade Brasília-Norte",cidade:"Brasília/DF",regiao:"Centro-Oeste",tipo:"Licenciado",rating:88,rl:"A",st:"Ativa",cons:22,cnpjs:3,dono:"Carla Mendes",ger:"Edivaldo P.",desde:"03/2019"},
+ {id:"L006",nome:"Unidade Belém",cidade:"Belém/PA",regiao:"Norte",tipo:"Autorizado",rating:73,rl:"B",st:"Pendente",cons:9,cnpjs:1,dono:"—",ger:"Edivaldo P.",desde:"11/2023"},
+];
+const PESSOAS=[
+ {id:1,nome:"João Silva",cpf:"***.456.789-**",mat:"M-00123",nivel:"Licenciado 3.5",nc:"violet",loja:"Unidade SP-Centro",emp:2,st:"Ativo"},
+ {id:2,nome:"Maria Santos",cpf:"***.654.321-**",mat:"M-00214",nivel:"Licenciado 3.0",nc:"violet",loja:"Unidade SP-Centro",emp:1,st:"Ativo"},
+ {id:3,nome:"Carlos Oliveira",cpf:"***.789.123-**",mat:"M-00301",nivel:"Autorizado 2.5",nc:"blue",loja:"Unidade SP-Interior",emp:1,st:"Ativo"},
+ {id:4,nome:"Ana Lima",cpf:"***.654.987-**",mat:"M-00422",nivel:"Autorizado 2.2",nc:"blue",loja:"Unidade SP-Interior",emp:1,st:"Em Prévia"},
+ {id:5,nome:"Pedro Costa",cpf:"***.123.456-**",mat:"M-00501",nivel:"Autorizado 2.0",nc:"green",loja:"Unidade SP-Centro",emp:1,st:"Ativo"},
+ {id:6,nome:"Beatriz Almeida",cpf:"***.222.333-**",mat:"M-00702",nivel:"Em Prévia",nc:"amber",loja:"Unidade SP-Centro",emp:0,st:"Em Prévia"},
+ {id:7,nome:"Rafael Dias",cpf:"***.321.987-**",mat:"M-00560",nivel:"Autorizado 2.0",nc:"green",loja:"Unidade SP-Centro",emp:1,st:"Ativo"},
+ {id:8,nome:"Juliana Prado",cpf:"***.444.222-**",mat:"M-00921",nivel:"Autorizado 2.7",nc:"blue",loja:"Unidade Belém",emp:1,st:"Ativo"},
+ {id:9,nome:"Marcos Vieira",cpf:"***.888.111-**",mat:"M-01002",nivel:"Licenciado 3.0",nc:"violet",loja:"Unidade Campinas",emp:1,st:"Ativo"},
+ {id:10,nome:"Tânia Rocha",cpf:"***.777.333-**",mat:"M-00571",nivel:"Autorizado 2.0",nc:"green",loja:"Unidade SP-Centro",emp:1,st:"Ativo"},
+ {id:11,nome:"Bruno Farias",cpf:"***.202.303-**",mat:"M-01204",nivel:"Autorizado 2.7",nc:"blue",loja:"Unidade Recife-Sul",emp:1,st:"Ativo"},
+ {id:12,nome:"Lucas Reis",cpf:"***.334.667-**",mat:"M-00533",nivel:"Autorizado 2.0",nc:"green",loja:"Unidade SP-Centro",emp:1,st:"Ativo"},
+ {id:13,nome:"Bianca Souza",cpf:"***.556.889-**",mat:"M-00548",nivel:"Autorizado 2.0",nc:"green",loja:"Unidade SP-Centro",emp:1,st:"Ativo"},
+];
+const KAN={
+ "Documental":{c:"blue",cards:[{id:"p1",n:"Fernanda Costa",t:"PF",a:"K.A.",loja:"SP-Centro",sla:3,s:"g"},{id:"p2",n:"Alpha Consultoria",t:"PJ",a:"G.M.",loja:"Campinas Centro",sla:1,s:"a"},{id:"p3",n:"Ricardo Souza",t:"PF",a:"K.A.",loja:"SP-Pinheiros",sla:2,s:"a"}]},
+ "Retificação":{c:"amber",cards:[{id:"p4",n:"Gamma Invest. ME",t:"PJ",a:"L.F.",loja:"Salvador Centro",sla:-1,s:"r"},{id:"p5",n:"Patrícia Alves",t:"PF",a:"K.A.",loja:"Recife Sul",sla:1,s:"a"}]},
+ "Jurídico":{c:"violet",cards:[{id:"p6",n:"Delta Corp. ME",t:"PJ",a:"C.L.",loja:"Fortaleza Aldeota",sla:2,s:"g"},{id:"p7",n:"Lucas Rodrigues",t:"PF",a:"M.S.",loja:"Goiânia Centro",sla:0,s:"r"}]},
+ "Aprovado":{c:"green",cards:[{id:"p8",n:"Camila Santos",t:"PF",a:"L.F.",loja:"Belém Sul",sla:5,s:"g"},{id:"p9",n:"Epsilon Soluções",t:"PJ",a:"G.M.",loja:"Manaus Centro",sla:5,s:"g"}]},
+ "Reprovado":{c:"red",cards:[{id:"p10",n:"Zeta Negócios ME",t:"PJ",a:"C.L.",loja:"Natal Centro",sla:0,s:"r"}]},
+};
+const GEO={
+ "Norte":{"AM":{"Manaus":["Manaus Centro","Manaus Norte"]},"PA":{"Belém":["Belém Sul","Belém Doca"]}},
+ "Nordeste":{"BA":{"Salvador":["Salvador Centro","Salvador Barra"]},"CE":{"Fortaleza":["Fortaleza Aldeota","Fortaleza Centro"]},"PE":{"Recife":["Recife Sul","Recife Boa Viagem"]},"RN":{"Natal":["Natal Centro"]}},
+ "Centro-Oeste":{"DF":{"Brasília":["Brasília Norte","Brasília Sul"]},"GO":{"Goiânia":["Goiânia Centro"]},"MT":{"Cuiabá":["Cuiabá Centro"]}},
+ "Sudeste":{"SP":{"São Paulo":["SP-Centro","SP-Paulista","SP-Pinheiros"],"Campinas":["Campinas Centro"]},"RJ":{"Rio de Janeiro":["Rio Centro","Rio Barra"]},"MG":{"Belo Horizonte":["BH Centro"]}},
+ "Sul":{"PR":{"Curitiba":["Curitiba Norte","Curitiba Centro"],"Londrina":["Londrina Centro"]},"RS":{"Porto Alegre":["POA Centro"]},"SC":{"Florianópolis":["Floripa Centro"]}}
+};
+const UNIT2GEO={};
+Object.entries(GEO).forEach(([reg,ufs])=>Object.entries(ufs).forEach(([uf,cids])=>Object.entries(cids).forEach(([cid,units])=>units.forEach(u=>{UNIT2GEO[u]={reg:reg,uf:uf,cid:cid};}))));
+// per-unit detail
+const UNIT={
+ perf:[ {m:"Jul",v:512,q:78},{m:"Ago",v:540,q:83},{m:"Set",v:566,q:88},{m:"Out",v:598,q:92},{m:"Nov",v:625,q:97},{m:"Dez",v:690,q:108},{m:"Jan",v:648,q:101},{m:"Fev",v:702,q:110},{m:"Mar",v:735,q:116},{m:"Abr",v:768,q:121},{m:"Mai",v:810,q:128},{m:"Jun",v:864,q:137} ],
+ soc:[ {n:"Alpha Consultoria Ltda",cnpj:"12.345.678/0001-90",role:"Licenciado Lojista",pct:"60%",st:"Ativo",sc:"green"},{n:"Beta Soluções ME",cnpj:"98.765.432/0001-10",role:"Sócio",pct:"25%",st:"Ativo",sc:"green"},{n:"Gamma Investimentos",cnpj:"45.678.901/0001-23",role:"Autorizado",pct:"15%",st:"Em Prévia",sc:"amber"} ],
+ s360:[ {l:"Comercial",v:92,c:"green"},{l:"Operacional",v:88,c:"green"},{l:"Clima Org.",v:84,c:"green"},{l:"Jurídico",v:75,c:"amber"},{l:"Pós-venda",v:80,c:"green"},{l:"Comunicação Visual",v:58,c:"red"} ],
+ equipe:[ {n:"João Silva",m:"M-00123",nivel:"Licenciado 3.5 · Dono (LL)",ind:0,c:"violet"},{n:"Maria Santos",m:"M-00214",nivel:"Licenciado 3.0",ind:0,c:"violet"},{n:"Carlos Oliveira",m:"M-00301",nivel:"Autorizado 2.5",ind:1,c:"blue"},{n:"Ana Lima",m:"M-00422",nivel:"Autorizado 2.2",ind:2,c:"blue"},{n:"Pedro Costa",m:"M-00501",nivel:"Autorizado 2.0",ind:2,c:"green"},{n:"Lucas Reis",m:"M-00533",nivel:"Autorizado 2.0",ind:2,c:"green"},{n:"Bianca Souza",m:"M-00548",nivel:"Autorizado 2.0",ind:2,c:"green"},{n:"Rafael Dias",m:"M-00560",nivel:"Autorizado 2.0",ind:2,c:"green"},{n:"Tânia Rocha",m:"M-00571",nivel:"Autorizado 2.0",ind:2,c:"green"} ],
+ timeline:[
+  {date:"Jun 2024",ic:"📋",c:"#64748B",t:"Checklist gerencial semestral",d:"Rating A mantido (94 pts). Comunicação visual em atraso — prazo 30 dias."},
+  {date:"Jul 2023",ic:"🏆",c:"var(--green)",t:"João Silva → Licenciado 3.5 (nível máximo)",d:"Passa a gerenciar 28 consultores. Nível máximo da carreira atingido."},
+  {date:"Nov 2022",ic:"🔄",c:"var(--violet)",t:"Mudança societária — saída de Pedro Machado",d:"Pedro desligou-se da Beta Soluções ME. Novo sócio em análise."},
+  {date:"Jun 2021",ic:"⬆️",c:"var(--green)",t:"Maria Santos → Licenciado 3.0",d:"Progressão após desenvolver equipe de 8 consultores."},
+  {date:"Jan 2020",ic:"⚠️",c:"var(--red)",t:"Consultor descredenciado — 4 meses sem venda",d:"MTR-00789 descredenciado. Carteira redistribuída."},
+  {date:"Mar 2018",ic:"🏪",c:"var(--maroon-2)",t:"Abertura da unidade",d:"Inauguração oficial com 3 consultores iniciais."},
+ ],
+ logbook:[
+  {t:"Conflito",c:"red",titulo:"Disputa societária entre sócios",pessoa:"João Silva",tempo:"há 2h",st:"Aberto"},
+  {t:"Visita",c:"green",titulo:"Visita semestral concluída",pessoa:"Roberto Almeida (Gerente BU)",tempo:"há 12d",st:"Resolvido"},
+  {t:"Penalidade",c:"violet",titulo:"Comunicação visual desatualizada",pessoa:"Gerente BU",tempo:"há 20d",st:"Em andamento"},
+ ]
+};
+const GNODES=[
+ {id:"MSE",t:"macro",lbl:"Sudeste",sub:"Macrorregião",x:210,y:64,r:30,uni:122,rating:"A · 90"},
+ {id:"MS", t:"macro",lbl:"Sul",     sub:"Macrorregião",x:500,y:64,r:27,uni:62, rating:"B · 78"},
+ {id:"MNE",t:"macro",lbl:"Nordeste",sub:"Macrorregião",x:770,y:64,r:27,uni:58, rating:"C · 66"},
+ {id:"L1",t:"loja",lbl:"SP-Centro", sub:"São Paulo/SP",x:120,y:205,r:26,unit:"L001",dono:"João Silva",  rating:"A · 94",rl:"green",cnpjs:3,lic:2,aut:26,macro:"Sudeste"},
+ {id:"L2",t:"loja",lbl:"Campinas",  sub:"Campinas/SP", x:315,y:205,r:24,unit:"L002",dono:"Marina Reis", rating:"A · 87",rl:"green",cnpjs:2,lic:1,aut:18,macro:"Sudeste"},
+ {id:"L3",t:"loja",lbl:"Curitiba-N",sub:"Curitiba/PR", x:500,y:205,r:22,unit:"L003",dono:"Felipe Neves", rating:"B · 79",rl:"amber",cnpjs:2,lic:1,aut:14,macro:"Sul"},
+ {id:"L4",t:"loja",lbl:"Recife-Sul",sub:"Recife/PE",   x:770,y:205,r:22,unit:"L004",dono:"José Santos",  rating:"C · 66",rl:"red",  cnpjs:1,lic:0,aut:11,macro:"Nordeste"},
+ {id:"C1",t:"cnpj",lbl:"Alpha",sub:"12.345.678/0001",x:70, y:350,r:16,razao:"Alpha Consultoria Ltda",papel:"Licenciado Lojista",pv:"PV-1001",socios:2,cid:"C1"},
+ {id:"C2",t:"cnpj",lbl:"Beta", sub:"98.765.432/0001",x:250,y:355,r:16,razao:"Beta Soluções ME",       papel:"Sócio",            pv:"PV-1042",socios:2,cid:"C2"},
+ {id:"C3",t:"cnpj",lbl:"Gamma",sub:"45.678.901/0001",x:400,y:350,r:16,razao:"Gamma Investimentos",     papel:"Autorizado",       pv:"PV-1188",socios:1,cid:"C3"},
+ {id:"C5",t:"cnpj",lbl:"Sigma",sub:"33.221.100/0001",x:520,y:355,r:15,razao:"Sigma Participações",     papel:"Licenciado",       pv:"PV-2050",socios:2,cid:"C3"},
+ {id:"C4",t:"cnpj",lbl:"Delta",sub:"67.890.123/0001",x:770,y:350,r:15,razao:"Delta Corp. ME",          papel:"Licenciado",       pv:"PV-4821",socios:3,cid:"C4"},
+ {id:"P1",t:"cpf",lbl:"João (LL)",sub:"Licenciado 3.5",x:55, y:480,r:11,pid:1},
+ {id:"P2",t:"cpf",lbl:"Maria",    sub:"Licenciado 3.0",x:150,y:485,r:11,pid:2},
+ {id:"P3",t:"cpf",lbl:"Carlos",   sub:"Autorizado 2.5",x:250,y:485,r:11,pid:3},
+ {id:"P4",t:"cpf",lbl:"Ana",      sub:"Autorizado 2.2",x:400,y:480,r:11,pid:4},
+ {id:"P5",t:"cpf",lbl:"Pedro",    sub:"Autorizado 2.0",x:520,y:485,r:11,pid:5},
+ {id:"P6",t:"cpf",lbl:"Lucas",    sub:"Autorizado 2.0",x:770,y:480,r:11,pid:12},
+];
+const GEDGES=[
+ {f:"MSE",t:"L1"},{f:"MSE",t:"L2"},{f:"MS",t:"L3"},{f:"MNE",t:"L4"},
+ {f:"L1",t:"C1"},{f:"L1",t:"C3"},{f:"L2",t:"C2"},{f:"L2",t:"C3"},{f:"L3",t:"C5"},{f:"L4",t:"C4"},
+ {f:"C1",t:"P1"},{f:"C1",t:"P2"},{f:"C2",t:"P3"},{f:"C3",t:"P4"},{f:"C5",t:"P5"},{f:"C4",t:"P6"}
+];
+const GC={macro:"#4338CA",loja:"#E24A3C",cnpj:"#15803D",cpf:"#D9892B"};
+let gCurSel="";
+const CV={red:"var(--red)",amber:"var(--amber)",green:"var(--green)",blue:"var(--blue)",violet:"var(--violet)",gray:"var(--muted)",maroon:"var(--maroon-2)"};
+const CB={red:"var(--red-bg)",amber:"var(--amber-bg)",green:"var(--green-bg)",blue:"var(--blue-bg)",violet:"var(--violet-bg)",gray:"#EFEAE4",maroon:"var(--maroon-bg)"};
+// Hierarquia Master › Regional › Unidade (porte = nº de unidades · r = rating 360)
+const MASTERS=[
+ {name:"Master Sudeste·Sul",owner:"Carlos Mendonça",c:"#E24A3C",regionais:[
+   {name:"SP Capital",health:94,c:"green",unidades:[{n:"SP-Centro",v:22,r:94},{n:"SP-Paulista",v:18,r:90},{n:"SP-Faria Lima",v:16,r:88},{n:"SP-Pinheiros",v:12,r:82}]},
+   {name:"SP Interior",health:87,c:"green",unidades:[{n:"Campinas",v:20,r:87},{n:"Ribeirão",v:14,r:84},{n:"Sorocaba",v:12,r:80},{n:"S.J.Campos",v:8,r:78}]},
+   {name:"Sul",health:74,c:"amber",unidades:[{n:"Curitiba-N",v:22,r:79},{n:"P.Alegre",v:16,r:82},{n:"Floripa",v:14,r:72},{n:"Londrina",v:10,r:64}]},
+ ]},
+ {name:"Master N·NE·CO",owner:"Roberta Lima",c:"#C43C30",regionais:[
+   {name:"Centro-Oeste",health:88,c:"green",unidades:[{n:"Brasília-N",v:12,r:88},{n:"Goiânia",v:10,r:85},{n:"Cuiabá",v:8,r:80},{n:"Campo Gr.",v:4,r:76}]},
+   {name:"Nordeste",health:66,c:"red",unidades:[{n:"Recife-Sul",v:20,r:66},{n:"Salvador",v:16,r:68},{n:"Fortaleza",v:14,r:70},{n:"Natal",v:8,r:58}]},
+   {name:"Norte",health:76,c:"amber",unidades:[{n:"Belém",v:14,r:73},{n:"Manaus",v:10,r:78},{n:"P.Velho",v:8,r:74},{n:"Macapá",v:4,r:70}]},
+ ]},
+];
+const utot=rg=>rg.unidades.reduce((s,u)=>s+u.v,0);
+const mtot=m=>m.regionais.reduce((s,rg)=>s+utot(rg),0);
+const rcol=r=> r>=85?"#15803D": r>=70?"#B45309":"#B91C1C";
+const rgrade=r=> r>=85?"A": r>=70?"B":"C";
+const REG2MACRO={"SP Capital":"Sudeste","SP Interior":"Sudeste","Sul":"Sul","Centro-Oeste":"Centro-Oeste","Nordeste":"Nordeste","Norte":"Norte"};
+const MACRO_C={"Sudeste":"#E24A3C","Sul":"#B45309","Centro-Oeste":"#15803D","Nordeste":"#0E7490","Norte":"#6D28D9"};
+const MACRO_ORDER=["Sudeste","Sul","Centro-Oeste","Nordeste","Norte"];
+const CIDADES={"SP-Centro":"São Paulo/SP","SP-Paulista":"São Paulo/SP","SP-Faria Lima":"São Paulo/SP","SP-Pinheiros":"São Paulo/SP","Campinas":"Campinas/SP","Ribeirão":"Ribeirão Preto/SP","Sorocaba":"Sorocaba/SP","S.J.Campos":"S. J. dos Campos/SP","Curitiba-N":"Curitiba/PR","P.Alegre":"Porto Alegre/RS","Floripa":"Florianópolis/SC","Londrina":"Londrina/PR","Brasília-N":"Brasília/DF","Goiânia":"Goiânia/GO","Cuiabá":"Cuiabá/MT","Campo Gr.":"Campo Grande/MS","Recife-Sul":"Recife/PE","Salvador":"Salvador/BA","Fortaleza":"Fortaleza/CE","Natal":"Natal/RN","Belém":"Belém/PA","Manaus":"Manaus/AM","P.Velho":"Porto Velho/RO","Macapá":"Macapá/AP"};
+const DONOS={"SP-Centro":"João Silva","SP-Paulista":"Renata Alves","SP-Faria Lima":"Bruno Tavares","SP-Pinheiros":"Camila Duarte","Campinas":"Marina Reis","Ribeirão":"Otávio Prado","Sorocaba":"Helena Vasquez","S.J.Campos":"Diego Martins","Curitiba-N":"Felipe Neves","P.Alegre":"Luana Becker","Floripa":"André Correia","Londrina":"Patrícia Gomes","Brasília-N":"Carla Mendes","Goiânia":"Rafael Lima","Cuiabá":"Sônia Rocha","Campo Gr.":"Marcelo Dias","Recife-Sul":"José Santos","Salvador":"Tânia Ribeiro","Fortaleza":"Gustavo Pinto","Natal":"Beatriz Nunes","Belém":"Eduardo Farias","Manaus":"Priscila Souza","P.Velho":"Rogério Melo","Macapá":"Aline Barros"};
+function allUnits(){const arr=[];MASTERS.forEach((m,mi)=>m.regionais.forEach((rg,ri)=>rg.unidades.forEach((u,ui)=>arr.push({u,mi,ri,ui,regional:rg.name,master:m.name,macro:REG2MACRO[rg.name]||rg.name}))));return arr;}
+function sbGroups(){return MACRO_ORDER.map((name,i)=>{const units=allUnits().filter(x=>x.macro===name);return {id:"M"+i,name,c:MACRO_C[name],units,tot:units.reduce((s,x)=>s+x.u.v,0)};}).filter(g=>g.units.length);}
+function polar(cx,cy,r,deg){const a=(deg-90)*Math.PI/180;return [cx+r*Math.cos(a),cy+r*Math.sin(a)];}
+function arcD(cx,cy,r0,r1,a0,a1){const large=(a1-a0)>180?1:0;const[x0,y0]=polar(cx,cy,r1,a0),[x1,y1]=polar(cx,cy,r1,a1),[x2,y2]=polar(cx,cy,r0,a1),[x3,y3]=polar(cx,cy,r0,a0);return `M${x0.toFixed(2)} ${y0.toFixed(2)} A${r1} ${r1} 0 ${large} 1 ${x1.toFixed(2)} ${y1.toFixed(2)} L${x2.toFixed(2)} ${y2.toFixed(2)} A${r0} ${r0} 0 ${large} 0 ${x3.toFixed(2)} ${y3.toFixed(2)} Z`;}
+
+/* ============== HELPERS ============== */
+const $=s=>document.querySelector(s);
+const pillCls={Ativo:"p-green",Ativa:"p-green",Resolvido:"p-green","Em Prévia":"p-amber",Pendente:"p-amber","Em andamento":"p-amber","Em Alerta":"p-red",Aberto:"p-red",Inativo:"p-gray"};
+function donut(pct,grade,color,size){size=size||90;const r=32,c=2*Math.PI*r;return `<svg width="${size}" height="${size}" viewBox="0 0 80 80"><circle cx="40" cy="40" r="${r}" fill="none" stroke="var(--line-2)" stroke-width="8"/><circle cx="40" cy="40" r="${r}" fill="none" stroke="${color}" stroke-width="8" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c*(1-pct/100)}" transform="rotate(-90 40 40)"/><text x="40" y="37" text-anchor="middle" font-size="22" font-weight="800" fill="${color}">${grade}</text><text x="40" y="52" text-anchor="middle" font-size="9" fill="var(--muted)">${pct}/100</text></svg>`;}
+function areaChart(data,series){ // series:[{key,color,label}]
+ const W=560,H=180,PL=34,PR=58,PT=12,PB=24;
+ const vals=data.flatMap(d=>series.map(s=>d[s.key]));
+ const mn=Math.min(...vals)*.9,mx=Math.max(...vals)*1.05;
+ const xs=i=>PL+i*(W-PL-PR)/(data.length-1), ys=v=>PT+(H-PT-PB)*(1-(v-mn)/(mx-mn));
+ let g="";[0,.33,.66,1].forEach(f=>{const y=PT+(H-PT-PB)*f;g+=`<line x1="${PL}" y1="${y}" x2="${W-PR}" y2="${y}" stroke="var(--line-2)"/>`;});
+ let paths="",labels="",dots="";
+ series.forEach(s=>{
+   const d=data.map((p,i)=>(i?"L":"M")+xs(i).toFixed(1)+","+ys(p[s.key]).toFixed(1)).join(" ");
+   const area=d+` L${xs(data.length-1)},${H-PB} L${PL},${H-PB} Z`;
+   paths+=`<path d="${area}" fill="${s.color}" opacity="0.07"/><path d="${d}" fill="none" stroke="${s.color}" stroke-width="2.5" stroke-linecap="round"/>`;
+   const last=data[data.length-1][s.key];
+   labels+=`<text x="${W-PR+6}" y="${ys(last)+3}" font-size="10" font-weight="700" fill="${s.color}">${s.label}</text>`;
+   dots+=`<circle cx="${xs(data.length-1)}" cy="${ys(last)}" r="3" fill="${s.color}"/>`;
+ });
+ let xlab=data.map((p,i)=>`<text x="${xs(i)}" y="${H-6}" text-anchor="middle" font-size="9" fill="var(--muted-2)">${p.m}</text>`).join("");
+ return `<svg width="100%" viewBox="0 0 ${W} ${H}">${g}${paths}${dots}${labels}${xlab}</svg>`;
+}
+function growthChart(data){
+ const W=700,H=360,PL=44,PR=20,PT=20,PB=40,yMax=320;
+ const n=data.length;
+ const S=[{key:"l",color:"#2563EB",grad:"gL",label:"Unidades"},{key:"li",color:"#16A34A",grad:"gLi",label:"Licenciados"},{key:"au",color:"#E0892B",grad:"gAu",label:"Autorizados"}];
+ const xs=i=>PL+i*(W-PL-PR)/(n-1), ys=v=>PT+(H-PT-PB)*(1-v/yMax), y0=ys(0);
+ // gridlines + y labels
+ let grid="";[0,80,160,240,320].forEach(v=>{const y=ys(v);grid+=`<line x1="${PL}" y1="${y.toFixed(1)}" x2="${W-PR}" y2="${y.toFixed(1)}" stroke="var(--line-2)"/><text x="${PL-10}" y="${(y+4).toFixed(1)}" text-anchor="end" font-size="11" fill="var(--muted-2)">${v}</text>`;});
+ // defs (gradients)
+ const defs=`<defs>${S.map(s=>`<linearGradient id="${s.grad}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${s.color}" stop-opacity="0.30"/><stop offset="1" stop-color="${s.color}" stop-opacity="0.02"/></linearGradient>`).join("")}</defs>`;
+ // areas + lines + static markers
+ let areas="",lines="",dots="";
+ S.forEach(s=>{
+   const line=data.map((p,i)=>(i?"L":"M")+xs(i).toFixed(1)+","+ys(p[s.key]).toFixed(1)).join(" ");
+   areas+=`<path d="${line} L${xs(n-1).toFixed(1)},${y0.toFixed(1)} L${xs(0).toFixed(1)},${y0.toFixed(1)} Z" fill="url(#${s.grad})"/>`;
+   lines+=`<path d="${line}" fill="none" stroke="${s.color}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>`;
+   dots+=data.map((p,i)=>`<circle cx="${xs(i).toFixed(1)}" cy="${ys(p[s.key]).toFixed(1)}" r="2.6" fill="#fff" stroke="${s.color}" stroke-width="1.6"/>`).join("");
+ });
+ // x labels
+ const xlab=data.map((p,i)=>`<text x="${xs(i).toFixed(1)}" y="${H-14}" text-anchor="middle" font-size="11" fill="var(--muted-2)">${p.m}</text>`).join("");
+ // hover columns: vertical guide + highlighted dots + tooltip
+ const bw=(W-PL-PR)/(n-1);
+ let hov="";
+ data.forEach((p,i)=>{
+   const px=xs(i);
+   const flip=i> n-4; const tw=140, th=26+S.length*20;
+   const tx=flip? px-tw-12 : px+12, ty=PT+10;
+   const bigdots=S.map(s=>`<circle cx="${px.toFixed(1)}" cy="${ys(p[s.key]).toFixed(1)}" r="5.2" fill="${s.color}" stroke="#fff" stroke-width="2"/>`).join("");
+   const rows=S.map(s=>`<div class="chr" style="color:${s.color}">${s.label}: <b>${p[s.key]}</b></div>`).join("");
+   const tip=`<foreignObject x="${tx.toFixed(1)}" y="${ty}" width="${tw}" height="${th+4}"><div xmlns="http://www.w3.org/1999/xhtml" class="cht"><div class="chm">${p.m}</div>${rows}</div></foreignObject>`;
+   hov+=`<g class="hcol"><rect x="${(px-bw/2).toFixed(1)}" y="${PT}" width="${bw.toFixed(1)}" height="${(H-PT-PB).toFixed(1)}" fill="#fff" fill-opacity="0"/><g class="rev"><line x1="${px.toFixed(1)}" y1="${PT}" x2="${px.toFixed(1)}" y2="${(H-PB).toFixed(1)}" stroke="var(--muted-2)" stroke-width="1"/>${bigdots}${tip}</g></g>`;
+ });
+ const svg=`<svg class="gchart" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">${defs}${grid}${areas}${lines}${dots}${xlab}${hov}</svg>`;
+ const legend=`<div class="glg">${S.map(s=>`<span><i style="background:${s.color}"></i>${s.label}</span>`).join("")}</div>`;
+ return svg+legend;
+}
+function hbars(items,max){return items.map(it=>`<div class="hb"><div class="hl"><span>${it.l}</span><b>${it.v}</b></div><div class="bar"><i style="width:${(it.v/(max||100))*100}%;background:${CV[it.c]||'var(--maroon-2)'}"></i></div></div>`).join("");}
+
+/* ============== SCREENS ============== */
+const MACRO={"SP Capital":"Sudeste","SP Interior":"Sudeste","Sudeste":"Sudeste","Sul":"Sul","Centro-Oeste":"Centro-Oeste","Nordeste":"Nordeste","Norte":"Norte"};
+const MACROREGS=[
+ {n:"Sudeste",lojas:122,c:"green",wide:true,spark:[104,109,113,117,120,122]},
+ {n:"Sul",lojas:62,c:"amber",spark:[54,56,58,59,61,62]},
+ {n:"Nordeste",lojas:58,c:"red",spark:[50,52,54,55,57,58]},
+ {n:"Norte",lojas:36,c:"amber",spark:[30,31,33,34,35,36]},
+ {n:"Centro-Oeste",lojas:34,c:"green",spark:[28,30,31,32,33,34]}
+];
+const REG_ORDER=MACROREGS.map(r=>r.n);
+function sparkline(vals,color){
+ const W=150,H=40,mn=Math.min(...vals),mx=Math.max(...vals),pad=5;
+ const xs=i=>pad+i*(W-2*pad)/(vals.length-1), ys=v=>pad+(H-2*pad)*(1-(v-mn)/((mx-mn)||1));
+ const d=vals.map((v,i)=>(i?"L":"M")+xs(i).toFixed(1)+","+ys(v).toFixed(1)).join(" ");
+ return `<svg viewBox="0 0 ${W} ${H}" class="spk" preserveAspectRatio="none"><path d="${d}" fill="none" stroke="${color}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+}
+function regionMap(){
+ return `<div class="card"><div class="between"><div><h3>Mapa de Status por Região</h3><div class="csub">Unidades por região · clique para abrir as lojas</div></div></div>
+  <div class="regmap">${MACROREGS.map(r=>`<button class="rcard${r.wide?' wide':''}" data-regiao="${r.n}"><div class="between"><span class="rn2">${r.n}</span><span class="rdot" style="background:${CV[r.c]}"></span></div><div class="rnum">${r.lojas}</div>${sparkline(r.spark,CV[r.c])}</button>`).join("")}</div></div>`;
+}
+
+const DISTRIB=[
+ {lvl:"Licenciado Lojista (3,5%)",nivel:"Licenciado 3.5",n:312,c:"#E24A3C"},
+ {lvl:"Licenciado (3,0%)",nivel:"Licenciado 3.0",n:640,c:"#6D28D9"},
+ {lvl:"Autorizado (2,7%)",nivel:"Autorizado 2.7",n:980,c:"#1D4ED8"},
+ {lvl:"Autorizado (2,5%)",nivel:"Autorizado 2.5",n:1520,c:"#2563EB"},
+ {lvl:"Autorizado (2,2%)",nivel:"Autorizado 2.2",n:2180,c:"#0E7490"},
+ {lvl:"Autorizado (2,0%)",nivel:"Autorizado 2.0",n:2788,c:"#15803D"},
+ {lvl:"Em Prévia",nivel:"Em Prévia",n:1847,c:"#E0892B"}
+];
+function distStatus(){
+ const total=DISTRIB.reduce((s,d)=>s+d.n,0);
+ const mx=Math.max(...DISTRIB.map(d=>d.n));
+ const nm=Math.ceil(mx/500)*500;
+ const fmt=x=>x.toLocaleString("pt-BR");
+ const ticks=[0,.25,.5,.75,1].map(fr=>`<span>${fmt(Math.round(nm*fr))}</span>`).join("");
+ const grid=[0,1,2,3,4].map(()=>"<i></i>").join("");
+ return `<div class="card" style="margin-bottom:16px"><div class="between"><div><h3>Distribuição por Status</h3><div class="csub">Pessoas por nível hierárquico · passe o mouse para detalhes · clique para abrir em Pessoas</div></div><span class="fresh">${fmt(total)} pessoas</span></div>
+  <div class="distchart">
+   <div class="dgrid">${grid}</div>
+   ${DISTRIB.map(d=>{const w=d.n/nm*100;const pct=(d.n/total*100).toFixed(1).replace(".",",");return `<button class="distrow" data-nivel="${d.nivel}">
+     <span class="dlabel">${d.lvl}<span class="dtick" style="background:${d.c}"></span></span>
+     <span class="dtrack"><span class="dbar" style="width:${w.toFixed(1)}%;background:${d.c}"><span class="dmark" style="background:${d.c}"></span></span><span class="dtip" style="left:${Math.min(Math.max(w,14),80)}%"><b>${d.lvl}</b><span class="dtq">Quantidade: <b>${fmt(d.n)}</b> (${pct}%)</span></span></span>
+     <span class="dval">${fmt(d.n)}</span>
+   </button>`;}).join("")}
+   <div class="daxis"><span class="ax">${ticks}</span></div>
+  </div></div>`;
+}
+
+function perfChart(data){
+ const W=560,H=210,PL=44,PR=16,PT=16,PB=32,color="#E24A3C";
+ const vals=data.map(d=>d.v),mn=Math.min(...vals)*0.9,mx=Math.max(...vals)*1.05;
+ const xs=i=>PL+i*(W-PL-PR)/(data.length-1), ys=v=>PT+(H-PT-PB)*(1-(v-mn)/(mx-mn)), y0=H-PB;
+ let grid="";[0,0.33,0.66,1].forEach(fr=>{const y=(PT+(H-PT-PB)*fr).toFixed(1);grid+=`<line x1="${PL}" y1="${y}" x2="${W-PR}" y2="${y}" stroke="var(--line-2)"/>`;});
+ const lp=data.map((p,i)=>(i?"L":"M")+xs(i).toFixed(1)+","+ys(p.v).toFixed(1)).join(" ");
+ const area=lp+` L${xs(data.length-1).toFixed(1)},${y0} L${xs(0).toFixed(1)},${y0} Z`;
+ const dots=data.map((p,i)=>`<circle cx="${xs(i).toFixed(1)}" cy="${ys(p.v).toFixed(1)}" r="2.6" fill="#fff" stroke="${color}" stroke-width="1.6"/>`).join("");
+ const xlab=data.map((p,i)=>`<text x="${xs(i).toFixed(1)}" y="${H-11}" text-anchor="middle" font-size="10" fill="var(--muted-2)">${p.m}</text>`).join("");
+ const bw=(W-PL-PR)/(data.length-1);
+ let hov="";
+ data.forEach((p,i)=>{const px=xs(i);const prev=i?data[i-1].v:p.v;const dd=prev?((p.v-prev)/prev*100):0;const dtxt=(dd>=0?"+":"")+dd.toFixed(1).replace(".",",")+"%";const dcol=dd>=0?"var(--green)":"var(--red)";const flip=i>data.length-4;const tw=154;const tx=(flip?px-tw-10:px+10).toFixed(1);
+   hov+=`<g class="hcol"><rect x="${(px-bw/2).toFixed(1)}" y="${PT}" width="${bw.toFixed(1)}" height="${(H-PT-PB).toFixed(1)}" fill="#fff" fill-opacity="0"/><g class="rev"><line x1="${px.toFixed(1)}" y1="${PT}" x2="${px.toFixed(1)}" y2="${y0}" stroke="var(--muted-2)" stroke-width="1"/><circle cx="${px.toFixed(1)}" cy="${ys(p.v).toFixed(1)}" r="5" fill="${color}" stroke="#fff" stroke-width="2"/><foreignObject x="${tx}" y="${PT+4}" width="${tw}" height="96"><div xmlns="http://www.w3.org/1999/xhtml" class="cht"><div class="chm">${p.m}</div><div class="chr" style="color:${color}">Vendas: <b>R$ ${p.v} mil</b></div><div class="chr" style="color:var(--blue)">Qtd. vendas: <b>${p.q}</b></div><div class="chr" style="color:${dcol}">Evolução: <b>${dtxt}</b></div></div></foreignObject></g></g>`;});
+ return `<svg class="gchart" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet"><defs><linearGradient id="gPerf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${color}" stop-opacity="0.28"/><stop offset="1" stop-color="${color}" stop-opacity="0.02"/></linearGradient></defs>${grid}<path d="${area}" fill="url(#gPerf)"/><path d="${lp}" fill="none" stroke="${color}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>${dots}${xlab}${hov}</svg>`;
+}
+function Dashboard(){
+ const kpis=[
+  {l:"Lojas ativas",ic:"🏪",bg:"maroon",n:"312",goal:"meta 320",pct:98,c:"green",go:"lojas"},
+  {l:"Consultores",ic:"👥",bg:"green",n:"8.420",goal:"▲ +142 mês",pct:82,c:"green",go:"pessoas?t=cpf"},
+  {l:"Em prévia",ic:"📋",bg:"amber",n:"1.847",goal:"SLA 2,1d · meta 3d",pct:70,c:"green",go:"previas"},
+  {l:"CNPJs",ic:"🏢",bg:"violet",n:"7.103",goal:"▲ +34 mês",pct:60,c:"blue",go:"pessoas?t=cnpj"},
+  {l:"Alertas críticos",ic:"⚠️",bg:"red",n:"23",goal:"requer ação",pct:40,c:"red",alert:true},
+ ];
+ return `
+ <div class="page-h between"><div><h1>Dashboard</h1><p>Visão geral da rede — KPIs, evolução, alertas e ocorrências.</p></div><span class="fresh">🟢 Atualizado há 2h · fonte: Data Lake (Gold)</span></div>
+ <div class="exec"><div class="ico">📊</div><div class="em"><b>Resumo executivo — Junho/2026.</b> A rede conta com <b>312 unidades ativas</b>; <span class="g">8 novas</span> inauguradas no mês. <span class="r">23 alertas críticos</span> exigem atenção — 12 consultores em 4 meses sem venda e 3 CNPJs com mudança societária não comunicada. SLA de prévias em <b>2,1 dias</b> (meta 3d).</div></div>
+ <div class="kpis" style="margin-bottom:16px">${kpis.map(k=>`
+   <div class="kpi ${k.alert?'alert':''}${k.go?' kclick':''}" ${k.go?`data-go="${k.go}"`:''}><div class="kt"><span class="kl">${k.l}</span><span class="ki" style="background:${CB[k.bg]};color:${CV[k.bg]}">${k.ic}</span></div>
+   <div class="kn" style="${k.alert?'color:var(--red)':''}">${k.n}</div><div class="kgoal"><span>${k.goal}</span></div><div class="kbar"><i style="width:${k.pct}%;background:${CV[k.c]}"></i></div></div>`).join("")}</div>
+ <div class="grid" style="grid-template-columns:1.5fr 1fr;margin-bottom:16px">
+   <div class="card"><div class="between"><div><h3>Crescimento da Rede</h3><div class="csub">Últimos 12 meses</div></div></div>${growthChart(GROWTH)}</div>
+   ${regionMap()}
+ </div>
+ ${distStatus()}
+ <div class="grid" style="grid-template-columns:1fr 1.4fr">
+   <div class="card alerts"><h3>Ação imediata</h3><div class="csub">Clique para resolver no contexto</div>
+     ${ALERTS.map(a=>`<div class="a" data-go="${a.go}"><div class="ico" style="background:${CB[a.c]};color:${CV[a.c]}">${a.ic}</div><div class="at">${a.l}</div><div class="cn" style="color:${CV[a.c]}">${a.n}</div><button class="go" data-go="${a.go}">Resolver</button></div>`).join("")}</div>
+   <div class="card"><div class="between"><h3>Últimas Ocorrências</h3><button class="btn s" data-go="logbook">Ver todas →</button></div><div style="margin-top:12px">
+     ${OCC.map(o=>`<div class="occ" style="border-left-color:${CV[o.c]}"><div style="font-size:18px">${o.ic}</div><div class="ot"><div class="ott">${o.titulo}</div><div class="od">${o.loja} · ${o.pessoa}</div><div class="meta"><span class="pill ${pillCls[o.st]||'p-gray'}">${o.st}</span><span>🕐 ${o.tempo}</span></div></div></div>`).join("")}</div></div>
+ </div>`;
+}
+
+function Lojas(q){
+ const reg=q&&q.regiao;
+ const list=reg?LOJAS.filter(l=>MACRO[l.regiao]===reg):LOJAS;
+ const head=reg
+  ? `<div class="page-h between"><div><h1>Unidades <span style="color:var(--muted-2)">·</span> ${reg}</h1><p>${list.length} unidade(s) da região <b>${reg}</b>. Clique em uma linha para abrir o perfil.</p></div><a href="#/lojas" class="btn s">✕ Limpar filtro</a></div>`
+  : `<div class="page-h between"><div><h1>Unidades</h1><p>320 unidades conectadas à rede. Clique em uma linha para abrir o perfil completo.</p></div><span class="fresh">🟢 Atualizado há 2h</span></div>`;
+ const chips=`<div class="chiprow"><a href="#/lojas" class="chip ${reg?'':'on'}">Todas</a>${REG_ORDER.map(n=>`<a href="#/lojas?regiao=${encodeURIComponent(n)}" class="chip ${reg===n?'on':''}">${n}</a>`).join("")}</div>`;
+ const search=`<div class="usearch"><span>🔍</span><input id="unitSearch" type="text" autocomplete="off" placeholder="Buscar unidade por nome, cidade, região ou responsável…"><span class="ushint" id="unitCount">${list.length} unidades</span></div>`;
+ const rows=list.map(l=>`<tr data-unit="${l.id}" data-search="${(l.id+" "+l.nome+" "+l.cidade+" "+(MACRO[l.regiao]||l.regiao)+" "+l.dono+" "+l.tipo+" "+l.st).toLowerCase()}"><td style="color:var(--muted);font-variant-numeric:tabular-nums">${l.id}</td><td><b>${l.nome}</b><div style="font-size:11px;color:var(--muted)">${l.cidade}</div></td><td>${MACRO[l.regiao]||l.regiao}</td><td>${l.dono}</td><td>${l.tipo}</td><td><span class="pill ${pillCls[l.st]||'p-gray'}">${l.st}</span></td><td style="text-align:center"><span class="pill ${l.rl==='A'?'p-green':l.rl==='B'?'p-amber':'p-red'}">${l.rl} · ${l.rating}</span></td></tr>`).join("");
+ const empty=list.length?"":`<tr><td colspan="7"><div class="emptybox">Nenhuma unidade desta região na amostra do protótipo.</div></td></tr>`;
+ return head+chips+search+`<div class="card" style="padding:0;overflow:hidden">
+ <table class="t" id="unitTable"><thead><tr><th>Código</th><th>Unidade</th><th>Região</th><th>Dono (LL)</th><th>Tipo</th><th>Status</th><th style="text-align:center">Rating</th></tr></thead>
+ <tbody>${rows}${empty}<tr id="unitNoResult" style="display:none"><td colspan="7"><div class="emptybox">Nenhuma unidade encontrada para a busca.</div></td></tr></tbody></table></div>`;
+}
+
+const CL_ITEMS=[
+ {t:"Plano de carreira",d:"Existe? Qual é? Foi divulgado ao time? · Formalizar para o front (e-mail) · Comprovação de divulgação na loja"},
+ {t:"Processo de contratação e periodicidade",d:"Existe um processo periódico? Qual formato é aplicado? · Formalizar para o front (e-mail)"},
+ {t:"Acelerador Ademicon (candidatos recebidos)",d:"Treinamento da plataforma/playbook/dash · Quem é o focal/responsável · Enviar planilha para a loja"},
+ {t:"Ava Prévias (transferência de carteira)",d:"Treinamento da plataforma · % de utilização de candidatos · Envio do dash da loja · Cobrança de candidatos com alto volume/baixa conversão"},
+ {t:"Multiplicador",d:"Quem é o focal/responsável (deve ser administrativo, não comercial) · Informar o nome ao Treinamento"},
+ {t:"Devolutiva do BackOffice",d:"Feedback informal sobre SLA de prévias e qualitativo · A Ademicon pode recusar candidatos sem informar o motivo"},
+ {t:"Visita da diretoria (Master/Regional)",d:"Última data · Quem foi? · Levantar necessidades de treinamento para o diretor"},
+ {t:"Normativa Digital",d:"Repassar os conteúdos com a unidade"},
+ {t:"Avaliação 360° da loja e premissas",d:"Devolutiva de rating + planos de ação · Explicar as novas premissas e atualizações"},
+ {t:"Mapa de análise de mercado (estado)",d:"Desejável apresentar"},
+ {t:"Comunicação Visual",d:"Coletar fotos: fachada (totem e selo), recepção (painel, balcão, poltronas), sala de atendimento, sala do gestor, pisos, baia dos consultores, BWC e copa"}
+];
+function switchVtab(t){document.querySelectorAll(".mtabs [data-vtab]").forEach(function(b){b.classList.toggle("on",b.dataset.vtab===t);});document.querySelectorAll(".vtabpane").forEach(function(p){p.style.display=(p.id==="vtab-"+t)?"":"none";});}
+function regVisitaHtml(id){
+ const u=LOJAS.find(x=>x.id===id)||LOJAS[0];
+ const dados=`<div class="msec">📋 Dados da visita</div>
+  <div class="frm">
+   <div class="fld" style="grid-column:span 2"><label>Unidade</label><input value="${u.nome} (${u.id})" readonly></div>
+   <div class="fld"><label>Data da visita</label><input type="date"></div>
+   <div class="fld"><label>Gerente de BU responsável</label><input value="${u.ger}" readonly></div>
+   <div class="fld"><label>Tipo de visita</label><select><option>Rotina</option><option>Estratégica</option><option>Conflituosa</option><option>Follow-up</option></select></div>
+   <label class="chkopt clbig"><input type="checkbox" id="clToggle"> Aplicar checklist da visita <span style="font-weight:500;color:var(--muted)">— habilita a aba “Checklist da Visita”</span></label>
+   <div class="fld" style="grid-column:span 3"><label>Observações gerais</label><textarea rows="2" placeholder="Resumo da visita, pontos fortes e pendências…"></textarea></div>
+   <div class="fld" style="grid-column:span 3"><label>Registro de conflitos / ponto sensível <span class="pill p-violet" style="margin-left:4px">privado</span></label><textarea rows="2" placeholder="Visível apenas para a diretoria (não vai para a devolutiva da loja)…"></textarea></div>
+  </div>
+  <div class="msec">🎯 Follow-up</div>
+  <div class="frm">
+   <div class="fld" style="grid-column:span 2"><label>Plano de ação</label><input placeholder="Ex.: Atualizar fachada e reforçar pós-venda"></div>
+   <div class="fld"><label>Prazo</label><input type="date"></div>
+   <div class="fld"><label>Próxima visita</label><input type="date"></div>
+  </div>`;
+ const checklist=`<div class="msec">🗒 Aplicação do checklist</div>
+  <div class="frm">
+   <div class="fld"><label>Loja</label><input value="${u.nome}" readonly></div>
+   <div class="fld"><label>Licenciado ou gestor</label><input value="${u.dono}" readonly></div>
+   <div class="fld"><label>Data da aplicação</label><input type="date"></div>
+  </div>
+  <div class="msec">Itens a avaliar</div>
+  ${CL_ITEMS.map(it=>`<div class="clitem"><div class="between"><b style="font-size:13px">${it.t}</b><select class="clsel"><option value="">Status —</option><option>Sim</option><option>Não</option><option>N/A</option></select></div><div style="font-size:11.5px;color:var(--muted);margin:3px 0 6px">${it.d}</div><input placeholder="Ações / observações…"></div>`).join("")}
+  <div class="fld" style="margin-top:14px"><label style="font-size:10.5px;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);font-weight:700">Observações adicionais</label><textarea rows="2" placeholder="Registre pontos adicionais da visita…" style="font-family:inherit;font-size:13px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;width:100%;box-sizing:border-box;margin-top:4px"></textarea></div>`;
+ return `
+ <div class="mtabs"><button class="on" data-vtab="dados">Dados da Visita</button><button data-vtab="checklist" id="vtabChecklist" disabled>Checklist da Visita</button></div>
+ <div class="mtab-body">
+  <div id="vtab-dados" class="vtabpane">${dados}</div>
+  <div id="vtab-checklist" class="vtabpane" style="display:none">${checklist}</div>
+ </div>
+ <div class="between" style="margin-top:18px"><span style="font-size:11.5px;color:var(--muted)">● Modo Demo — dados ilustrativos</span><div style="display:flex;gap:8px"><button class="btn s" data-modal-close>Cancelar</button><button class="btn p" data-modal-close>Salvar visita</button></div></div>`;
+}
+function Unidade(id,tab){
+ const u=LOJAS.find(x=>x.id===id)||LOJAS[0]; tab=tab||"visao";
+ const rcolor=u.rl==='A'?'var(--green)':u.rl==='B'?'var(--amber)':'var(--red)';
+ const gnode=GNODES.find(n=>n.t==="loja"&&n.unit===u.id);
+ const goRede=gnode?`rede?view=grafo&sel=${gnode.id}`:"rede?view=grafo";
+ const pf=UNIT.perf, pevol=Math.round((pf[pf.length-1].v-pf[0].v)/pf[0].v*100);
+ const TABS=[["visao","Visão Geral"],["hier","Pessoas & Hierarquia"],["cart","💼 Carteira"],["penalty","💰 Comissão & Penalty"],["hist","🎬 Histórico"],["log","Logbook"],["s360","Avaliação 360"]];
+ let body="";
+ if(tab==="visao"){
+  const lls=UNIT.soc.filter(s=>s.role==="Licenciado Lojista");
+  const eq=UNIT.equipe;
+  const eqc=eq.filter(p=>p.nivel!=="Licenciado 3.0"&&p.nivel!=="Autorizado 2.5");
+  const NLABEL={"Licenciado 3.5 · Dono (LL)":"Dono da loja (LL)","Licenciado 3.0":"Licenciado 3,0%","Autorizado 2.5":"Autorizado 2,5%","Autorizado 2.2":"Autorizado 2,2%","Autorizado 2.0":"Autorizado 2,0%"};
+  const NORDER=["Licenciado 3.5 · Dono (LL)","Licenciado 3.0","Autorizado 2.5","Autorizado 2.2","Autorizado 2.0"];
+  const cgroups=NORDER.map(k=>({key:k,label:NLABEL[k],ppl:eqc.filter(p=>p.nivel===k)})).filter(g=>g.ppl.length);
+  const nLL=eqc.filter(p=>p.nivel.indexOf("Dono (LL)")>=0).length;
+  const nGestor=eqc.filter(p=>p.nivel.indexOf("Licenciado 3.0")>=0).length;
+  const nAut=eqc.filter(p=>p.nivel.indexOf("Autorizado")>=0).length;
+  const compHtml=cgroups.map(g=>{const isLL=g.key.indexOf("LL")>=0;const n=g.ppl.length;const lbl=n>1?g.label.replace(/^Autorizado /,"Autorizados ").replace(/^Licenciado 3/,"Licenciados 3"):g.label;const names=isLL?u.dono:g.ppl.map(p=>p.n).join(", ");return `<div class="soc soclink" data-nivel="${g.key.split(" · ")[0]}"><div class="si" style="background:${isLL?'var(--maroon-bg)':'#EFEAE4'}">${isLL?'👑':'👤'}</div><div class="sn"><div class="snn">${lbl}</div><div class="snc">${names}</div></div><span class="pill ${isLL?'p-maroon':'p-gray'}">${n}</span><span class="socchev">›</span></div>`;}).join("");
+  body=`<div class="grid" style="grid-template-columns:1fr 1fr;margin-bottom:16px">
+   <div class="card"><h3>Composição Societária</h3><div class="csub">Licenciado(s) Lojista(s) (LL) desta unidade</div>
+     ${lls.map(s=>`<div class="soc"><div class="si" style="background:var(--maroon-bg)">👤</div><div class="sn"><div class="snn">${u.dono}</div><div class="snc">${s.n} · ${s.cnpj}</div></div><span class="pill p-violet">Licenciado Lojista</span><span class="pill ${pillCls[s.st]||'p-gray'}">${s.st}</span></div>`).join("")}
+     <div style="margin-top:10px;font-size:12px;color:var(--muted)">Apenas os Licenciados Lojistas são exibidos — o dono responde pela unidade.</div></div>
+   <div class="card"><h3>Performance Comercial</h3><div class="csub">Vendas mensais (R$ mil) — 12 meses · <span style="color:var(--green);font-weight:700">▲ +${pevol}%</span> · passe o mouse nos pontos</div>${perfChart(UNIT.perf)}</div>
+  </div>
+  <div class="grid" style="grid-template-columns:1fr 1fr;margin-bottom:16px">
+   <div class="card"><h3>Score de Avaliação 360°</h3><div class="csub">Trimestral · destaque para o que precisa de atenção</div>${hbars(UNIT.s360,100)}</div>
+   <div class="card"><h3>Cascata de Comissão</h3><div class="csub">Como os 3,5% por PV se distribuem (por subtração) · nº de pessoas por faixa</div>
+     <div class="casc"><div class="seg" style="background:#D9892B"><div class="sp">2,0%</div><div class="sl">Autorizado</div><div class="sq">👥 ${nAut}</div></div><div class="seg" style="background:var(--green)"><div class="sp">0,2%</div><div class="sl">Gestor</div><div class="sq">👥 ${nGestor}</div></div><div class="seg" style="background:var(--maroon-2)"><div class="sp">1,3%</div><div class="sl">Licenciado Lojista</div><div class="sq">👥 ${nLL}</div></div></div>
+     <div style="margin-top:14px;font-size:12.5px;color:var(--muted)">Total pago pela Ademicon: <b style="color:var(--ink)">3,5%</b> (imutável — apenas a divisão varia).</div>
+     <div style="margin-top:14px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted-2)">Composição da unidade · ${eqc.length} pessoas</div>
+     ${compHtml}</div>
+  </div>`;
+ } else if(tab==="hier"){
+  body=`<div class="card"><div class="between"><div><h3>Equipe Comercial &amp; Hierarquia</h3><div class="csub">${u.cons} consultores nesta unidade</div></div><button class="btn s" data-go="${goRede}">🕸 Ver no grafo</button></div><div class="tree" style="margin-top:8px">
+   ${UNIT.equipe.map(p=>`<div class="tn" style="padding-left:${p.ind*22}px">${p.ind?'<span class="branch">└</span>':''}<div class="av" style="background:${CB[p.c]};color:${CV[p.c]}">${p.n.split(" ").map(w=>w[0]).slice(0,2).join("")}</div><div class="nn"><div class="nnn">${p.n}</div><div class="nnm">${p.m}</div></div><span class="pill ${p.c==='violet'?'p-violet':p.c==='blue'?'p-blue':'p-green'}">${p.nivel}</span></div>`).join("")}</div></div>`;
+ } else if(tab==="hist"){
+  body=`<div class="card"><h3>🎬 Filme da Unidade</h3><div class="csub">Linha do tempo histórica — a "evolução", não a "fotografia" (Dor nº1 da diretoria)</div><div class="tl" style="margin-top:14px">
+   ${UNIT.timeline.map(e=>`<div class="tlitem"><div class="node" style="background:#fff;color:${e.c}">${e.ic}</div><div class="box"><div class="bh"><div class="bt">${e.t}</div><div class="bd" style="color:${e.c}">${e.date}</div></div><div class="bx">${e.d}</div></div></div>`).join("")}</div></div>`;
+ } else if(tab==="log"){
+  body=`<div class="card"><div class="between"><h3>Logbook da Unidade</h3><button class="btn p">+ Nova ocorrência</button></div><div style="margin-top:12px">
+   ${UNIT.logbook.map(o=>`<div class="occ" style="border-left-color:${CV[o.c]}"><div class="ot"><div class="ott">${o.titulo}</div><div class="od">${o.pessoa} · ${o.tempo}</div><div class="meta"><span class="pill ${o.c==='red'?'p-red':o.c==='green'?'p-green':'p-violet'}">${o.t}</span><span class="pill ${pillCls[o.st]||'p-gray'}">${o.st}</span></div></div></div>`).join("")}</div></div>`;
+ } else if(tab==="s360"){
+  body=`<div class="grid" style="grid-template-columns:1fr 2fr"><div class="card" style="text-align:center"><h3 style="margin-bottom:14px">Nota Geral</h3>${donut(u.rating,u.rl,rcolor,140)}<div style="margin-top:10px;font-size:13px;color:var(--muted)">Rating ${u.rl} · desde 2023</div></div>
+   <div class="card"><h3>Dimensões avaliadas</h3><div class="csub">Coleta: 70% automática (Data Lake) · 30% manual (a reduzir)</div>${hbars(UNIT.s360,100)}
+   <div class="banner" style="margin:14px 0 0"><span>⚠️</span><div><b>Comunicação Visual em 58.</b> Fotos da fachada desatualizadas há 90 dias — abrir pendência para a loja.</div></div></div></div>`;
+ } else if(tab==="cart"){
+  const mine=CARTEIRAS.filter(x=>x.loja===u.nome);
+  const rows=mine.length?mine:[{pv:"PV-1"+u.id.slice(1),titular:"Loja (LL "+u.dono+")",clientes:Math.round(u.cons*42),valor:"R$ "+(u.cons*1.6).toFixed(1).replace(".",",")+" mi",st:"Ativa",c:"green"}];
+  const totCli=rows.reduce((a,x)=>a+x.clientes,0);
+  body=`
+  <div class="kpi-mini"><div class="m"><div class="mn">${totCli.toLocaleString("pt-BR")}</div><div class="ml">Clientes sob gestão</div></div><div class="m"><div class="mn" style="color:var(--maroon-2)">${rows[0].valor}</div><div class="ml">Valor da carteira</div></div><div class="m"><div class="mn">${rows.length}</div><div class="ml">PVs / carteiras</div></div><div class="m"><div class="mn" style="color:var(--amber)">${u.st==="Em Alerta"?1:0}</div><div class="ml">Transferências pendentes</div></div></div>
+  <div class="grid" style="grid-template-columns:1.5fr 1fr">
+   <div class="card" style="padding:0;overflow:hidden"><div style="padding:16px 18px 4px"><h3>Carteiras por PV</h3><div class="csub">Titularidade sempre da unidade — permanece mesmo com a saída do consultor</div></div>
+    <table class="t"><thead><tr><th>PV</th><th>Titular</th><th style="text-align:right">Clientes</th><th style="text-align:right">Valor</th><th>Status</th></tr></thead>
+    <tbody>${rows.map(x=>`<tr><td><b>${x.pv}</b></td><td style="font-size:12.5px">${x.titular}</td><td style="text-align:right;font-weight:700">${x.clientes.toLocaleString("pt-BR")}</td><td style="text-align:right">${x.valor}</td><td><span class="pill ${x.c==="green"?"p-green":x.c==="amber"?"p-amber":"p-red"}">${x.st}</span></td></tr>`).join("")}</tbody></table></div>
+   <div class="card"><h3>Transferências &amp; redistribuição</h3><div class="csub">Aceite do LL registrado — fim da planilha NAC</div>
+    ${CART_TRANSF.map(t=>`<div class="pnl"><div style="font-size:12.5px;color:var(--muted)">De</div><b style="font-size:13px">${t.de}</b><div style="font-size:16px;color:var(--muted-2);margin:2px 0">↓ ${t.clientes} clientes</div><div style="font-size:12.5px;color:var(--muted)">Para</div><b style="font-size:13px">${t.para}</b><div class="between" style="margin-top:8px"><span class="pill ${t.c==="amber"?"p-amber":"p-red"}">${t.st}</span><span style="font-size:11.5px;color:var(--muted-2)">🕐 ${t.data}</span></div></div>`).join("")}
+    <div class="banner" style="margin:4px 0 0;background:var(--green-bg);border-color:#bfe3cd"><span>✓</span><div style="color:var(--ink-2)">Titularidade <b style="color:var(--green)">Loja↔PV↔Carteira</b> como entidade de primeira classe no Data Lake.</div></div>
+   </div>
+  </div>`;
+ } else if(tab==="penalty"){
+  const mine=PENALTIES.filter(p=>u.nome.indexOf(p.primaria)>=0);
+  const enc=mine.filter(p=>p.st==="Encerrando").length;
+  body=`
+  <div class="kpi-mini"><div class="m"><div class="mn">${mine.length}</div><div class="ml">Penaltis a favor da unidade</div></div><div class="m"><div class="mn" style="color:var(--maroon-2)">R$ ${(mine.length*2.1).toFixed(1).replace(".",",")}k</div><div class="ml">Retido este mês</div></div><div class="m"><div class="mn" style="color:var(--amber)">${enc}</div><div class="ml">Vigências encerrando</div></div></div>
+  <div class="grid" style="grid-template-columns:1.3fr 1fr">
+   <div class="card"><h3>Penaltis de Transferência — vigência de 24 meses</h3><div class="csub">0,5% à Loja Primária (${u.nome}) · contagem automática</div>
+    ${mine.length?mine.map(p=>`<div class="pnl"><div class="between"><div><b style="font-size:13.5px">${p.consultor}</b> <span style="font-size:11.5px;color:var(--muted)">${p.cpf}</span><div style="font-size:12px;color:var(--muted);margin-top:2px">Primária <b style="color:var(--ink-2)">${p.primaria}</b> ← atual ${p.atual} · ${p.pct}% · ${p.valor}</div></div><span class="pill ${p.c==='amber'?'p-amber':p.c==='green'?'p-green':'p-gray'}">${p.st}</span></div><div class="between" style="margin-top:8px;gap:10px"><div style="flex:1">${meter(p.mes/24*100, p.c==='green'?'var(--green)':p.c==='gray'?'var(--muted-2)':'var(--amber)')}</div><span style="font-size:11.5px;font-weight:700;color:var(--muted);white-space:nowrap">mês ${p.mes}/24</span></div></div>`).join(""):'<div class="emptybox">Nenhum penalty ativo com esta unidade como loja primária.</div>'}
+   </div>
+   <div class="card"><h3>Loja Primária automática</h3><div class="csub">Derivada da 1ª matrícula — elimina o conflito manual (P03)</div>
+    <div class="soc"><div class="si" style="background:var(--maroon-bg)">🏠</div><div class="sn"><div class="snn">${u.dono}</div><div class="snc">Licenciado Lojista · 1ª matrícula desta unidade</div></div><span class="pill p-green">Auto</span></div>
+    ${mine.map(p=>`<div class="soc"><div class="si" style="background:var(--maroon-bg)">🏠</div><div class="sn"><div class="snn">${p.consultor}</div><div class="snc">1ª matrícula: ${p.primaria} → primária permanente</div></div><span class="pill p-green">Auto</span></div>`).join("")}
+    <div class="banner" style="margin:12px 0 0"><span>⚙️</span><div>Motor de Comissão &amp; Penalty conta os 24 meses automaticamente e dispara alertas de início/fim.</div></div>
+   </div>
+  </div>`;
+ }
+ return `
+ <div class="uhead"><div class="top2"><div>
+   <h1>${u.nome} <span class="pill ${pillCls[u.st]||'p-gray'}">${u.st}</span></h1>
+   <div class="facts">
+     <div class="f"><div class="fl">Localização</div><div class="fv">📍 ${u.cidade}</div></div>
+     <div class="f"><div class="fl">Dono (LL)</div><div class="fv">👤 ${u.dono}</div></div>
+     <div class="f"><div class="fl">Gerente da BU</div><div class="fv">${u.ger}</div></div>
+     <div class="f"><div class="fl">Abertura</div><div class="fv">📅 ${u.desde}</div></div>
+     <div class="f"><div class="fl">Código</div><div class="fv">${u.id}</div></div>
+   </div>
+   <div class="actions"><button class="btn p" data-regvisita="${u.id}">Registrar Visita</button><button class="btn s" data-go="${goRede}">🕸 Ver no Grafo</button><button class="btn s">📊 Exportar relatório</button></div>
+ </div><div class="donut-wrap">${donut(u.rating,u.rl,rcolor,110)}<div class="dl">Rating ${u.rl}</div></div></div></div>
+ <div class="tabs">${TABS.map(t=>`<button data-tab="${t[0]}" data-unit="${u.id}" class="${tab===t[0]?'on':''}">${t[1]}</button>`).join("")}</div>
+ ${body}`;
+}
+
+function Pessoas(q){
+ const t=(q&&q.t)||"cpf";
+ const nivel=(t==="cpf")?(q&&q.nivel):null;
+ const fpill=nivel?` <span class="pill p-maroon" style="vertical-align:middle;font-size:12px">${nivel}</span>`:"";
+ const right=nivel?`<a href="#/pessoas?t=cpf" class="btn s">✕ Limpar filtro</a>`:`<span class="fresh">🟢 Fonte: Data Lake</span>`;
+ const head=`
+ <div class="page-h between"><div><h1>Pessoas &amp; Empresas${fpill}</h1><p>Visão unificada de CPFs e CNPJs — o que hoje exige consultar 3 sistemas, em um só lugar. Clique numa linha para abrir a visão consolidada (resolve o G3).</p></div>${right}</div>
+ <div class="chiprow"><a href="#/pessoas?t=cpf" class="chip ${t==='cpf'?'on':''}">👤 Pessoas (CPF)</a><a href="#/pessoas?t=cnpj" class="chip ${t==='cnpj'?'on':''}">🏢 Empresas (CNPJ)</a></div>`;
+ if(t==='cnpj'){
+  return head+`<div class="card" style="padding:0;overflow:hidden"><table class="t"><thead><tr><th>Razão social</th><th>CNPJ</th><th>Loja</th><th>Papel</th><th style="text-align:center">Sócios</th><th>Status</th></tr></thead><tbody>${CNPJS.map(c=>`<tr data-cnpj="${c.id}"><td><b>${c.razao}</b><div style="font-size:11px;color:var(--muted)">${c.pv}</div></td><td style="color:var(--muted)">${c.cnpj}</td><td>${c.loja}</td><td>${c.papel}</td><td style="text-align:center;font-weight:700">${c.socios}</td><td><span class="pill ${c.nc==='green'?'p-green':c.nc==='amber'?'p-amber':'p-red'}">${c.st}</span></td></tr>`).join("")}</tbody></table></div>`;
+ }
+ const list=nivel?PESSOAS.filter(p=>p.nivel===nivel):PESSOAS;
+ const rows=list.length?list.map(p=>`<tr data-person="${p.id}"><td style="display:flex;gap:10px;align-items:center"><span class="av" style="width:32px;height:32px;border-radius:50%;background:${CB[p.nc]};color:${CV[p.nc]};display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px">${p.nome.split(" ").map(w=>w[0]).slice(0,2).join("")}</span><div><b>${p.nome}</b><div style="font-size:11px;color:var(--muted)">${p.mat}</div></div></td><td style="color:var(--muted)">${p.cpf}</td><td><span class="pill ${p.nc==='violet'?'p-violet':p.nc==='blue'?'p-blue':p.nc==='amber'?'p-amber':'p-green'}">${p.nivel}</span></td><td>${p.loja}</td><td style="text-align:center"><b>${p.emp}</b></td><td><span class="pill ${pillCls[p.st]||'p-gray'}">${p.st}</span></td></tr>`).join(""):`<tr><td colspan="6"><div class="emptybox">Nenhuma pessoa no nível “${nivel}” na amostra do protótipo.</div></td></tr>`;
+ return head+`<div class="card" style="padding:0;overflow:hidden"><table class="t"><thead><tr><th>Nome / Matrícula</th><th>CPF</th><th>Nível</th><th>Loja principal</th><th style="text-align:center">Empresas</th><th>Status</th></tr></thead>
+ <tbody>${rows}</tbody></table></div>`;
+}
+
+function estadosOf(reg){ if(!reg||reg==="Todas")return []; return Object.keys(GEO[reg]||{}).sort((a,b)=>a.localeCompare(b,"pt")); }
+function cidadesOf(reg,uf){ if(!reg||reg==="Todas"||!uf)return []; return Object.keys((GEO[reg]||{})[uf]||{}).sort((a,b)=>a.localeCompare(b,"pt")); }
+function unidadesOf(reg,uf,cid){ if(!reg||reg==="Todas"||!uf||!cid)return []; return (((GEO[reg]||{})[uf]||{})[cid]||[]).slice().sort((a,b)=>a.localeCompare(b,"pt")); }
+function selVal(id){const el=document.getElementById(id);return el?el.value:"";}
+function fillSelect(id,arr,placeholder){const el=document.getElementById(id);if(!el)return;el.innerHTML=`<option value="">${placeholder}</option>`+arr.map(o=>`<option value="${o}">${o}</option>`).join("");el.disabled=arr.length===0;}
+function kanHtml(pred){
+ pred=pred||function(){return true;};
+ return `<div class="kanwrap">${Object.entries(KAN).map(([col,o])=>{const cards=o.cards.filter(pred);return `<div class="kcol"><div class="kchead" style="color:${CV[o.c]};border-color:${CV[o.c]}"><span>${col}</span><span class="ct">${cards.length}</span></div>${cards.map(c=>`<div class="kcard2" data-prev="${c.id}" style="border-top-color:${CV[o.c]}"><div class="kf" style="margin-bottom:6px"><span class="pill ${c.t==='PF'?'p-blue':'p-violet'}">${c.t}</span><span class="pill ${c.s==='g'?'p-green':c.s==='a'?'p-amber':'p-red'}">${c.sla}d</span></div><div class="kn2">${c.n}</div><div class="kl2">${c.loja}</div><div class="kf"><span class="ka">Analista ${c.a}</span></div></div>`).join("")}</div>`;}).join("")}</div>`;
+}
+function previaPred(){
+ const reg=selVal("filRegional"),uf=selVal("filEstado"),cid=selVal("filCidade"),un=selVal("filUnidade");
+ return function(cd){ if(!un&&!cid&&!uf&&(!reg||reg==="Todas"))return true; const g=UNIT2GEO[cd.loja]; if(!g)return false; if(un)return cd.loja===un; if(cid)return g.cid===cid; if(uf)return g.uf===uf; return g.reg===reg; };
+}
+function applyPreviaFilter(){
+ const pred=previaPred();
+ const cont=document.getElementById("kanContainer"); if(cont)cont.innerHTML=kanHtml(pred);
+ const reg=selVal("filRegional"),uf=selVal("filEstado"),cid=selVal("filCidade"),un=selVal("filUnidade");
+ const total=Object.values(KAN).reduce((s,o)=>s+o.cards.filter(pred).length,0);
+ const note=document.getElementById("filNote"); if(note){const path=[reg&&reg!=="Todas"?reg:null,uf,cid,un].filter(Boolean).join(" › ");note.innerHTML=`<b>${total}</b> prévia(s) no filtro${path?` · ${path}`:" · todas as unidades"}`;}
+}
+function clearPreviaFilter(){
+ const r=document.getElementById("filRegional"); if(r)r.value="Todas";
+ fillSelect("filEstado",[],"Todos os estados"); fillSelect("filCidade",[],"Todas as cidades"); fillSelect("filUnidade",[],"Todas as unidades");
+ const cont=document.getElementById("kanContainer"); if(cont)cont.innerHTML=kanHtml();
+ const note=document.getElementById("filNote"); if(note)note.innerHTML="";
+}
+const _CPF=["435.999.788-40","129.734.799-40","051.079.311-89","324.556.907-11","789.223.145-06","512.884.330-77","640.117.882-59","233.905.471-08","908.665.219-32","117.443.660-85"];
+const _RG=["40.936.565-8","32.114.905-1","28.774.330-2","44.902.117-5","19.556.884-0","51.223.907-4","63.118.550-7","15.778.394-6","26.881.005-3","37.992.116-8"];
+const _NASC=["04/07/1995","25/07/1985","03/11/1994","18/02/1988","30/09/1992","07/05/1983","21/12/1996","14/08/1991","09/06/1987","27/01/1993"];
+const _NASCID=["Cosmópolis/SP","Salvador/BA","Campo Verde/MT","São Paulo/SP","Recife/PE","Fortaleza/CE","Goiânia/GO","Belém/PA","Manaus/AM","Natal/RN"];
+const _CIVIL=["Solteiro","Casado","Solteira","Divorciado","Casada","Solteiro","União estável","Solteira","Casado","Solteiro"];
+const _CONJ=["—","Roberta Nunes","—","—","Marcos Alves","—","—","—","Helena Dias","—"];
+const _REG=["08/06/2026","05/06/2026","19/05/2026","12/06/2026","02/06/2026","28/05/2026","15/06/2026","10/06/2026","03/06/2026","20/06/2026"];
+const _EMAIL=["fernanda.costa@gmail.com","contato@alphaconsult.com.br","ricardo.souza@gmail.com","gamma.invest@outlook.com","patricia.alves@gmail.com","delta.corp@gmail.com","lucas.rodrigues@gmail.com","camila.santos@gmail.com","epsilon.sol@gmail.com","zeta.neg@gmail.com"];
+const _TELF=["(19) 3324-1762","(71) 3255-0091","(65) 3611-7845","(11) 3901-2233","(81) 3444-7788","(85) 3277-1120","(62) 3355-9080","(91) 3220-4411","(92) 3600-7766","(84) 3210-9933"];
+const _CEL=["(19) 99241-7621","(71) 99880-1200","(65) 99771-3300","(11) 99123-4567","(81) 99655-8842","(85) 99333-2211","(62) 99870-5544","(91) 99120-8833","(92) 99441-2200","(84) 99500-6677"];
+const _LOJISTA=["NXJ INTERMEDIACAO DE NEGOCIOS","ALPHA CONSULTORIA LTDA","SILVA & SOUZA ME","GAMMA INVESTIMENTOS LTDA","NOGUEIRA INTERMEDIACOES","DELTA CORP ME","PERENE EMPREENDIMENTOS","BELÉM NEGOCIOS LTDA","EPSILON SOLUCOES ME","ZETA NEGOCIOS ME"];
+const _MATAVA=["7730049614","—","6621009930","—","—","—","5540118820","9910447700","8820551133","—"];
+const _CEP=["13140-000","40010-000","78840-000","01310-100","50010-000","60110-000","74000-000","66010-000","69005-000","59010-000"];
+const _LOGR=["Rua das Palmeiras","Av. Sete de Setembro","Rua Projetada A","Av. Paulista","Rua do Sol","Av. Beira-Mar","Rua 24 de Outubro","Av. Nazaré","Rua Eduardo Ribeiro","Av. Rio Branco"];
+const _NUM=["245","1020","57","1578","330","900","412","210","688","145"];
+const _REF=["Próx. à praça central","Ao lado do mercado","Em frente à escola","Esq. c/ Rua Augusta","Próx. ao shopping","Ao lado do posto","Próx. à rodoviária","Em frente ao banco","Próx. à igreja","Ao lado da farmácia"];
+const STATUSMAP={"Documental":{t:"Assinar termo",c:"amber"},"Retificação":{t:"Retificação de documentos PF",c:"blue"},"Jurídico":{t:"Em análise jurídica",c:"violet"},"Aprovado":{t:"Processo finalizado",c:"green"},"Reprovado":{t:"Prévia negada",c:"red"}};
+function previaList(){const a=[];Object.entries(KAN).forEach(([col,o])=>o.cards.forEach(c=>a.push(Object.assign({col:col,cc:o.c},c))));return a;}
+function findPrevia(id){return previaList().find(x=>x.id===id);}
+function previaIdx(id){const i=previaList().findIndex(x=>x.id===id);return i<0?0:i;}
+function sidebarHtml(cd){
+ const i=previaIdx(cd.id); const st=STATUSMAP[cd.col]; const uf=(_NASCID[i]||"/SP").split("/")[1];
+ return `<div class="pvside-h">👤 Candidato</div>
+  <div class="pvside-name">${cd.n.toUpperCase()}</div>
+  <div class="pvside-grid"><div><div class="dk">CPF</div><div class="dv">${_CPF[i]}</div></div><div><div class="dk">Data do registro</div><div class="dv">${_REG[i]}</div></div></div>
+  <div class="pvside-link">🚫 Negar pedido de prévia</div>
+  <div class="pvside-grid"><div><div class="dk">Matrícula AVA</div><div class="dv"><span class="dot-red"></span>${_MATAVA[i]}</div></div><div><div class="dk">Senha</div><div class="dv">••••• ⧉</div></div></div>
+  <div class="pvside-sec">🗂 Atuação</div>
+  <div class="pvside-grid"><div><div class="dk">BU</div><div class="dv">BU3</div></div><div><div class="dk">Área de atuação</div><div class="dv">${cd.loja}</div></div></div>
+  <div style="margin-bottom:12px"><div class="dk">Lojista</div><div class="dv">${_LOJISTA[i]} ⧉</div></div>
+  <div class="pvside-grid"><div><div class="dk">ID Pessoa PJ</div><div class="dv">${cd.t==="PJ"?"PJ-"+(1000+i):"—"}</div></div><div><div class="dk">ID Pessoa Sócio</div><div class="dv">${cd.t==="PJ"?"SO-"+(2000+i):"—"}</div></div></div>
+  <div class="pvside-sec">Status</div>
+  <span class="statusbadge sb-${st.c}">${st.t}</span>
+  <button class="btn s" style="width:100%;justify-content:center;margin-top:14px">📄 Detalhes do termo</button>
+  <button class="btn s" style="width:100%;justify-content:center;margin-top:8px">📑 Detalhes do contrato</button>`;
+}
+function dadosTab(cd){
+ const i=previaIdx(cd.id); const uf=(_NASCID[i]||"/SP").split("/")[1]; const cid=(_NASCID[i]||"/").split("/")[0]; const gEnd=UNIT2GEO[cd.loja]||{cid:cd.loja,uf:uf};
+ return `<div class="msec">👤 Dados pessoais</div>
+  <div class="pvgrid">
+   <div class="di" style="grid-column:span 3"><div class="dk">Nome completo</div><div class="dv">${cd.n.toUpperCase()}</div></div>
+   <div class="di"><div class="dk">CPF</div><div class="dv">${_CPF[i]}</div></div>
+   <div class="di"><div class="dk">RG</div><div class="dv">${_RG[i]}</div></div>
+   <div class="di"><div class="dk">Órgão Emissor</div><div class="dv">SSP/${uf}</div></div>
+   <div class="di"><div class="dk">Data de nascimento</div><div class="dv">${_NASC[i]}</div></div>
+   <div class="di"><div class="dk">Nacionalidade</div><div class="dv">Brasileiro(a)</div></div>
+   <div class="di"><div class="dk">Profissão</div><div class="dv">Consultor(a) de Vendas</div></div>
+   <div class="di"><div class="dk">Cidade de nascimento</div><div class="dv">${cid}</div></div>
+   <div class="di"><div class="dk">Estado de nascimento</div><div class="dv">${uf}</div></div>
+   <div class="di"><div class="dk">Unidade de atendimento</div><div class="dv">${cd.loja}</div></div>
+   <div class="di"><div class="dk">Estado civil</div><div class="dv">${_CIVIL[i]}</div></div>
+   <div class="di"><div class="dk">Nome do cônjuge</div><div class="dv">${_CONJ[i]}</div></div>
+  </div>
+  <div class="msec">📞 Informação de contato</div>
+  <div class="pvgrid">
+   <div class="di"><div class="dk">E-mail</div><div class="dv">${_EMAIL[i]}</div></div>
+   <div class="di"><div class="dk">Telefone fixo</div><div class="dv">${_TELF[i]}</div></div>
+   <div class="di"><div class="dk">Celular</div><div class="dv">${_CEL[i]}</div></div>
+  </div>
+  <div class="msec">📍 Endereço</div>
+  <div class="pvgrid">
+   <div class="di"><div class="dk">CEP</div><div class="dv">${_CEP[i]}</div></div>
+   <div class="di" style="grid-column:span 2"><div class="dk">Endereço</div><div class="dv">${_LOGR[i]}</div></div>
+   <div class="di"><div class="dk">Número</div><div class="dv">${_NUM[i]}</div></div>
+   <div class="di" style="grid-column:span 2"><div class="dk">Referência</div><div class="dv">${_REF[i]}</div></div>
+   <div class="di"><div class="dk">Cidade</div><div class="dv">${gEnd.cid}</div></div>
+   <div class="di"><div class="dk">Estado</div><div class="dv">${gEnd.uf}</div></div>
+  </div>`;
+}
+function docsFor(cd){
+ const mEnd="A IA identificou comprovante fora do padrão: aceitos contas de água, luz, gás, telefone/internet em nome do candidato(a) ou parente de 1º grau.";
+ const mComp="Documento ilegível ou com dados divergentes do cadastro — a IA solicitou reenvio.";
+ if(cd.col==="Aprovado") return [["RG/CNH","conforme","Dados legíveis e compatíveis com o cadastro.",99],["CPF","conforme","CPF válido e conferido na Receita.",100],["Comprovante de Endereço","conforme","Endereço confere com o cadastro.",97],["Documentos Complementares","conforme","Documentação completa e válida.",95]];
+ if(cd.col==="Retificação"||cd.col==="Reprovado") return [["RG/CNH","conforme","Dados legíveis e compatíveis.",98],["CPF","conforme","CPF válido e conferido.",100],["Comprovante de Endereço","nao",mEnd,88],["Documentos Complementares","nao",mComp,82]];
+ if(cd.col==="Jurídico") return [["RG/CNH","conforme","Aprovado pela IA.",99],["CPF","conforme","Aprovado pela IA.",100],["Comprovante de Endereço","conforme","Aprovado pela IA.",96],["Documentos Complementares","analise","IA processando o documento…",0]];
+ return [["RG/CNH","analise","IA analisando o documento…",0],["CPF","analise","IA analisando o documento…",0],["Comprovante de Endereço","analise","Aguardando envio para análise.",0],["Documentos Complementares","analise","Aguardando envio para análise.",0]];
+}
+function docsTab(cd){
+ const docs=docsFor(cd);
+ const consultas=[["CNJ","green"],["CNDT","green"],["Google","green"],["Serasa",cd.col==="Documental"?"amber":"green"]];
+ const okCount=docs.filter(d=>d[1]==="conforme").length;
+ const vb=function(v){return v==="conforme"?'<span class="statusbadge sb-green">✓ Conforme</span>':v==="nao"?'<span class="statusbadge sb-red">✗ Não conforme</span>':'<span class="statusbadge sb-amber ia-pulse">⟳ Analisando…</span>';};
+ return `<div class="ia-banner"><span class="ia-ic">🤖</span><div><b>Validação automática por IA.</b> Cada documento é analisado e validado quanto à conformidade (legibilidade, dados e padrão) — sem etapa manual. <b style="color:var(--green)">${okCount}/${docs.length}</b> conformes.</div></div>
+  <div style="font-size:13px;margin:10px 0 12px">Situação Newcon: <b><span class="dot-red"></span> Sem Cadastro</b></div>
+  <div class="msec">🗂 Documentos</div>
+  <table class="t doctable"><thead><tr><th>Documento</th><th>Validação IA</th><th>Análise da IA</th><th style="text-align:center">Confiança</th></tr></thead>
+  <tbody>${docs.map(dc=>`<tr><td><span style="color:var(--muted-2)">⬇</span> ${dc[0]}</td><td>${vb(dc[1])}</td><td style="font-size:11.5px;color:var(--muted)">${dc[2]}</td><td style="text-align:center;font-weight:700;color:${dc[1]==="conforme"?"var(--green)":dc[1]==="nao"?"var(--red)":"var(--muted-2)"}">${dc[3]?dc[3]+"%":"—"}</td></tr>`).join("")}</tbody></table>
+  <div class="msec">☁ Consultas automáticas</div>
+  <table class="t doctable"><thead><tr><th>Plataforma</th><th style="text-align:center">Situação</th></tr></thead>
+  <tbody>${consultas.map(cs=>`<tr><td><span style="color:var(--muted-2)">⬇</span> ${cs[0]}</td><td style="text-align:center"><span class="sitdot ${cs[1]}"></span></td></tr>`).join("")}</tbody></table>`;
+}
+function histFor(cd){
+ const i=previaIdx(cd.id); const st=STATUSMAP[cd.col]; const reg=_REG[i]||"20/05/2026";
+ const rows=[
+  {date:reg,resp:"Sistema",badge:st.t,c:st.c,desc:"Status atual do processo: "+st.t},
+  {date:"20/05/2026",resp:"Automação",badge:"Matricular UCA",c:"amber",desc:"Candidato matriculado na UCA (13 módulos)"},
+  {date:"20/05/2026",resp:"Automação",badge:"Aguardando docs",c:"amber",desc:"Prévia liberada para anexo de documentos"},
+  {date:"19/05/2026",resp:"Moises A. Monteiro",badge:"Assinar termo",c:"amber",desc:"Enviar termo de confidencialidade"},
+  {date:"19/05/2026",resp:"Moises A. Monteiro",badge:"Em análise",c:"red",desc:"Documento aprovado: Comprovante de Endereço · Motivo: Aprovado"},
+  {date:"19/05/2026",resp:"Moises A. Monteiro",badge:"Em análise",c:"red",desc:"Documento aprovado: CPF · Motivo: Aprovado"},
+  {date:"19/05/2026",resp:"Moises A. Monteiro",badge:"Em análise",c:"red",desc:"Documento aprovado: RG/CNH · Motivo: Aprovado"},
+  {date:"18/05/2026",resp:cd.n,badge:"Em análise",c:"red",desc:"Documentos enviados pelo candidato"},
+  {date:"18/05/2026",resp:"Automação",badge:"Prévia aberta",c:"gray",desc:"Ficha do candidato lançada — abertura da prévia (120 dias)"}
+ ];
+ return rows;
+}
+function histTab(cd){
+ const H=histFor(cd);
+ return `<div class="msec">🕒 Histórico de andamento</div><table class="t histtable"><thead><tr><th>Data</th><th>Responsável</th><th>Status</th><th>Descrição</th></tr></thead>
+  <tbody>${H.map(h=>`<tr><td style="white-space:nowrap">${h.date}</td><td>${h.resp}</td><td><span class="statusbadge sb-${h.c}" style="font-size:10px">${h.badge}</span></td><td style="font-size:12px">${h.desc}</td></tr>`).join("")}</tbody></table>`;
+}
+function previaTabContent(cd,t){return t==="docs"?docsTab(cd):t==="hist"?histTab(cd):dadosTab(cd);}
+function previaModalBody(cd,t){
+ t=t||"dados";
+ const tabs=[["dados","Cadastro PF"],["docs","Análise / Documentos"],["hist","Histórico"]];
+ return `<div class="pvwrap"><div class="pvmain"><div class="mtabs">${tabs.map(x=>`<button class="${t===x[0]?"on":""}" data-ptab="${x[0]}" data-prev="${cd.id}">${x[1]}</button>`).join("")}</div><div class="mtab-body">${previaTabContent(cd,t)}</div></div><aside class="pvside">${sidebarHtml(cd)}</aside></div>`;
+}
+function totalPrevias(){return Object.values(KAN).reduce((s,o)=>s+o.cards.length,0);}
+function filaPreviasHtml(){
+ const all=[]; Object.entries(KAN).forEach(([col,o])=>o.cards.forEach(cd=>all.push(Object.assign({col:col,cc:o.c},cd))));
+ all.sort((a,b)=>a.sla-b.sla);
+ const rows=all.map(cd=>`<tr${cd.sla<0?' style="background:var(--red-bg)"':''}><td><b>${cd.n}</b></td><td><span class="pill ${cd.t==='PF'?'p-blue':'p-violet'}">${cd.t}</span></td><td>${cd.loja}</td><td>Analista ${cd.a}</td><td><span class="pill ${cd.cc==='blue'?'p-blue':cd.cc==='amber'?'p-amber':cd.cc==='violet'?'p-violet':cd.cc==='green'?'p-green':'p-red'}">${cd.col}</span></td><td style="text-align:center"><span class="pill ${cd.s==='g'?'p-green':cd.s==='a'?'p-amber':'p-red'}">${cd.sla}d</span></td></tr>`).join("");
+ return `<div style="font-size:12.5px;color:var(--muted);margin-bottom:12px">${all.length} prévias no processo · ordenadas por SLA — as que estouraram o prazo aparecem <b style="color:var(--red)">destacadas</b>.</div><table class="t"><thead><tr><th>Candidato</th><th>Tipo</th><th>Unidade</th><th>Analista</th><th>Etapa</th><th style="text-align:center">SLA</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+function openModal(title,body,wide){
+ const m=document.getElementById("modal"); if(!m)return;
+ const box=m.querySelector(".modal"); if(box)box.classList.toggle("modal-wide",!!wide);
+ m.querySelector(".modal-inner").innerHTML=`<div class="modal-h"><h3>${title}</h3><button class="modal-x" data-modal-close>✕</button></div><div class="modal-body">${body}</div>`;
+ m.style.display="flex";
+ if(typeof anime!=="undefined"){anime({targets:m,opacity:[0,1],duration:160,easing:"linear"});anime({targets:m.querySelector(".modal"),scale:[0.94,1],opacity:[0,1],duration:260,easing:"easeOutBack"});}
+}
+function closeModal(){const m=document.getElementById("modal"); if(m)m.style.display="none";}
+function alertsSheetHtml(){
+ return `<div style="font-size:12.5px;color:var(--muted);margin-bottom:12px">${ALERTAS.length} notificações · detecção automática sobre o Data Lake</div>`+ALERTAS.map(a=>`<div class="occ" style="border-left-color:${CV[a.c]};margin-bottom:10px"><div style="font-size:18px">${a.ic}</div><div class="ot"><div class="ott">${a.tit}</div><div class="od">${a.d}</div><div class="meta"><span class="pill ${a.c==="red"?"p-red":a.c==="amber"?"p-amber":a.c==="violet"?"p-violet":a.c==="blue"?"p-blue":"p-green"}">${a.tag}</span></div></div><button class="btn s" style="padding:5px 11px" data-go="${a.go}">Tratar →</button></div>`).join("");
+}
+function openSheet(title,body){const sh=document.getElementById("sheet");if(!sh)return;sh.querySelector(".sheet-inner").innerHTML=`<div class="sheet-h"><h3>${title}</h3><button class="modal-x" data-sheet-close>✕</button></div><div class="sheet-body">${body}</div>`;sh.style.display="flex";}
+function closeSheet(){const sh=document.getElementById("sheet");if(sh)sh.style.display="none";}
+function Previas(){
+ const regs=["Todas"].concat(Object.keys(GEO).sort((a,b)=>a.localeCompare(b,"pt")));
+ return `
+ <div class="page-h between"><div><h1>Prévias</h1><p>Credenciamento — o processo de maior volume (4.500/mês, +181% em 12 meses). Substitui o Backstage saturado.</p></div></div>
+ <div class="kpi-mini"><div class="m"><div class="mn">4.512</div><div class="ml">Prévias ativas</div></div><div class="m"><div class="mn" style="color:var(--green)">2,1d</div><div class="ml">SLA médio (meta 3d)</div></div><div class="m"><div class="mn" style="color:var(--red)">7</div><div class="ml">SLA estourado</div></div></div>
+ <div class="banner"><span>⚠️</span><div><b>7 prévias estouraram o SLA</b> — escalonadas automaticamente para o responsável. <button class="btn s" style="margin-left:8px;padding:4px 10px" data-modal="fila-previas">Ver fila</button></div></div>
+ <div class="filterbar">
+   <div class="ff"><label>Regional</label><select id="filRegional">${regs.map(r=>`<option value="${r}">${r}</option>`).join("")}</select></div>
+   <div class="ff"><label>Estado</label><select id="filEstado" disabled><option value="">Todos os estados</option></select></div>
+   <div class="ff"><label>Cidade</label><select id="filCidade" disabled><option value="">Todas as cidades</option></select></div>
+   <div class="ff"><label>Unidade</label><select id="filUnidade" disabled><option value="">Todas as unidades</option></select></div>
+   <button class="btn p" data-fil-previas>Filtrar</button>
+   <button class="btn s" data-fil-clear>Limpar</button>
+ </div>
+ <div id="filNote" style="font-size:12px;color:var(--muted);margin:-4px 0 12px 2px"></div>
+ <div id="kanContainer">${kanHtml()}</div>`;
+}
+
+const HIST_EVENTS=[
+ {date:"18 Jun 2026",ic:"🧭",c:"var(--green)",t:"Visita de campo — SP-Centro",d:"Rating A mantido (94) · devolutiva 360°",tipo:"visitas"},
+ {date:"02 Jun 2026",ic:"🏗",c:"var(--blue)",t:"Abertura aprovada — Fortaleza Leste",d:"313ª unidade da rede · comitê de expansão",tipo:"aberturas"},
+ {date:"21 Mai 2026",ic:"⬆️",c:"var(--green)",t:"Promoção — Carlos Oliveira → Autorizado 2.5",d:"Unidade SP-Interior · Comitê de Masters",tipo:"promocoes"},
+ {date:"14 Mai 2026",ic:"🏗",c:"var(--blue)",t:"Abertura aprovada — Curitiba Sul",d:"Nova unidade no PR · início da obra",tipo:"aberturas"},
+ {date:"10 Mai 2026",ic:"🔄",c:"var(--violet)",t:"Mudança societária — Beta Soluções ME",d:"Saída de sócio · novo sócio em análise",tipo:"societarias"},
+ {date:"28 Abr 2026",ic:"🚩",c:"var(--red)",t:"Penalidade aplicada — comunicação visual",d:"Unidade Recife-Sul · rating impactado",tipo:"penalidades"},
+ {date:"10 Abr 2026",ic:"🧭",c:"var(--amber)",t:"Visita de campo — Belém",d:"2 pendências registradas · plano de ação criado",tipo:"visitas"},
+ {date:"03 Abr 2026",ic:"⬆️",c:"var(--green)",t:"Promoção — Maria Santos → Licenciado 3.0",d:"Unidade SP-Centro",tipo:"promocoes"},
+ {date:"27 Mar 2026",ic:"👑",c:"var(--maroon-2)",t:"Promoção — João Silva → Licenciado Lojista",d:"Assumiu a titularidade da unidade SP-Centro",tipo:"promocoes"},
+ {date:"15 Mar 2026",ic:"🧭",c:"var(--red)",t:"Visita de campo — Recife-Sul",d:"Rating C (66) · follow-up agendado",tipo:"visitas"},
+ {date:"22 Fev 2026",ic:"🔄",c:"var(--violet)",t:"Mudança societária — Gamma Investimentos",d:"Entrada de novo sócio · versionamento registrado",tipo:"societarias"},
+ {date:"15 Jan 2026",ic:"🚩",c:"var(--red)",t:"Penalty de transferência iniciado",d:"Consultor transferido · 0,5%/24m à loja primária",tipo:"penalidades"}
+];
+function HistLog(q){
+ const view=(q&&q.v==="logbook")?"logbook":"timeline";
+ const ctrl=`<span class="seg-ctrl"><button data-histview="timeline" class="${view==='timeline'?'on':''}">🎬 Histórico de Eventos</button><button data-histview="logbook" class="${view==='logbook'?'on':''}">📒 Histórico de Ocorrência</button></span>`;
+ const head=`<div class="page-h between"><div><h1>Histórico Geral</h1><p>Linha do tempo de eventos da rede e registro central de ocorrências — em um só lugar.</p></div>${ctrl}</div>`;
+ if(view==="logbook"){
+  const flt=["Todos","Conflito","Visita","Notificação","Penalidade","Descredenciamento"];
+  return head+`
+  <div class="kpi-mini"><div class="m"><div class="mn">1.247</div><div class="ml">Registros</div></div><div class="m"><div class="mn">89</div><div class="ml">Este mês</div></div><div class="m"><div class="mn" style="color:var(--red)">12</div><div class="ml">Conflitos abertos</div></div><div class="m"><div class="mn" style="color:var(--green)">34</div><div class="ml">Visitas realizadas</div></div></div>
+  <div class="chiprow">${flt.map((ff,i)=>`<span class="chip ${i===0?'on':''}">${ff}</span>`).join("")}</div>
+  <div class="card"><h3>Ocorrências</h3><div class="csub">Registro central de ocorrências, visitas e decisões — antes disperso em e-mail e WhatsApp</div><div style="margin-top:12px">${OCC.concat(OCC.slice(0,2)).map(o=>`<div class="occ" style="border-left-color:${CV[o.c]}"><div style="font-size:18px">${o.ic}</div><div class="ot"><div class="ott">${o.titulo}</div><div class="od">${o.loja} · ${o.pessoa}</div><div class="meta"><span class="pill ${o.c==='red'?'p-red':o.c==='green'?'p-green':o.c==='violet'?'p-violet':o.c==='blue'?'p-blue':'p-amber'}">${o.t}</span><span class="pill ${pillCls[o.st]||'p-gray'}">${o.st}</span><span>🕐 ${o.tempo}</span></div></div><button class="btn s" style="padding:5px 11px">Ver</button></div>`).join("")}</div></div>`;
+ }
+ const ALLT=["aberturas","promocoes","societarias","penalidades","visitas"];
+ const sel=(q&&q.ev!==undefined)?(q.ev===""?[]:q.ev.split(",")):ALLT.slice();
+ const isOn=t=>sel.indexOf(t)>=0;
+ const CHIPS=[["aberturas","Aberturas"],["promocoes","Promoções"],["societarias","Mudanças Societárias"],["penalidades","Penalidades"],["visitas","Visitas"]];
+ const events=HIST_EVENTS.filter(e=>isOn(e.tipo));
+ return head+`
+ <div class="chiprow"><span class="chip">Últimos 2 anos ▾</span><a href="#/historico" class="chip ${sel.length===ALLT.length?"on":""}">Todos</a>${CHIPS.map(cp=>`<a href="#/historico?ev=${cp[0]}" class="chip ${sel.length===1&&sel[0]===cp[0]?'on':''}">${cp[1]}</a>`).join("")}</div>
+ <div class="card"><div class="between"><div><h3>Eventos no período</h3><div class="csub">${events.length} evento(s) exibido(s) · clique nos tipos acima para filtrar</div></div><button class="btn s">📊 Exportar</button></div><div class="tl" style="margin-top:14px">
+   ${events.length?events.map(e=>`<div class="tlitem"><div class="node" style="background:#fff;color:${e.c}">${e.ic}</div><div class="box"><div class="bh"><div class="bt">${e.t}</div><div class="bd" style="color:${e.c}">${e.date}</div></div><div class="bx">${e.d}</div></div></div>`).join(""):'<div class="emptybox">Nenhum tipo selecionado — clique num dos tipos acima para ver os eventos.</div>'}</div></div>`;
+}
+
+function Logbook(){
+ const flt=["Todos","Conflito","Visita","Notificação","Penalidade","Descredenciamento"];
+ return `
+ <div class="page-h between"><div><h1>Logbook da Rede</h1><p>Registro central de ocorrências, visitas e decisões — antes disperso em e-mail e WhatsApp.</p></div><button class="btn p">+ Nova Ocorrência</button></div>
+ <div class="kpi-mini"><div class="m"><div class="mn">1.247</div><div class="ml">Registros</div></div><div class="m"><div class="mn">89</div><div class="ml">Este mês</div></div><div class="m"><div class="mn" style="color:var(--red)">12</div><div class="ml">Conflitos abertos</div></div><div class="m"><div class="mn" style="color:var(--green)">34</div><div class="ml">Visitas realizadas</div></div></div>
+ <div class="chiprow">${flt.map((f,i)=>`<span class="chip ${i===0?'on':''}">${f}</span>`).join("")}</div>
+ <div class="card">${OCC.concat(OCC.slice(0,2)).map(o=>`<div class="occ" style="border-left-color:${CV[o.c]}"><div style="font-size:18px">${o.ic}</div><div class="ot"><div class="ott">${o.titulo}</div><div class="od">${o.loja} · ${o.pessoa}</div><div class="meta"><span class="pill ${o.c==='red'?'p-red':o.c==='green'?'p-green':o.c==='violet'?'p-violet':o.c==='blue'?'p-blue':'p-amber'}">${o.t}</span><span class="pill ${pillCls[o.st]||'p-gray'}">${o.st}</span><span>🕐 ${o.tempo}</span></div></div><button class="btn s" style="padding:5px 11px">Ver</button></div>`).join("")}</div>`;
+}
+
+const UNITMAP={"SP-Centro":"L001","Campinas":"L002","Curitiba-N":"L003","Recife-Sul":"L004","Brasília-N":"L005","Belém":"L006"};
+function graphPanel(sel){
+ if(!sel) return `<div class="gt">Detalhes do item</div><div class="gs">Nenhum item selecionado</div><div class="gempty"><div class="gemptyic">🕸️</div><div>Clique em um nó do grafo — <b>macrorregião</b>, <b>unidade</b>, <b>CNPJ</b> ou <b>CPF</b> — para ver os detalhes dele aqui.</div></div>`;
+ const sn=GNODES.find(n=>n.id===sel)||GNODES[0];
+ const nb=dir=>GEDGES.filter(e=>e[dir]===sn.id).map(e=>GNODES.find(n=>n.id===(dir==="f"?e.t:e.f))).filter(Boolean);
+ const ce=o=>`<div class="ce" data-sel="${o.id}"><span class="cd" style="background:${GC[o.t]}"></span><div style="flex:1"><b>${o.lbl}</b><div style="font-size:10px;color:var(--muted)">${o.t==="macro"?"MACRORREGIÃO":o.t.toUpperCase()} · ${o.sub}</div></div>›</div>`;
+ const down=nb("f"), up=nb("t");
+ let rows="",btn="",conns="";
+ if(sn.t==="macro"){
+   rows=`<div class="gr"><span>Unidades</span><b>${sn.uni}</b></div><div class="gr"><span>Rating médio</span><b>${sn.rating}</b></div>`;
+   btn=`<button class="btn p gpbtn" data-regiao="${sn.lbl}">Ver lojas da região →</button>`;
+   conns=`<div class="conn">Unidades relacionadas</div>${down.map(ce).join("")}`;
+ } else if(sn.t==="loja"){
+   rows=`<div class="gr"><span>Licenciado Lojista</span><b>${sn.dono}</b></div><div class="gr"><span>Rating</span><b style="color:${CV[sn.rl]}">${sn.rating}</b></div><div class="gr"><span>CNPJs na unidade</span><b>${sn.cnpjs}</b></div><div class="gr"><span>Licenciados</span><b>${sn.lic}</b></div><div class="gr"><span>Autorizados</span><b>${sn.aut}</b></div>`;
+   btn=`<button class="btn p gpbtn" data-unit="${sn.unit}">Abrir perfil completo →</button>`;
+   conns=`<div class="conn">Conexões diretas</div>${up.concat(down).map(ce).join("")}`;
+ } else if(sn.t==="cnpj"){
+   rows=`<div class="gr"><span>Razão social</span><b style="font-size:11.5px;text-align:right;max-width:130px">${sn.razao}</b></div><div class="gr"><span>Papel</span><b>${sn.papel}</b></div><div class="gr"><span>PV</span><b>${sn.pv}</b></div><div class="gr"><span>Sócios</span><b>${sn.socios}</b></div>`;
+   btn=`<button class="btn p gpbtn" data-cnpj="${sn.cid}">Abrir Visão CNPJ →</button>`;
+   conns=`<div class="conn">Unidades vinculadas</div>${up.map(ce).join("")}<div class="conn">Consultores (CPF)</div>${down.map(ce).join("")}`;
+ } else {
+   rows=`<div class="gr"><span>Nível</span><b>${sn.sub}</b></div>`;
+   btn=sn.pid?`<button class="btn p gpbtn" data-person="${sn.pid}">Abrir Visão CPF →</button>`:"";
+   conns=`<div class="conn">Vinculado a</div>${up.map(ce).join("")}`;
+ }
+ const tl=sn.t==="macro"?"MACRORREGIÃO":sn.t.toUpperCase();
+ return `<div class="gt">${sn.lbl}</div><div class="gs">${sn.sub} · ${tl}</div>${rows}${btn}${conns}`;
+}
+function sbPanel(sel){
+ const groups=sbGroups();
+ const total=groups.reduce((s,g)=>s+g.tot,0);
+ const sbce=(id,lbl,color,sub)=>`<div class="ce" data-sb="${id}"><span class="cd" style="background:${color}"></span><div style="flex:1"><b>${lbl}</b><div style="font-size:10px;color:var(--muted)">${sub}</div></div>›</div>`;
+ if(!sel) return `<div class="gpanel gpanel-static"><div class="gt">Rede completa</div><div class="gs">${groups.length} macrorregiões · ${total} unidades</div><div class="conn">Como usar</div><div class="gphint">Clique numa <b>macrorregião</b> (anel interno) ou numa <b>unidade</b> para realçar. Clicar de novo — ou no centro — remove o destaque e mostra tudo.</div></div>`;
+ const p=sel.split("-"); const g=groups[+p[0].slice(1)]; if(!g) return "";
+ if(p.length===1){
+   return `<div class="gpanel gpanel-static"><div class="gt">${g.name}</div><div class="gs">MACRORREGIÃO</div>
+     <div class="gr"><span>Unidades</span><b>${g.units.length}</b></div>
+     <div class="gr"><span>Porte total</span><b>${g.tot}</b></div>
+     <button class="btn p gpbtn" data-regiao="${g.name}">Ver lojas da região →</button>
+     <div class="conn">Unidades da macrorregião</div>${g.units.map((x,ui)=>sbce(g.id+"-u"+ui,x.u.n,rcol(x.u.r),x.regional+" · porte "+x.u.v+" · "+rgrade(x.u.r)+" "+x.u.r)).join("")}</div>`;
+ }
+ const ui=+p[1].slice(1); const x=g.units[ui]; const uid=UNITMAP[x.u.n];
+ return `<div class="gpanel gpanel-static"><div class="gt">${x.u.n}</div><div class="gs">UNIDADE · ${g.name}</div>
+   <div class="gr"><span>Rating 360°</span><b style="color:${rcol(x.u.r)}">${rgrade(x.u.r)} · ${x.u.r}</b></div>
+   <div class="gr"><span>Porte</span><b>${x.u.v} consultores</b></div>
+   <div class="gr"><span>Regional</span><b>${x.regional}</b></div>
+   <div class="gr"><span>Macrorregião</span><b>${g.name}</b></div>
+   ${uid?`<button class="btn p gpbtn" data-unit="${uid}">Abrir perfil completo →</button>`:""}
+   <div class="conn">Outras unidades da macrorregião</div>${g.units.map((y,yi)=>yi===ui?"":sbce(g.id+"-u"+yi,y.u.n,rcol(y.u.r),y.regional+" · "+rgrade(y.u.r)+" "+y.u.r)).join("")}</div>`;
+}
+function tmPanel(sel){
+ if(!sel) return `<div class="gpanel gpanel-static"><div class="gt">Selecione uma unidade</div><div class="gs">Unidades por macrorregião</div><div class="conn">Dica</div><div class="gphint">Clique numa célula: ela é realçada e as demais esmaecem. Área = porte · cor = rating 360°.</div></div>`;
+ const p=sel.split("-"); const m=MASTERS[+p[0].slice(1)]; const rg=m.regionais[+p[1].slice(1)]; const u=rg.unidades[+p[2].slice(1)]; const uid=UNITMAP[u.n];
+ const macro=REG2MACRO[rg.name]||rg.name;
+ const others=allUnits().filter(x=>x.macro===macro&&!(x.mi===+p[0].slice(1)&&x.ri===+p[1].slice(1)&&x.ui===+p[2].slice(1))).map(x=>`<div class="ce" data-tm="m${x.mi}-r${x.ri}-u${x.ui}"><span class="cd" style="background:${rcol(x.u.r)}"></span><div style="flex:1"><b>${x.u.n}</b><div style="font-size:10px;color:var(--muted)">${x.regional} · porte ${x.u.v} · ${rgrade(x.u.r)} ${x.u.r}</div></div>›</div>`).join("");
+ return `<div class="gpanel gpanel-static"><div class="gt">${u.n}</div><div class="gs">UNIDADE · ${macro}</div>
+   <div class="gr"><span>Rating 360°</span><b style="color:${rcol(u.r)}">${rgrade(u.r)} · ${u.r}</b></div>
+   <div class="gr"><span>Porte</span><b>${u.v} consultores</b></div>
+   <div class="gr"><span>Regional</span><b>${rg.name}</b></div>
+   <div class="gr"><span>Licenciado Lojista</span><b>${DONOS[u.n]||"—"}</b></div>
+   ${uid?`<button class="btn p gpbtn" data-unit="${uid}">Abrir perfil completo →</button>`:""}
+   <div class="conn">Outras unidades da macrorregião</div>${others}</div>`;
+}
+function Rede(q){
+ const view=(q&&q.view)||"grafo";
+ const sel=(q&&q.sel)||"";
+ const sb=(q&&q.sb)||"";
+ const tm=(q&&q.tm)||"";
+ const f=(q&&q.f)||"todos";
+ gCurSel=sel;
+ const conn=id=> !sel ? true : (id===sel||GEDGES.some(e=>(e.f===sel&&e.t===id)||(e.t===sel&&e.f===id)));
+ const nodeOn=n=> f==="todos" ? conn(n.id) : n.t===f;
+ const FILTERS=[["todos","Todos"],["macro","Macrorregiões"],["loja","Unidades"],["cnpj","CNPJs"],["cpf","CPFs"]];
+ let edges=GEDGES.map(e=>{const a=GNODES.find(n=>n.id===e.f),b=GNODES.find(n=>n.id===e.t);const on=f==="todos"?(conn(a.id)&&conn(b.id)):(a.t===f||b.t===f);const soc=a.t==="cnpj"&&b.t==="cpf";return `<line class="gedge" data-a="${a.id}" data-b="${b.id}" data-soc="${soc?1:0}" x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" stroke="${GC[a.t]}" stroke-width="${on?2:1}" opacity="${on?(f==="todos"?.5:.3):.06}" ${soc?'stroke-dasharray="5 3"':''}/>`;}).join("");
+ let nodes=GNODES.map(n=>{const ok=nodeOn(n),isS=n.id===sel&&ok;const op=ok?1:.1;const c=GC[n.t];
+   let shape;
+   if(n.t==="macro"){const w=n.r*2.7,h=n.r*1.5;shape=`<rect x="${(n.x-w/2).toFixed(1)}" y="${(n.y-h/2).toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" rx="9" fill="${c}22" stroke="${c}" stroke-width="${isS?3:2}"/>`;}
+   else if(n.t==="loja"){shape=`<polygon points="${[0,1,2,3,4,5].map(k=>{const a=(k*60-90)*Math.PI/180;return (n.x+n.r*Math.cos(a)).toFixed(1)+","+(n.y+n.r*Math.sin(a)).toFixed(1);}).join(" ")}" fill="${c}1f" stroke="${c}" stroke-width="${isS?3:1.8}"/>`;}
+   else{shape=`<circle cx="${n.x}" cy="${n.y}" r="${n.r}" fill="${c}1f" stroke="${c}" stroke-width="${isS?3:1.6}"/>`;}
+   const ring=`<circle class="gring" cx="${n.x}" cy="${n.y}" r="${n.r+12}" fill="none" stroke="${c}" stroke-width="1.5" stroke-dasharray="4 3" opacity="${isS?1:0}"/>`;
+   const label=n.t==="macro"?`<text class="gnlabel gmacro" x="${n.x}" y="${n.y+4}" text-anchor="middle" fill="${c}" font-weight="800" font-size="12" style="pointer-events:none">${n.lbl}</text>`:`<text class="gnlabel" x="${n.x}" y="${n.y+n.r+13}" text-anchor="middle" fill="${isS?'#211A15':'#857a70'}" font-weight="${isS?700:600}">${n.lbl}</text>`;
+   return `<g class="gnode" data-sel="${n.id}" opacity="${op}">${ring}${shape}${label}</g>`;}).join("");
+ const VIEWS=[["grafo","Grafo"],["sunburst","Sunburst"],["treemap","Treemap"],["hierarquia","Hierarquia"],["tabela","Tabela"]];
+ const ctrl=`<span class="seg-ctrl">${VIEWS.map(v=>`<button data-view="${v[0]}" class="${view===v[0]?'on':''}">${v[1]}</button>`).join("")}</span>`;
+ const subt={grafo:"Grafo hierárquico Macrorregião › Unidade › CNPJ › CPF. Clique num nó para realçar (dinâmico); use os filtros para isolar um tipo.",sunburst:"Hierarquia radial por macrorregião. Clique num segmento para realçar; clique no centro para ver tudo.",treemap:"Unidades agrupadas por macrorregião. Área = porte · cor = rating 360°. Clique numa célula para realçar.",hierarquia:"Árvore Master › Regional › Unidade.",tabela:"Todas as unidades por Master e Regional."}[view];
+ const head=`<div class="page-h between"><div><h1>Mapa de Vínculos da Rede</h1><p>${subt}</p></div>${ctrl}</div>`;
+ if(view==="sunburst") return head+SunburstView(sb);
+ if(view==="treemap") return head+TreemapView(tm);
+ if(view==="hierarquia") return head+HierarquiaView();
+ if(view==="tabela") return head+TabelaView();
+ return head+`
+ <div class="gcanvas">
+   <div class="gfilters">${FILTERS.map(ff=>`<button data-fil="${ff[0]}" class="${f===ff[0]?'on':''}">${ff[1]}</button>`).join("")}</div>
+   <svg width="100%" height="100%" viewBox="0 0 900 560" id="gsvg">${edges}${nodes}</svg>
+   <div class="glegend"><span><i style="background:#4338CA"></i>Macrorregião</span><span><i style="background:var(--maroon-2)"></i>Unidade</span><span><i style="background:var(--green)"></i>CNPJ</span><span><i style="background:#D9892B"></i>CPF</span></div>
+   <div class="gpanel" id="gpanel">${graphPanel(sel)}</div>
+ </div>`;
+}
+
+function Config(){
+ return `<div class="page-h"><h1>Configurações</h1><p>Governança, acessos, fontes de dados e regras de detecção.</p></div>
+ <div class="grid" style="grid-template-columns:1fr 1fr;margin-bottom:16px">
+  <div class="card"><h3>Fontes de dados &amp; frescor</h3><div class="csub">Transparência de origem e latência (Data Lake)</div>
+   ${[["Newcon (ERP)","🟢 conectado","2h"],["Data Lake — Gold","🟢 conectado","2h (até 6–7h em pico)"],["Pipefy — Prévias","🟡 parcial","tempo real"],["SharePoint — manuais","🔴 a migrar","manual"]].map(r=>`<div class="soc"><div class="si" style="background:var(--maroon-bg)">🗄</div><div class="sn"><div class="snn">${r[0]}</div><div class="snc">Atualização: ${r[2]}</div></div><span style="font-size:12px">${r[1]}</span></div>`).join("")}</div>
+  <div class="card"><h3>Controle de acesso</h3><div class="csub">Por hierarquia e dono de loja (substitui o Excel manual)</div>
+   <div class="soc"><div class="si">👤</div><div class="sn"><div class="snn">Diretoria</div><div class="snc">Visão completa da rede</div></div><span class="pill p-green">Ativo</span></div>
+   <div class="soc"><div class="si">👤</div><div class="sn"><div class="snn">Gerente de BU</div><div class="snc">Apenas suas regiões</div></div><span class="pill p-green">Ativo</span></div>
+   <div class="soc"><div class="si">👤</div><div class="sn"><div class="snn">Analista BackOffice</div><div class="snc">Prévias das unidades atribuídas</div></div><span class="pill p-green">Ativo</span></div></div>
+ </div>
+ <div class="card"><h3>Regras de detecção</h3><div class="csub">Motor de anomalia configurável (sobre o Data Lake) — antes na Central de Alertas</div>
+   <div class="grid" style="grid-template-columns:1fr 1fr;gap:0 26px">${REGRAS.map(r=>`<div class="soc"><div class="sn"><div class="snn" style="font-size:13px">${r.n}</div><div class="snc">${r.d}</div></div><span class="sw ${r.on?'on':''}"><i></i></span></div>`).join("")}</div>
+ </div>`;
+}
+
+function SunburstView(sel){
+ const cx=300,cy=300,R=[0,70,150,262];
+ const groups=sbGroups();
+ const total=groups.reduce((s,g)=>s+g.tot,0);
+ const active=id=> !sel || id.indexOf(sel)===0 || sel.indexOf(id)===0;
+ let segs="",labels="";
+ const lab=(r,a0,a1,txt,size,minDeg,on)=>{ if((a1-a0)<(minDeg||14))return; const mid=(a0+a1)/2,[x,y]=polar(cx,cy,r,mid); labels+=`<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle" dominant-baseline="middle" font-size="${size}" font-weight="700" fill="#fff" opacity="${on?1:0.22}" paint-order="stroke" stroke="rgba(0,0,0,0.34)" stroke-width="${on?0.9:0.5}" style="pointer-events:none">${txt}</text>`; };
+ let a=0;
+ groups.forEach(g=>{ const ga0=a,ga1=a+g.tot/total*360; const on=active(g.id); const op=on?1:0.14;
+   segs+=`<path class="sbseg" data-sb="${g.id}" data-op="${op}" opacity="${op}" d="${arcD(cx,cy,R[1],R[2],ga0,ga1)}" fill="${g.c}" stroke="#fff" stroke-width="2"><title>${g.name} · ${g.tot} unid.</title></path>`;
+   lab((R[1]+R[2])/2,ga0,ga1,g.name,12,14,on);
+   let ua=ga0;
+   g.units.forEach((x,ui)=>{ const uid=g.id+"-u"+ui; const ua0=ua,ua1=ua+x.u.v/total*360; const uon=active(uid); const uop=uon?0.95:0.12;
+     segs+=`<path class="sbseg" data-sb="${uid}" data-op="${uop}" opacity="${uop}" d="${arcD(cx,cy,R[2],R[3],ua0,ua1)}" fill="${rcol(x.u.r)}" stroke="#fff" stroke-width="1"><title>${x.u.n} · ${x.regional} · rating ${x.u.r} (${rgrade(x.u.r)})</title></path>`;
+     lab((R[2]+R[3])/2,ua0,ua1,x.u.n,8,15,uon); ua=ua1; });
+   a=ga1; });
+ const center=`<g data-sb="" style="cursor:pointer"><circle cx="${cx}" cy="${cy}" r="${R[1]-6}" fill="#fff" stroke="var(--maroon-2)" stroke-width="1.5"/><text x="${cx}" y="${cy-7}" text-anchor="middle" font-size="17" font-weight="800" fill="var(--maroon-2)" style="pointer-events:none">Rede</text><text x="${cx}" y="${cy+11}" text-anchor="middle" font-size="10.5" fill="var(--muted)" style="pointer-events:none">${total} unid.</text><text x="${cx}" y="${cy+26}" text-anchor="middle" font-size="8.5" fill="var(--muted-2)" style="pointer-events:none">clique = ver tudo</text></g>`;
+ return `<div class="rede-split"><div class="gcanvas" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px">
+   <svg viewBox="0 0 600 600" id="sbsvg" style="height:100%;max-height:470px;width:auto"><g id="sbg" style="transform-box:fill-box;transform-origin:center">${segs}${labels}${center}</g></svg>
+   <div class="glegend" style="position:static;background:none;border:none;padding:0"><span>Anel interno: macrorregião</span><span><i style="background:#15803D"></i>Unid. A</span><span><i style="background:#B45309"></i>Unid. B</span><span><i style="background:#B91C1C"></i>Unid. C</span></div>
+ </div>${sbPanel(sel)}</div>`;
+}
+
+function TreemapView(sel){
+ const units=allUnits();
+ let cols="";
+ MACRO_ORDER.forEach(macro=>{
+   const list=units.filter(x=>x.macro===macro); if(!list.length)return;
+   const tot=list.reduce((s,x)=>s+x.u.v,0);
+   const cells=list.map(x=>{const id="m"+x.mi+"-r"+x.ri+"-u"+x.ui;const on=!sel||sel===id;const op=on?1:0.22;return `<div class="tmcell${sel===id?' tmsel':''}" data-tm="${id}" data-op="${op}" style="flex:${x.u.v} 1 0;background:${rcol(x.u.r)};opacity:${op}" title="${x.u.n} · ${x.regional} · porte ${x.u.v} · rating ${x.u.r} (${rgrade(x.u.r)})"><div class="tn2">${x.u.n}</div><div class="tv2">porte ${x.u.v} · ${rgrade(x.u.r)} ${x.u.r}</div></div>`;}).join("");
+   cols+=`<div class="tmcol" style="flex:${tot} 1 0"><div class="tmhead" data-op="1" style="background:${MACRO_C[macro]}" title="${macro}"><span>${macro}</span><span style="opacity:.85">${tot} unid.</span></div>${cells}</div>`;
+ });
+ return `<div class="rede-split"><div><div class="tmwrap" id="tmwrap">${cols}</div>
+  <div class="between" style="margin-top:10px">
+    <div class="glegend" style="position:static"><span><i style="background:#15803D"></i>Rating A (≥85)</span><span><i style="background:#B45309"></i>Rating B (70–84)</span><span><i style="background:#B91C1C"></i>Rating C (&lt;70)</span></div>
+    <div style="font-size:12px;color:var(--muted)">Agrupado por macrorregião · largura da coluna = porte · cor da célula = rating 360°</div>
+  </div></div>${tmPanel(sel)}</div>`;
+}
+
+function HierarquiaView(){
+ let rows="";
+ MASTERS.forEach(m=>{ rows+=`<div class="hrow" style="font-weight:800;color:var(--maroon-2)"><span>👑 ${m.name}</span><span style="color:var(--muted);font-weight:600">${m.owner} · ${mtot(m)} unid.</span></div>`;
+   m.regionais.forEach(rg=>{ rows+=`<div class="hrow" style="padding-left:34px;font-weight:700"><span>🗺️ ${rg.name}</span><span class="pill ${rg.c==='green'?'p-green':rg.c==='amber'?'p-amber':'p-red'}">saúde ${rg.health}</span></div>`;
+     rg.unidades.forEach(u=>{ rows+=`<div class="hrow" style="padding-left:60px"><span>🏪 ${u.n}</span><span class="pill ${u.r>=85?'p-green':u.r>=70?'p-amber':'p-red'}">${rgrade(u.r)} · ${u.r}</span></div>`; }); }); });
+ return `<div class="card" style="padding:6px 0">${rows}</div>`;
+}
+
+function TabelaView(){
+ let rows="";
+ MASTERS.forEach(m=>m.regionais.forEach(rg=>rg.unidades.forEach(u=>{ rows+=`<tr><td><b>${u.n}</b></td><td>${CIDADES[u.n]||"—"}</td><td>${rg.name}</td><td style="text-align:center;font-weight:700">${u.v}</td><td style="text-align:center"><span class="pill ${u.r>=85?'p-green':u.r>=70?'p-amber':'p-red'}">${rgrade(u.r)} · ${u.r}</span></td></tr>`; })));
+ return `<div class="card" style="padding:0;overflow:hidden"><table class="t"><thead><tr><th>Unidade</th><th>Cidade</th><th>Regional</th><th style="text-align:center">Quantidade de Pessoas</th><th style="text-align:center">Rating</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+
+function animateSunburst(){
+ const segs=[...document.querySelectorAll(".sbseg")]; if(!segs.length)return;
+ const rest=()=>segs.forEach(x=>{x.style.opacity=x.getAttribute("data-op")||x.getAttribute("opacity")||"1";});
+ rest();
+ if(typeof anime==="undefined"||document.hidden) return;
+ anime.suspendWhenDocumentHidden=false;
+ segs.forEach(x=>{x.style.opacity="0";});
+ anime({targets:"#sbg",scale:[0.7,1],duration:700,easing:"easeOutBack"});
+ anime({targets:segs,opacity:el=>parseFloat(el.getAttribute("data-op")||"1"),delay:anime.stagger(6),duration:460,easing:"easeOutQuad",complete:rest});
+ setTimeout(rest,1600);
+}
+function animateTreemap(){
+ if(typeof anime==="undefined")return; anime.suspendWhenDocumentHidden=false;
+ const cells=[...document.querySelectorAll("#tmwrap .tmhead, #tmwrap .tmcell")]; if(!cells.length)return;
+ cells.forEach(c=>{c.style.opacity="0";c.style.transformOrigin="center";});
+ anime({targets:cells,opacity:el=>parseFloat(el.getAttribute("data-op")||"1"),scale:[0.86,1],translateY:[10,0],delay:anime.stagger(16),duration:460,easing:"easeOutQuad",complete:()=>cells.forEach(c=>c.style.transform="")});
+}
+
+/* ============== NEW DATA (v2 — cobertura de gaps §7.1 + Seção 8) ============== */
+const CNPJS=[
+ {id:"C1",razao:"Alpha Consultoria Ltda",cnpj:"12.345.678/0001-90",loja:"Unidade SP-Centro",socios:2,pv:"PV-1001",papel:"Licenciado Lojista",st:"Ativo",nc:"green"},
+ {id:"C2",razao:"Beta Soluções ME",cnpj:"98.765.432/0001-10",loja:"Unidade Campinas",socios:2,pv:"PV-1042",papel:"Sócio",st:"Ativo",nc:"green"},
+ {id:"C3",razao:"Gamma Investimentos",cnpj:"45.678.901/0001-23",loja:"Unidade SP-Centro",socios:1,pv:"PV-1188",papel:"Autorizado",st:"Em Prévia",nc:"amber"},
+ {id:"C4",razao:"Delta Corp. ME",cnpj:"67.890.123/0001-45",loja:"Unidade Recife-Sul",socios:3,pv:"PV-4821",papel:"Licenciado",st:"Alerta societário",nc:"red"},
+];
+/* Motor de Comissão & Penalty — G6, G7, P03 */
+const PENALTIES=[
+ {consultor:"Carlos Oliveira",cpf:"***.789.123-**",primaria:"SP-Centro",atual:"Campinas",pct:0.5,mes:14,valor:"R$ 2.180/mês",st:"Ativo",c:"amber"},
+ {consultor:"Pedro Costa",cpf:"***.123.456-**",primaria:"Recife-Sul",atual:"Salvador",pct:0.5,mes:3,valor:"R$ 3.050/mês",st:"Ativo",c:"amber"},
+ {consultor:"Marina Reis",cpf:"***.111.222-**",primaria:"Curitiba-N",atual:"P.Alegre",pct:0.4,mes:22,valor:"R$ 1.420/mês",st:"Encerrando",c:"green"},
+ {consultor:"Ana Lima",cpf:"***.654.987-**",primaria:"Fortaleza",atual:"Natal",pct:0.3,mes:24,valor:"R$ 0 (fim)",st:"Concluído",c:"gray"},
+];
+const PVCLEAN=[
+ {pv:"PV-4821",loja:"Recife-Sul",cnpj:"45.222.111/0001",motivo:"Sem consultor ativo há 92 dias",st:"Fila",c:"red",cons:"Marina Alves (descred.)",cli:118,res:"R$ 2.340",uv:"há 92 dias",det:"12/06/2026"},
+ {pv:"PV-3910",loja:"Belém",cnpj:"78.010.230/0001",motivo:"Consultor descredenciado (sem sucessor)",st:"Aguard. aprovação",c:"amber",cons:"João Belém (descred.)",cli:150,res:"R$ 4.120",uv:"há 130 dias",det:"03/06/2026"},
+ {pv:"PV-2277",loja:"Natal",cnpj:"11.902.884/0001",motivo:"120 dias sem venda",st:"Fila",c:"red",cons:"Rafael Natal",cli:64,res:"R$ 980",uv:"há 121 dias",det:"18/06/2026"},
+ {pv:"PV-1043",loja:"Sorocaba",cnpj:"22.334.556/0001",motivo:"Higienizado em 02/06",st:"Concluído",c:"green",cons:"—",cli:0,res:"R$ 0",uv:"—",det:"02/06/2026"},
+];
+/* Orquestrador de Processos — G8, G9a, G9b, P02/P03/P04/P05/P07 */
+const PROCS=[
+ {id:"pr1",k:"abertura",tipo:"Abertura de Unidade",ic:"🏗",alvo:"Fortaleza Leste",resp:"Comitê de Masters",etapa:2,total:6,etapaNome:"Comitê avalia e vota",sla:"12/20 sem.",s:"g",c:"blue"},
+ {id:"pr2",k:"transferencia",tipo:"Transferência",ic:"🔄",alvo:"Carlos Oliveira → Campinas",resp:"Gerente de BU",etapa:3,total:5,etapaNome:"Formalização + penalty",sla:"2 d.ú. restantes",s:"a",c:"amber"},
+ {id:"pr3",k:"promocao",tipo:"Promoção",ic:"⬆️",alvo:"Maria Santos → Licenciado 3.5",resp:"Comitê de Masters",etapa:3,total:5,etapaNome:"Análise e decisão",sla:"no prazo",s:"g",c:"green"},
+ {id:"pr4",k:"cessao",tipo:"Cessão de Crédito",ic:"💸",alvo:"PV-1188 → PV-1042",resp:"Diretor de Redes",etapa:2,total:4,etapaNome:"Aprovação diretoria",sla:"SLA estourado",s:"r",c:"violet"},
+ {id:"pr5",k:"descred",tipo:"Descredenciamento",ic:"🚪",alvo:"MTR-00789 (4 meses s/ venda)",resp:"Analista + Jurídico",etapa:4,total:6,etapaNome:"Checklist multi-sistema",sla:"5 d.ú. defesa",s:"a",c:"red"},
+];
+const PROC_CHECK={
+ pr1:[{s:"Solicitação por e-mail ao gerente regional",ok:true},{s:"Comitê de expansão avalia e vota",ok:true},{s:"Coleta de documentos e contrato",ok:false},{s:"Planejamento e execução da obra",ok:false},{s:"Credenciamento dos primeiros consultores",ok:false},{s:"Abertura e funcionamento",ok:false}],
+ pr2:[{s:"Solicitação registrada (fila única)",ok:true},{s:"Mediação pelo Gerente de BU",ok:true},{s:"Formalização + termo de penalty",ok:false},{s:"Ajuste de PV/hierarquia no Newcon",ok:false},{s:"Controle automático do penalty (24m)",ok:false}],
+ pr3:[{s:"Identificação do candidato",ok:true},{s:"Solicitação formal",ok:true},{s:"Análise e decisão — Comitê de Masters",ok:false},{s:"Aprovação e formalização",ok:false},{s:"Ajuste do % no Newcon",ok:false}],
+ pr4:[{s:"Solicitação de cessão registrada",ok:true},{s:"Aprovação do Diretor de Redes",ok:false},{s:"Redirecionamento das parcelas",ok:false},{s:"Descredenciamento da matrícula antiga",ok:false}],
+ pr5:[{s:"Projuris — encerramento jurídico",ok:true},{s:"Planilha NAC — redistribuição de carteira",ok:true},{s:"TI — revogação de acessos",ok:false},{s:"Antecipay — bloqueio financeiro + blacklist",ok:false},{s:"Newcon — bloqueio de matrícula + PV",ok:false}]
+};
+const PROC_HIST={
+ pr1:[{t:"Card criado — Abertura de Unidade",d:"por LL solicitante · fila única",date:"há 12 d",ic:"➕",c:"var(--blue)"},{t:"Encaminhado ao Comitê de Masters",d:"aguardando votação",date:"há 10 d",ic:"📨",c:"var(--maroon-2)"},{t:"Documentação inicial anexada",d:"contrato + planta da obra",date:"há 6 d",ic:"📎",c:"var(--green)"}],
+ pr2:[{t:"Card criado — Transferência",d:"por Gerente de BU · fila única",date:"há 6 d",ic:"➕",c:"var(--blue)"},{t:"Loja primária derivada automaticamente",d:"1ª matrícula → SP-Centro",date:"há 6 d",ic:"⚙️",c:"var(--maroon-2)"},{t:"Documentos anexados e validados",d:"contrato + termo de penalty",date:"há 4 d",ic:"📎",c:"var(--green)"},{t:"Penalty 0,5%/24m configurado",d:"início 01/07 · fim 30/06/2028",date:"há 2 d",ic:"🚩",c:"var(--amber)"}],
+ pr3:[{t:"Card criado — Promoção",d:"por Gestor atual",date:"há 5 d",ic:"➕",c:"var(--blue)"},{t:"Linha do tempo do consultor anexada",d:"subsídio ao Comitê (Visão CPF)",date:"há 4 d",ic:"📎",c:"var(--green)"},{t:"Em pauta no Comitê de Masters",d:"aguardando decisão",date:"há 1 d",ic:"⚖️",c:"var(--maroon-2)"}],
+ pr4:[{t:"Card criado — Cessão de Crédito",d:"exceção financeira",date:"há 8 d",ic:"➕",c:"var(--blue)"},{t:"Encaminhado ao Diretor de Redes",d:"aprovação obrigatória",date:"há 7 d",ic:"📨",c:"var(--maroon-2)"},{t:"SLA estourado — escalonado",d:"prazo de 45 dias em risco",date:"há 1 d",ic:"⚠️",c:"var(--red)"}],
+ pr5:[{t:"Card criado — Descredenciamento",d:"4 meses sem venda",date:"há 20 d",ic:"➕",c:"var(--blue)"},{t:"Notificação enviada",d:"LL + L + Gestor + Gerente BU",date:"há 18 d",ic:"📨",c:"var(--amber)"},{t:"Prazo de defesa aberto",d:"5 d.ú. para manifestação",date:"há 5 d",ic:"⏳",c:"var(--red)"}]
+};
+const DESC_CHECK=[
+ {s:"Projuris — encerramento jurídico",ok:true},
+ {s:"Planilha NAC — redistribuição de carteira",ok:true},
+ {s:"TI — revogação de acessos (e-mail, plataforma)",ok:false},
+ {s:"Antecipay — bloqueio financeiro + blacklist",ok:false},
+ {s:"Newcon — bloqueio de matrícula + PV",ok:false},
+];
+const AUDIT=[
+ {t:"Card criado — Transferência",d:"por Gerente de BU · fila única",date:"há 6 d",ic:"➕",c:"var(--blue)"},
+ {t:"Loja primária derivada automaticamente",d:"1ª matrícula → SP-Centro · Motor de Penalty",date:"há 6 d",ic:"⚙️",c:"var(--maroon-2)"},
+ {t:"Documentos anexados e validados",d:"contrato + termo de penalty",date:"há 4 d",ic:"📎",c:"var(--green)"},
+ {t:"Penalty 0,5%/24m configurado",d:"início 01/07 · fim 30/06/2028",date:"há 2 d",ic:"🚩",c:"var(--amber)"},
+];
+/* Gestão de Carteira — substitui planilha NAC */
+const CARTEIRAS=[
+ {pv:"PV-1001",loja:"Unidade SP-Centro",titular:"Loja (LL João Silva)",clientes:1240,valor:"R$ 48,2 mi",st:"Ativa",c:"green"},
+ {pv:"PV-1042",loja:"Unidade Campinas",titular:"Loja (LL Marina Reis)",clientes:820,valor:"R$ 30,5 mi",st:"Ativa",c:"green"},
+ {pv:"PV-4821",loja:"Unidade Recife-Sul",titular:"Loja (LL José Santos)",clientes:410,valor:"R$ 12,1 mi",st:"Transferência pendente",c:"amber"},
+ {pv:"PV-3910",loja:"Unidade Belém",titular:"Loja (sem sucessor)",clientes:150,valor:"R$ 4,3 mi",st:"Redistribuir",c:"red"},
+];
+const CART_TRANSF=[
+ {de:"MTR-00789 (saída)",para:"Carteira da Loja Recife-Sul",clientes:118,st:"Aguardando aceite do LL",c:"amber",data:"12/06/2026"},
+ {de:"Consultor Belém (descred.)",para:"A redistribuir na unidade",clientes:150,st:"Em análise",c:"red",data:"03/06/2026"},
+];
+/* Visita de Campo — P10, G5/G10 */
+const VISITAS=[
+ {loja:"Unidade Recife-Sul",rating:66,rl:"C",ultima:"há 8 meses",prox:"ATRASADA",pend:3,prio:"Alta",c:"red"},
+ {loja:"Unidade Curitiba-Norte",rating:79,rl:"B",ultima:"há 5 meses",prox:"30 dias",pend:1,prio:"Média",c:"amber"},
+ {loja:"Unidade Belém",rating:73,rl:"B",ultima:"há 11 meses",prox:"ATRASADA",pend:2,prio:"Alta",c:"red"},
+ {loja:"Unidade SP-Centro",rating:94,rl:"A",ultima:"há 12 dias",prox:"6 meses",pend:0,prio:"Baixa",c:"green"},
+ {loja:"Unidade Brasília-Norte",rating:88,rl:"A",ultima:"há 3 meses",prox:"9 meses",pend:0,prio:"Baixa",c:"green"},
+];
+const VIS_CHECK=[
+ {s:"Comunicação visual da fachada",ok:true},
+ {s:"Conferência de estrutura e QPI",ok:true},
+ {s:"Devolutiva da Avaliação 360°",ok:true},
+ {s:"Registro de conflitos (campo privado)",ok:false,priv:true},
+ {s:"Plano de ação com prazo",ok:false},
+];
+/* Central de Alertas — G11, P06, P09, onboarding */
+const ALERTAS=[
+ {ic:"⛔",c:"red",tit:"12 consultores em 4 meses sem venda",d:"Aciona descredenciamento (P06) · notificação automática LL+L+Gestor",tag:"Inatividade",go:"processos"},
+ {ic:"🔺",c:"amber",tit:"Alta produção sem promoção — Carlos Oliveira",d:"Score no topo há 3 meses sem avanço de nível (P09)",tag:"Score",go:"processos"},
+ {ic:"🔄",c:"violet",tit:"3 CNPJs com mudança societária não comunicada",d:"Versionamento societário detectou alteração sem registro",tag:"Societária",go:"pessoas"},
+ {ic:"📄",c:"blue",tit:"28 documentos de prévia vencendo em 7 dias",d:"Identidade/endereço >90d · candidatos na fila",tag:"Onboarding",go:"previas"},
+ {ic:"🎓",c:"amber",tit:"9 candidatos parados na UCA (13 módulos)",d:"Sem progresso há 15 dias — risco de expiração da prévia",tag:"UCA",go:"previas"},
+ {ic:"🚩",c:"green",tit:"Penalty de Marina Reis encerra em 60 dias",d:"Mês 22/24 · alerta de fim de vigência (G7)",tag:"Penalty",go:"unidades/L003?tab=penalty"},
+];
+const REGRAS=[
+ {n:"Inatividade precoce (Score)",d:"Consultor sem venda por 60/90/120 dias",on:true},
+ {n:"Anomalia de vendas",d:"Desvio > 3σ sobre a média móvel do PV",on:true},
+ {n:"Alta produção sem promoção",d:"Top-decil de Score há 3 meses sem avanço",on:true},
+ {n:"Documento vencido",d:"Identidade/endereço com mais de 90 dias",on:true},
+ {n:"Candidato parado na UCA",d:"Sem progresso nos módulos por 15 dias",on:true},
+ {n:"Fim de vigência de penalty",d:"Alerta a 60 e 30 dias do mês 24",on:true},
+ {n:"Mudança societária não comunicada",d:"Diff no quadro societário do CNPJ",on:false},
+];
+/* Blacklist — §7.1 (unificação + anti-reentrada + histórico) */
+const BLACK=[
+ {chave:"***.999.888-**",tipo:"CPF",cat:"Processo criminal",origem:"Credenciamento + Antecipay",tent:2,rev:"Irreversível",c:"red"},
+ {chave:"***.777.666-**",tipo:"CPF",cat:"Máx. de tentativas (4ª)",origem:"Credenciamento",tent:4,rev:"Automático",c:"amber"},
+ {chave:"33.444.555/0001",tipo:"CNPJ",cat:"Vínculo societário restrito",origem:"Base societária (auto)",tent:1,rev:"Bloqueio (exceto PJ2)",c:"violet"},
+ {chave:"***.555.444-**",tipo:"CPF",cat:"Desistência",origem:"Credenciamento",tent:1,rev:"Reversível",c:"gray"},
+ {chave:"22.111.000/0001",tipo:"CNPJ",cat:"Negado — contratual",origem:"Antecipay",tent:1,rev:"Reversível",c:"gray"},
+];
+
+/* ============== NEW SCREENS ============== */
+function miniStats(arr){return `<div class="kpi-mini">${arr.map(m=>`<div class="m"><div class="mn"${m.c?` style="color:${m.c}"`:''}>${m.n}</div><div class="ml">${m.l}</div></div>`).join("")}</div>`;}
+function meter(pct,color){return `<div class="mtr"><i style="width:${Math.min(pct,100)}%;background:${color}"></i></div>`;}
+
+/* --- Orquestrador de Processos (G9a/G9b · P02-P07) --- */
+function pvDetailHtml(code){
+ const v=PVCLEAN.find(x=>x.pv===code)||PVCLEAN[0];
+ return `
+ <div class="msec">🏷 Identificação do PV</div>
+ <div class="pvgrid">
+  <div class="di"><div class="dk">Código do PV</div><div class="dv">${v.pv}</div></div>
+  <div class="di"><div class="dk">Unidade</div><div class="dv">${v.loja}</div></div>
+  <div class="di"><div class="dk">CNPJ vinculado</div><div class="dv">${v.cnpj}</div></div>
+  <div class="di"><div class="dk">Status</div><div class="dv"><span class="pill ${v.c==='red'?'p-red':v.c==='amber'?'p-amber':'p-green'}">${v.st}</span></div></div>
+  <div class="di" style="grid-column:span 2"><div class="dk">Motivo da inatividade</div><div class="dv">${v.motivo}</div></div>
+  <div class="di"><div class="dk">Detectado em</div><div class="dv">${v.det}</div></div>
+ </div>
+ <div class="msec">💰 Situação comercial</div>
+ <div class="pvgrid">
+  <div class="di"><div class="dk">Consultor anterior</div><div class="dv">${v.cons}</div></div>
+  <div class="di"><div class="dk">Clientes na carteira</div><div class="dv">${v.cli}</div></div>
+  <div class="di"><div class="dk">Comissão residual</div><div class="dv">${v.res}</div></div>
+  <div class="di"><div class="dk">Última venda</div><div class="dv">${v.uv}</div></div>
+ </div>
+ <div class="banner" style="margin-top:14px"><span>⚙️</span><div>PV detectado automaticamente pelo Motor de Comissão &amp; Penalty — encaminhado à fila de higienização (G6).</div></div>`;
+}
+function Processos(q){
+ const f=(q&&q.f)||"todos";
+ const CHIPS=[["todos","Todos"],["abertura","Abertura"],["transferencia","Transferência"],["promocao","Promoção"],["cessao","Cessão"],["descred","Descredenciamento"],["pvs","PVs Inativos"]];
+ const list=(f==="pvs"||f==="todos")?PROCS:PROCS.filter(p=>p.k===f);
+ const selId=(q&&q.sel&&list.some(p=>p.id===q.sel))?q.sel:(list[0]?list[0].id:PROCS[0].id);
+ const selP=PROCS.find(p=>p.id===selId)||PROCS[0];
+ const check=PROC_CHECK[selId]||[]; const hist=PROC_HIST[selId]||[]; const pend=check.filter(c=>!c.ok).length;
+ const pvsCard=`<div class="card"><h3>PVs Inativos</h3><div class="csub">PVs sem consultor detectados automaticamente → fila com aprovação (G6)</div>
+  <table class="t" style="margin-top:8px"><thead><tr><th>PV</th><th>Unidade</th><th>CNPJ</th><th>Motivo</th><th>Status</th></tr></thead>
+  <tbody>${PVCLEAN.map(v=>`<tr data-pv="${v.pv}"><td><b>${v.pv}</b></td><td>${v.loja}</td><td style="color:var(--muted);font-variant-numeric:tabular-nums">${v.cnpj}</td><td style="font-size:12.5px">${v.motivo}</td><td><span class="pill ${v.c==='red'?'p-red':v.c==='amber'?'p-amber':'p-green'}">${v.st}</span></td></tr>`).join("")}</tbody></table></div>`;
+ const gridHtml=`<div class="grid" style="grid-template-columns:1.55fr 1fr">
+  <div class="card"><h3>Fila de processos</h3><div class="csub">${list.length} processo(s) · clique num card para ver o checklist e o histórico</div>
+   ${list.length?list.map(p=>`<div class="pcard ${p.id===selId?"sel":""}" data-go="processos?f=${f}&sel=${p.id}" style="cursor:pointer"><div class="pi" style="background:${CB[p.c]};color:${CV[p.c]}">${p.ic}</div>
+     <div style="flex:1;min-width:0"><div class="between"><b style="font-size:13.5px">${p.tipo}</b><span class="pill ${p.s==='g'?'p-green':p.s==='a'?'p-amber':'p-red'}">${p.sla}</span></div>
+      <div style="font-size:12.5px;color:var(--ink-2);margin:2px 0 7px">${p.alvo} · <span style="color:var(--muted)">${p.resp}</span></div>
+      <div class="steps">${Array.from({length:p.total}).map((_,i)=>`<span class="dot ${i<p.etapa?'done':''} ${i===p.etapa-1?'cur':''}"></span>`).join("")}<span class="stept">Etapa ${p.etapa}/${p.total} · ${p.etapaNome}</span></div>
+     </div></div>`).join(""):'<div class="emptybox">Nenhum processo deste tipo.</div>'}
+  </div>
+  <div>
+   <div class="card" style="margin-bottom:16px"><h3>Checklist do Processo</h3><div class="csub">${selP.tipo} · o card só encerra com todas as etapas concluídas</div>
+    ${check.map(c=>`<div class="chk ${c.ok?'ok':''}"><span class="ck">${c.ok?'✓':'○'}</span><span>${c.s}</span></div>`).join("")}
+    ${pend?`<div class="banner" style="margin:12px 0 0"><span>⏳</span><div><b>${pend} etapa(s) pendente(s)</b> para concluir o processo.</div></div>`:`<div class="banner" style="margin:12px 0 0;background:var(--green-bg);border-color:#bfe3cd"><span>✓</span><div style="color:var(--ink-2)">Todas as etapas concluídas.</div></div>`}
+   </div>
+   <div class="card"><h3>Histórico do Processo</h3><div class="csub">${selP.tipo} · ${selP.alvo}</div>
+    <div class="tl" style="margin-top:12px">${hist.map(e=>`<div class="tlitem"><div class="node" style="background:#fff;color:${e.c}">${e.ic}</div><div class="box"><div class="bh"><div class="bt" style="font-size:12.5px">${e.t}</div><div class="bd">${e.date}</div></div><div class="bx">${e.d}</div></div></div>`).join("")}</div>
+   </div>
+  </div>
+ </div>`;
+ return `
+ <div class="page-h between"><div><h1>Processos da Rede Ademicon</h1><p>Fila única para Abertura, Transferência, Promoção, Cessão e Descredenciamento — antes 100% por e-mail (G9). Com SLA, fila e histórico do processo.</p></div><button class="btn p">+ Novo processo</button></div>
+ ${miniStats([{n:"38",l:"Processos ativos"},{n:"4,2d",l:"SLA médio",c:"var(--green)"},{n:"3",l:"SLA estourado",c:"var(--red)"},{n:PVCLEAN.filter(v=>v.st!=="Concluído").length+"",l:"PVs inativos",c:"var(--red)"}])}
+ ${f==="pvs"?"":`<div class="banner"><span>⚠️</span><div><b>1 Cessão de Crédito estourou o SLA</b> — escalonada automaticamente ao Diretor de Redes. Integração Newcon↔Pipefy v2 ativa.</div></div>`}
+ <div class="chiprow">${CHIPS.map(cp=>`<a href="#/processos?f=${cp[0]}" class="chip ${f===cp[0]?'on':''}">${cp[1]}</a>`).join("")}</div>
+ ${f==="pvs"?pvsCard:gridHtml}`;
+}
+
+/* --- Motor de Comissão & Penalty (G6 · G7 · P03) --- */
+function Penalty(){
+ return `
+ <div class="page-h between"><div><h1>Motor de Comissão &amp; Penalty <span class="pill p-green" style="vertical-align:middle">NOVO</span></h1><p>Vigências automáticas do penalty de 24 meses (G7), loja primária derivada da 1ª matrícula (P03) e higienização de PVs inativos (G6).</p></div><span class="fresh">🟢 Newcon + Data Lake (Gold)</span></div>
+ ${miniStats([{n:"3",l:"Penaltis ativos"},{n:"R$ 6,7k",l:"Retido este mês",c:"var(--maroon-2)"},{n:"3",l:"PVs inativos (fila)",c:"var(--red)"},{n:"2",l:"Vigências encerrando",c:"var(--amber)"}])}
+ <div class="grid" style="grid-template-columns:1.3fr 1fr">
+  <div class="card"><h3>Penaltis de Transferência — vigência de 24 meses</h3><div class="csub">Contagem automática · aplica 0,5% à Loja Primária · alerta de início/fim (antes: controle manual)</div>
+   ${PENALTIES.map(p=>`<div class="pnl"><div class="between"><div><b style="font-size:13.5px">${p.consultor}</b> <span style="font-size:11.5px;color:var(--muted)">${p.cpf}</span><div style="font-size:12px;color:var(--muted);margin-top:2px">Primária <b style="color:var(--ink-2)">${p.primaria}</b> ← atual ${p.atual} · ${p.pct}% · ${p.valor}</div></div><span class="pill ${p.c==='amber'?'p-amber':p.c==='green'?'p-green':'p-gray'}">${p.st}</span></div>
+     <div class="between" style="margin-top:8px;gap:10px"><div style="flex:1">${meter(p.mes/24*100, p.c==='green'?'var(--green)':p.c==='gray'?'var(--muted-2)':'var(--amber)')}</div><span style="font-size:11.5px;font-weight:700;color:var(--muted);white-space:nowrap">mês ${p.mes}/24</span></div></div>`).join("")}
+  </div>
+  <div>
+   <div class="card" style="margin-bottom:16px"><h3>Loja Primária automática</h3><div class="csub">Derivada da 1ª matrícula — elimina o conflito manual (P03)</div>
+    <div class="soc"><div class="si" style="background:var(--maroon-bg)">🏠</div><div class="sn"><div class="snn">Carlos Oliveira</div><div class="snc">1ª matrícula: SP-Centro (03/2019) → primária permanente</div></div><span class="pill p-green">Auto</span></div>
+    <div class="soc"><div class="si" style="background:var(--maroon-bg)">🏠</div><div class="sn"><div class="snn">Pedro Costa</div><div class="snc">1ª matrícula: Recife-Sul (07/2021)</div></div><span class="pill p-green">Auto</span></div>
+   </div>
+   <div class="card"><div class="between"><h3>Higienização de PVs (G6)</h3><button class="btn s" style="padding:5px 11px">Aprovar fila</button></div><div class="csub">PVs sem consultor detectados automaticamente → fila com aprovação</div>
+    ${PVCLEAN.map(v=>`<div class="occ" style="border-left-color:${CV[v.c]};padding:9px 11px"><div class="ot"><div class="ott" style="font-size:12.5px">${v.pv} · ${v.loja}</div><div class="od">${v.motivo}</div></div><span class="pill ${v.c==='red'?'p-red':v.c==='amber'?'p-amber':'p-green'}">${v.st}</span></div>`).join("")}
+   </div>
+  </div>
+ </div>`;
+}
+
+/* --- Gestão de Carteira (substitui planilha NAC) --- */
+function Carteira(){
+ return `
+ <div class="page-h between"><div><h1>Gestão de Carteira <span class="pill p-green" style="vertical-align:middle">NOVO</span></h1><p>Titularidade modelada Loja ↔ PV ↔ Carteira. A carteira é ativo da loja — transferência com aceite do LL registrado (substitui a planilha NAC).</p></div><button class="btn p">+ Transferência</button></div>
+ ${miniStats([{n:"312",l:"Carteiras ativas"},{n:"~198 mil",l:"Clientes sob gestão"},{n:"2",l:"Transferências pendentes",c:"var(--amber)"},{n:"R$ 95 mi",l:"Sob gestão (amostra)",c:"var(--maroon-2)"}])}
+ <div class="grid" style="grid-template-columns:1.5fr 1fr">
+  <div class="card" style="padding:0;overflow:hidden"><div style="padding:16px 18px 4px"><h3>Carteiras por PV</h3><div class="csub">Titularidade sempre da loja — permanece mesmo com a saída do consultor</div></div>
+   <table class="t"><thead><tr><th>PV</th><th>Unidade</th><th>Titular</th><th style="text-align:right">Clientes</th><th style="text-align:right">Valor</th><th>Status</th></tr></thead>
+   <tbody>${CARTEIRAS.map(c=>`<tr><td><b>${c.pv}</b></td><td>${c.loja}</td><td style="font-size:12.5px">${c.titular}</td><td style="text-align:right;font-weight:700">${c.clientes.toLocaleString('pt-BR')}</td><td style="text-align:right">${c.valor}</td><td><span class="pill ${c.c==='green'?'p-green':c.c==='amber'?'p-amber':'p-red'}">${c.st}</span></td></tr>`).join("")}</tbody></table>
+  </div>
+  <div class="card"><h3>Transferências &amp; redistribuição</h3><div class="csub">Aceite do LL registrado em sistema — fim da planilha NAC</div>
+   ${CART_TRANSF.map(t=>`<div class="pnl"><div style="font-size:12.5px;color:var(--muted)">De</div><b style="font-size:13px">${t.de}</b><div style="font-size:16px;color:var(--muted-2);margin:2px 0">↓ ${t.clientes} clientes</div><div style="font-size:12.5px;color:var(--muted)">Para</div><b style="font-size:13px">${t.para}</b><div class="between" style="margin-top:8px"><span class="pill ${t.c==='amber'?'p-amber':'p-red'}">${t.st}</span>${t.c==='amber'?'<button class="btn p" style="padding:5px 12px">Registrar aceite</button>':'<button class="btn s" style="padding:5px 12px">Redistribuir</button>'}</div></div>`).join("")}
+   <div class="banner" style="margin:4px 0 0;background:var(--green-bg);border-color:#bfe3cd"><span>✓</span><div style="color:var(--ink-2)">Titularidade <b style="color:var(--green)">Loja↔PV↔Carteira</b> como entidade de primeira classe no Data Lake.</div></div>
+  </div>
+ </div>`;
+}
+
+/* --- Visita de Campo (P10 · G5/G10) --- */
+function visLoja(n){return LOJAS.find(x=>x.nome===n);}
+function visLid(n){const l=visLoja(n);return l?l.id:"L001";}
+function visLoc(n){const l=visLoja(n);return l?{cid:l.cidade,reg:MACRO[l.regiao]||l.regiao}:{cid:"—",reg:"—"};}
+const LOJAGEO={};
+LOJAS.forEach(l=>{const macro=MACRO[l.regiao]||l.regiao;const p=(l.cidade||"/").split("/");const cid=(p[0]||"").trim();const uf=(p[1]||"").trim();LOJAGEO[macro]=LOJAGEO[macro]||{};LOJAGEO[macro][uf]=LOJAGEO[macro][uf]||{};LOJAGEO[macro][uf][cid]=LOJAGEO[macro][uf][cid]||[];if(LOJAGEO[macro][uf][cid].indexOf(l.nome)<0)LOJAGEO[macro][uf][cid].push(l.nome);});
+function vEstadosOf(reg){if(!reg||reg==="Todas")return [];return Object.keys(LOJAGEO[reg]||{}).sort((a,b)=>a.localeCompare(b,"pt"));}
+function vCidadesOf(reg,uf){if(!reg||reg==="Todas"||!uf)return [];return Object.keys((LOJAGEO[reg]||{})[uf]||{}).sort((a,b)=>a.localeCompare(b,"pt"));}
+function vUnidadesOf(reg,uf,cid){if(!reg||reg==="Todas"||!uf||!cid)return [];return (((LOJAGEO[reg]||{})[uf]||{})[cid]||[]).slice().sort((a,b)=>a.localeCompare(b,"pt"));}
+function visMatch(nome){
+ const reg=selVal("vfilRegional"),uf=selVal("vfilEstado"),cid=selVal("vfilCidade"),un=selVal("vfilUnidade");
+ if(!un&&!cid&&!uf&&(!reg||reg==="Todas"))return true;
+ const l=visLoja(nome); if(!l)return false;
+ const lmacro=MACRO[l.regiao]||l.regiao; const p=(l.cidade||"/").split("/"); const lcid=(p[0]||"").trim(); const luf=(p[1]||"").trim();
+ if(un)return nome===un;
+ if(cid)return lcid===cid;
+ if(uf)return luf===uf;
+ return lmacro===reg;
+}
+function visFilterBar(type){
+ const regs=["Todas"].concat(MACRO_ORDER.slice().sort((a,b)=>a.localeCompare(b,"pt")));
+ return `<div class="filterbar">
+   <div class="ff"><label>Regional</label><select id="vfilRegional">${regs.map(r=>`<option value="${r}">${r}</option>`).join("")}</select></div>
+   <div class="ff"><label>Estado</label><select id="vfilEstado" disabled><option value="">Todos os estados</option></select></div>
+   <div class="ff"><label>Cidade</label><select id="vfilCidade" disabled><option value="">Todas as cidades</option></select></div>
+   <div class="ff"><label>Unidade</label><select id="vfilUnidade" disabled><option value="">Todas as unidades</option></select></div>
+   <button class="btn p" data-vfil="${type}">Filtrar</button>
+   <button class="btn s" data-vfil-clear="${type}">Limpar</button>
+ </div>`;
+}
+function visRealizadasData(){return [
+ {u:"Unidade SP-Centro",data:"18/06/2026",r:"A · 94",rl:"A"},
+ {u:"Unidade Campinas",data:"02/06/2026",r:"A · 87",rl:"A"},
+ {u:"Unidade Brasília-Norte",data:"20/05/2026",r:"A · 88",rl:"A"},
+ {u:"Unidade Curitiba-Norte",data:"28/04/2026",r:"B · 79",rl:"B"},
+ {u:"Unidade Belém",data:"10/04/2026",r:"B · 73",rl:"B"},
+ {u:"Unidade Recife-Sul",data:"15/03/2026",r:"C · 66",rl:"C"},
+ {u:"Unidade SP-Centro",data:"12/02/2026",r:"A · 92",rl:"A"},
+ {u:"Unidade Campinas",data:"20/01/2026",r:"A · 85",rl:"A"}
+];}
+function visRealizadasTableHtml(){
+ const done=visRealizadasData().filter(v=>visMatch(v.u));
+ return `<div style="font-size:12.5px;color:var(--muted);margin-bottom:10px">${done.length} visita(s) exibida(s) — clique numa linha para abrir a unidade.</div>
+  <table class="t"><thead><tr><th>Unidade</th><th>Cidade</th><th>Regional</th><th>Data</th><th style="text-align:center">Rating</th></tr></thead>
+  <tbody>${done.length?done.map(v=>{const lc=visLoc(v.u);return `<tr data-unit="${visLid(v.u)}"><td><b>${v.u}</b></td><td>${lc.cid}</td><td>${lc.reg}</td><td>${v.data}</td><td style="text-align:center"><span class="pill ${v.rl==="A"?"p-green":v.rl==="B"?"p-amber":"p-red"}">${v.r}</span></td></tr>`;}).join(""):`<tr><td colspan="5"><div class="emptybox">Nenhuma visita para o filtro selecionado.</div></td></tr>`}</tbody></table>`;
+}
+function visitasRealizadasHtml(){return visFilterBar("realizadas")+`<div id="vtable">`+visRealizadasTableHtml()+`</div>`;}
+function visPendentesTableHtml(){
+ const pend=VISITAS.filter(v=>v.prox==="ATRASADA").filter(v=>visMatch(v.loja));
+ return `<div style="font-size:12.5px;color:var(--muted);margin-bottom:10px">${pend.length} unidade(s) com visita em atraso — clique numa linha para abrir a unidade.</div>
+  <table class="t"><thead><tr><th>Unidade</th><th>Cidade</th><th>Regional</th><th>Última visita</th><th style="text-align:center">Pend.</th><th>Prioridade</th></tr></thead>
+  <tbody>${pend.length?pend.map(v=>{const lc=visLoc(v.loja);return `<tr data-unit="${visLid(v.loja)}"><td><b>${v.loja}</b></td><td>${lc.cid}</td><td>${lc.reg}</td><td><b style="color:var(--red)">${v.ultima}</b></td><td style="text-align:center;font-weight:700">${v.pend}</td><td><span class="pill p-red">${v.prio}</span></td></tr>`;}).join(""):`<tr><td colspan="6"><div class="emptybox">Nenhuma unidade para o filtro selecionado.</div></td></tr>`}</tbody></table>`;
+}
+function visitasPendentesHtml(){return visFilterBar("pendentes")+`<div id="vtable">`+visPendentesTableHtml()+`</div>`;}
+function Visitas(q){
+ const pend=q&&q.pend;
+ const cov=pend?VISITAS.filter(v=>v.prox==="ATRASADA"):VISITAS;
+ const pendN=VISITAS.filter(v=>v.prox==="ATRASADA").length;
+ return `
+ <div class="page-h"><h1>Visitas de Campo</h1><p>Dashboard de cobertura (prioriza por dados, não por memória), checklist digitalizado e loop de follow-up pós-visita — o gap crítico da fase 7.</p></div>
+ <div class="kpi-mini">
+   <div class="m mclick" data-modal="visitas-realizadas"><div class="mn">34</div><div class="ml">Visitas no ano ›</div></div>
+   <div class="m"><div class="mn" style="color:var(--amber)">71%</div><div class="ml">Cobertura da rede</div></div>
+   <div class="m mclick" data-modal="visitas-pendentes"><div class="mn" style="color:var(--red)">${pendN}</div><div class="ml">Unidades Pendentes de Visita ›</div></div>
+   <div class="m"><div class="mn">5</div><div class="ml">Planos de ação abertos</div></div>
+ </div>
+ <div class="grid" style="grid-template-columns:1.5fr 1fr">
+  <div class="card" style="padding:0;overflow:hidden"><div style="padding:16px 18px 4px"><div class="between"><div><h3>Cobertura de visitas</h3><div class="csub">${pend?`Filtrado: unidades pendentes de visita (${cov.length})`:"Ordenado por prioridade — clique numa unidade para abrir o detalhamento"}</div></div>${pend?`<a href="#/visitas" class="btn s" style="padding:4px 10px">✕ Limpar filtro</a>`:""}</div></div>
+   <table class="t"><thead><tr><th>Unidade</th><th style="text-align:center">Rating</th><th>Última visita</th><th>Próxima</th><th style="text-align:center">Pend.</th><th>Prioridade</th></tr></thead>
+   <tbody>${cov.map(v=>`<tr data-unit="${visLid(v.loja)}"><td><b>${v.loja}</b></td><td style="text-align:center"><span class="pill ${v.rl==='A'?'p-green':v.rl==='B'?'p-amber':'p-red'}">${v.rl} · ${v.rating}</span></td><td>${v.ultima}</td><td>${v.prox==='ATRASADA'?'<b style="color:var(--red)">ATRASADA</b>':v.prox}</td><td style="text-align:center;font-weight:700">${v.pend}</td><td><span class="pill ${v.c==='red'?'p-red':v.c==='amber'?'p-amber':'p-green'}">${v.prio}</span></td></tr>`).join("")}</tbody></table>
+  </div>
+  <div>
+   <div class="card" style="margin-bottom:16px"><h3>Checklist digital — Recife-Sul</h3><div class="csub">Substitui o Excel/e-mail · rastreável (G10)</div>
+    ${VIS_CHECK.map(c=>`<div class="chk ${c.ok?'ok':''}"><span class="ck">${c.ok?'✓':'○'}</span><span>${c.s}${c.priv?' <span class="pill p-violet" style="margin-left:4px">privado</span>':''}</span></div>`).join("")}
+   </div>
+   <div class="card"><h3>Loop de follow-up</h3><div class="csub">Plano de ação com prazo + checagem da evolução do rating (antes: inexistente)</div>
+    <div class="tl" style="margin-top:12px">
+     <div class="tlitem"><div class="node" style="background:#fff;color:var(--red)">🚩</div><div class="box"><div class="bh"><div class="bt" style="font-size:12.5px">Visita — rating C (66)</div><div class="bd">há 8 meses</div></div><div class="bx">3 pendências registradas · plano de ação criado.</div></div></div>
+     <div class="tlitem"><div class="node" style="background:#fff;color:var(--amber)">🎯</div><div class="box"><div class="bh"><div class="bt" style="font-size:12.5px">Meta: rating B em 90 dias</div><div class="bd">em curso</div></div><div class="bx">Comunicação visual + pós-venda priorizados.</div></div></div>
+     <div class="tlitem"><div class="node" style="background:#fff;color:var(--green)">📈</div><div class="box"><div class="bh"><div class="bt" style="font-size:12.5px">Checagem automática do 360°</div><div class="bd">agendada</div></div><div class="bx">CRM reavalia a evolução e reabre se estagnar.</div></div></div>
+    </div>
+   </div>
+  </div>
+ </div>`;
+}
+
+/* --- Central de Alertas (G11 · P06 · P09 · onboarding) --- */
+function Alertas(){
+ return `
+ <div class="page-h between"><div><h1>Central de Alertas <span class="pill p-green" style="vertical-align:middle">NOVO</span></h1><p>Detecção automática de anomalia e inatividade sobre o Data Lake — Score, "4 Meses Sem Venda", alta-produção-sem-promoção, documentos e societária. Fim da vigilância manual.</p></div><span class="fresh">🟢 Regras sobre camada Gold</span></div>
+ ${miniStats([{n:"23",l:"Alertas abertos",c:"var(--red)"},{n:"6",l:"Críticos",c:"var(--red)"},{n:"41",l:"Resolvidos hoje",c:"var(--green)"},{n:"7",l:"Regras ativas"}])}
+ <div class="grid" style="grid-template-columns:1.5fr 1fr">
+  <div class="card"><h3>Alertas ativos</h3><div class="csub">Clique em "Tratar" para resolver no contexto da tela responsável</div>
+   ${ALERTAS.map(a=>`<div class="occ" style="border-left-color:${CV[a.c]}"><div style="font-size:18px">${a.ic}</div><div class="ot"><div class="ott">${a.tit}</div><div class="od">${a.d}</div><div class="meta"><span class="pill ${a.c==='red'?'p-red':a.c==='amber'?'p-amber':a.c==='violet'?'p-violet':a.c==='blue'?'p-blue':'p-green'}">${a.tag}</span></div></div><button class="btn s" style="padding:5px 11px" data-go="${a.go}">Tratar →</button></div>`).join("")}
+  </div>
+  <div class="card"><h3>Regras de detecção</h3><div class="csub">Motor de anomalia configurável (sobre o Data Lake)</div>
+   ${REGRAS.map(r=>`<div class="soc"><div class="sn"><div class="snn" style="font-size:13px">${r.n}</div><div class="snc">${r.d}</div></div><span class="sw ${r.on?'on':''}"><i></i></span></div>`).join("")}
+  </div>
+ </div>`;
+}
+
+/* --- Blacklist (§7.1: unificação + anti-reentrada + histórico) --- */
+const BL_CRIME=[
+ {chave:"***.999.888-**",tipo:"CPF",cat:"Processo criminal",rev:"Irreversível"},
+ {chave:"***.410.223-**",tipo:"CPF",cat:"Crime — estelionato",rev:"Irreversível"},
+ {chave:"***.733.190-**",tipo:"CPF",cat:"Crime — lavagem de dinheiro",rev:"Irreversível"},
+ {chave:"***.208.551-**",tipo:"CPF",cat:"Processo criminal",rev:"Irreversível"},
+ {chave:"***.612.907-**",tipo:"CPF",cat:"Crime — falsidade ideológica",rev:"Irreversível"}
+];
+const BL_BLOQ=[
+ {chave:"***.777.666-**",tipo:"CPF",cat:"Máx. de tentativas (4ª)",rev:"Automático"},
+ {chave:"***.120.334-**",tipo:"CPF",cat:"Reentrada bloqueada",rev:"Automático"},
+ {chave:"22.111.000/0001",tipo:"CNPJ",cat:"Negado — contratual",rev:"Reversível"},
+ {chave:"***.905.221-**",tipo:"CPF",cat:"Documentos fraudados",rev:"Automático"},
+ {chave:"***.445.882-**",tipo:"CPF",cat:"Bloqueio temporário",rev:"Reversível"}
+];
+const BL_SOC=[
+ {chave:"33.444.555/0001",tipo:"CNPJ",cat:"Vínculo societário restrito",rev:"Bloqueio (exceto PJ2)"},
+ {chave:"44.221.880/0001",tipo:"CNPJ",cat:"Sócio com restrição",rev:"Bloqueio"},
+ {chave:"***.660.114-**",tipo:"CPF",cat:"Sócio problemático",rev:"Bloqueio"},
+ {chave:"55.908.112/0001",tipo:"CNPJ",cat:"Alteração societária irregular",rev:"Bloqueio"}
+];
+function blackModalHtml(list,note){
+ return `<div style="font-size:12.5px;color:var(--muted);margin-bottom:10px">${note}</div>
+  <table class="t"><thead><tr><th>Chave</th><th>Tipo</th><th>Categoria</th><th>Reversibilidade</th></tr></thead>
+  <tbody>${list.map(b=>`<tr><td style="font-variant-numeric:tabular-nums">${b.chave}</td><td><span class="pill ${b.tipo==="CPF"?"p-blue":"p-violet"}">${b.tipo}</span></td><td>${b.cat}</td><td>${b.rev||""}</td></tr>`).join("")}</tbody></table>`;
+}
+function Blacklist(q){
+ const qcpf=q&&q.cpf, qnome=q&&q.nome;
+ const hit=qcpf?BLACK.find(b=>b.chave===qcpf):null;
+ const vb=qcpf?(hit
+   ?`<div class="banner"><span>⛔</span><div><b>${qnome||qcpf} CONSTA na blacklist</b> — ${hit.cat} · ${hit.rev}. <a href="#/blacklist" class="btn s" style="margin-left:8px;padding:4px 10px">✕ Limpar</a></div></div>`
+   :`<div class="banner" style="background:var(--green-bg);border-color:#bfe3cd"><span>✓</span><div style="color:var(--ink-2)"><b style="color:var(--green)">${qnome||qcpf} não consta na blacklist</b> — CPF <b>${qcpf}</b> apto, sem restrições registradas. <a href="#/blacklist" class="btn s" style="margin-left:8px;padding:4px 10px">✕ Limpar</a></div></div>`):"";
+ return `
+ <div class="page-h between"><div><h1>Blacklist Unificada <span class="pill p-green" style="vertical-align:middle">NOVO</span></h1><p>Base única (Credenciamento + Antecipay) com verificação determinística anti-reentrada por CPF/CNPJ e histórico consolidado por pessoa.</p></div><span class="fresh">🟢 Base única no Data Lake</span></div>
+ <div class="kpi-mini">
+   <div class="m mclick" data-modal="bl-registros"><div class="mn">+135</div><div class="ml">Registros ›</div></div>
+   <div class="m mclick" data-modal="bl-crime"><div class="mn" style="color:var(--red)">41</div><div class="ml">Crime (irreversível) ›</div></div>
+   <div class="m mclick" data-modal="bl-bloq"><div class="mn" style="color:var(--green)">312</div><div class="ml">Tentativas bloqueadas ›</div></div>
+   <div class="m mclick" data-modal="bl-soc"><div class="mn" style="color:var(--violet)">18</div><div class="ml">Vínculo societário (auto) ›</div></div>
+ </div>
+ ${vb}
+ <div class="banner" style="background:var(--green-bg);border-color:#bfe3cd"><span>✓</span><div style="color:var(--ink-2)"><b style="color:var(--green)">Verificação anti-reentrada ativa</b> — toda prévia é checada automaticamente por chave (CPF/CNPJ), sem etapa manual.</div></div>
+ <div class="grid" style="grid-template-columns:1.5fr 1fr">
+  <div class="card" style="padding:0;overflow:hidden"><div style="padding:16px 18px 4px"><h3>Registros</h3><div class="csub">Origem unificada — a mesma pessoa é ligada por todas as tentativas</div></div>
+   <table class="t"><thead><tr><th>Chave</th><th>Tipo</th><th>Categoria</th><th>Origem</th><th style="text-align:center">Tent.</th><th>Reversibilidade</th></tr></thead>
+   <tbody>${BLACK.map(b=>`<tr${b.chave===qcpf?' style="background:var(--amber-bg)"':''}><td style="font-variant-numeric:tabular-nums">${b.chave}</td><td><span class="pill ${b.tipo==='CPF'?'p-blue':'p-violet'}">${b.tipo}</span></td><td>${b.cat}</td><td style="font-size:12px;color:var(--muted)">${b.origem}</td><td style="text-align:center;font-weight:700">${b.tent}</td><td><span class="pill ${b.c==='red'?'p-red':b.c==='amber'?'p-amber':b.c==='violet'?'p-violet':'p-gray'}">${b.rev}</span></td></tr>`).join("")}</tbody></table>
+  </div>
+  <div class="card"><h3>Fontes unificadas</h3><div class="csub">Antes: listas separadas (fragmentação)</div>
+   <div class="soc"><div class="si" style="background:var(--maroon-bg)">🗄</div><div class="sn"><div class="snn">Credenciamento</div><div class="snc">Reprovados, negados, desistências</div></div><span class="pill p-green">Unificada</span></div>
+   <div class="soc"><div class="si" style="background:var(--maroon-bg)">💳</div><div class="sn"><div class="snn">Antecipay</div><div class="snc">Blacklist financeira (antes isolada)</div></div><span class="pill p-green">Unificada</span></div>
+   <div class="soc"><div class="si" style="background:var(--maroon-bg)">🏢</div><div class="sn"><div class="snn">Base societária</div><div class="snc">Inserção automática de sócios problemáticos</div></div><span class="pill p-violet">Auto</span></div>
+   <div class="banner" style="margin:12px 0 0"><span>🔎</span><div>Histórico consolidado liga tentativas por <b>CPF/CNPJ e lojas diferentes</b> à mesma identidade (Visão CPF).</div></div>
+  </div>
+ </div>`;
+}
+
+/* --- Visão CPF (drill-down · G3 · P04) --- */
+function PessoaDetalhe(id){
+ const p=PESSOAS.find(x=>String(x.id)===String(id))||PESSOAS[0];
+ const gcpf=GNODES.find(n=>n.t==="cpf"&&n.pid===p.id);
+ let gsel=""; if(gcpf) gsel=gcpf.id; else {const lj=LOJAS.find(x=>x.nome===p.loja); const gl=lj?GNODES.find(n=>n.t==="loja"&&n.unit===lj.id):null; if(gl) gsel=gl.id;}
+ const goRede=gsel?`rede?view=grafo&sel=${gsel}`:"rede?view=grafo";
+ const goBL=`blacklist?cpf=${encodeURIComponent(p.cpf)}&nome=${encodeURIComponent(p.nome)}`;
+ const grade=p.nivel.indexOf("Licenciado 3.5")>=0?"LL":p.nivel.indexOf("Licenciado")>=0?"L":p.nivel.indexOf("Autorizado")>=0?"A":(p.nivel[0]||"A");
+ const nivelLabel=p.nivel==="Licenciado 3.5"?"Licenciado Lojista 3.5":p.nivel;
+ const empresas=[
+  {n:"Alpha Consultoria Ltda",cnpj:"12.345.678/0001-90",loja:"Unidade SP-Centro",papel:"Licenciado Lojista",pct:"60%",st:"Ativo",cid:"C1",c:"green"},
+  {n:"Beta Soluções ME",cnpj:"98.765.432/0001-10",loja:"Unidade Campinas",papel:"Sócio",pct:"25%",st:"Ativo",cid:"C2",c:"green"},
+ ].slice(0, p.emp||1);
+ const traj=[
+  {date:"Jul 2023",ic:"👑",c:"var(--maroon-2)",t:"Licenciado Lojista (3,5%)",d:"Dono da unidade SP-Centro · nível máximo."},
+  {date:"Jun 2021",ic:"⬆️",c:"var(--green)",t:"Licenciado (3,0%)",d:"Após desenvolver equipe de 8 consultores."},
+  {date:"Mar 2020",ic:"⬆️",c:"var(--green)",t:"Autorizado Pleno (2,5%)",d:"Primeira equipe formada."},
+  {date:"Ago 2019",ic:"✅",c:"var(--blue)",t:"Autorizado (2,0%) — matrícula ativa",d:"Entrada no CNPJ · início da carreira."},
+  {date:"Abr 2019",ic:"📋",c:"var(--amber)",t:"Prévia aprovada",d:"13 módulos UCA + análise jurídica."},
+ ];
+ return `
+ <div class="uhead"><div class="top2"><div>
+   <h1>${p.nome} <span class="pill ${pillCls[p.st]||'p-gray'}">${p.st}</span></h1>
+   <div class="facts">
+     <div class="f"><div class="fl">CPF</div><div class="fv">🪪 ${p.cpf}</div></div>
+     <div class="f"><div class="fl">Matrícula</div><div class="fv">${p.mat}</div></div>
+     <div class="f"><div class="fl">Nível atual</div><div class="fv">${nivelLabel}</div></div>
+     <div class="f"><div class="fl">Empresas (CNPJ)</div><div class="fv">🏢 ${p.emp}</div></div>
+     <div class="f"><div class="fl">Unidade Principal</div><div class="fv">${p.loja}</div></div>
+   </div>
+   <div class="actions"><button class="btn s" data-go="${goRede}">🕸 Ver no grafo</button><button class="btn s" data-go="${goBL}">⛔ Checar blacklist</button><button class="btn s">📊 Exportar</button></div>
+ </div><div class="donut-wrap">${donut(p.st==='Em Prévia'?0:88,grade,'var(--green)',110)}<div class="dl">Score do consultor</div></div></div></div>
+ <div class="grid" style="grid-template-columns:1fr 1fr">
+  <div class="card"><h3>Empresas do CPF (Visão consolidada)</h3><div class="csub">O que hoje exige cruzar 3 sistemas — resolve o G3</div>
+   ${empresas.map(e=>`<div class="soc" data-cnpj="${e.cid}" style="cursor:pointer"><div class="si">🏢</div><div class="sn"><div class="snn">${e.n}</div><div class="snc">${e.cnpj} · ${e.loja} · ${e.papel}</div></div><span style="color:var(--muted-2)">›</span></div>`).join("")}
+   <div class="banner" style="margin:12px 0 0;background:var(--blue-bg);border-color:#c3d2f5"><span>🔗</span><div style="color:var(--ink-2)">Relação <b style="color:var(--blue)">N:N CPF ↔ CNPJ</b> materializada: um CPF pode ser sócio de várias empresas em lojas diferentes.</div></div>
+  </div>
+  <div class="card"><h3>🎬 Trajetória na Ademicon</h3><div class="csub">De prévia a LL — subsidia o Comitê de Masters nas promoções (P04)</div>
+   <div class="tl" style="margin-top:12px">${traj.map(e=>`<div class="tlitem"><div class="node" style="background:#fff;color:${e.c}">${e.ic}</div><div class="box"><div class="bh"><div class="bt" style="font-size:12.5px">${e.t}</div><div class="bd">${e.date}</div></div><div class="bx">${e.d}</div></div></div>`).join("")}</div>
+  </div>
+ </div>`;
+}
+
+/* --- Visão CNPJ (drill-down · G1 · G3 · societária) --- */
+function CnpjDetalhe(id){
+ const c=CNPJS.find(x=>x.id===id)||CNPJS[0];
+ const gcnpj=GNODES.find(n=>n.t==="cnpj"&&n.cid===c.id);
+ let gsel=""; if(gcnpj) gsel=gcnpj.id; else {const lj=LOJAS.find(x=>x.nome===c.loja); const gl=lj?GNODES.find(n=>n.t==="loja"&&n.unit===lj.id):null; if(gl) gsel=gl.id;}
+ const goRede=gsel?`rede?view=grafo&sel=${gsel}`:"rede?view=grafo";
+ const socios=[
+  {n:"João Silva",cpf:"***.456.789-**",papel:"Licenciado Lojista",pct:"60%"},
+  {n:"Maria Santos",cpf:"***.654.321-**",papel:"Sócia",pct:"40%"},
+ ];
+ const hist=[
+  {date:"Mai 2024",ic:"🔄",c:"var(--violet)",t:"Alteração societária detectada",d:"Entrada de novo sócio — versionamento temporal registrou a vigência."},
+  {date:"Jan 2023",ic:"🚩",c:"var(--amber)",t:"Penalty de transferência encerrado",d:"24 meses concluídos · 0,5% à loja primária."},
+  {date:"Mar 2019",ic:"🏢",c:"var(--maroon-2)",t:"CNPJ criado + PV vinculado (1:1)",d:"Matrícula ativa na Unidade SP-Centro."},
+ ];
+ return `
+ <div class="uhead"><div class="top2"><div>
+   <h1>${c.razao} <span class="pill ${c.nc==='green'?'p-green':c.nc==='amber'?'p-amber':'p-red'}">${c.st}</span></h1>
+   <div class="facts">
+     <div class="f"><div class="fl">CNPJ</div><div class="fv">🏢 ${c.cnpj}</div></div>
+     <div class="f"><div class="fl">PV (1:1)</div><div class="fv">${c.pv}</div></div>
+     <div class="f"><div class="fl">Papel</div><div class="fv">${c.papel}</div></div>
+     <div class="f"><div class="fl">Unidade</div><div class="fv">📍 ${c.loja}</div></div>
+     <div class="f"><div class="fl">Sócios (CPF)</div><div class="fv">👥 ${c.socios}</div></div>
+   </div>
+   <div class="actions"><button class="btn s" data-go="${goRede}">🕸 Ver no grafo</button><button class="btn s" data-unit="L001">🏪 Abrir a loja</button><button class="btn s">📊 Exportar</button></div>
+ </div></div></div>
+ <div class="grid" style="grid-template-columns:1fr 1fr">
+  <div class="card"><h3>Quem é o dono (G1)</h3><div class="csub">CPFs sócios deste CNPJ — identificação instantânea (antes: dias de cruzamento manual)</div>
+   ${socios.map(s=>`<div class="soc"><div class="si" style="background:var(--maroon-bg)">👤</div><div class="sn"><div class="snn">${s.n}</div><div class="snc">${s.cpf} · ${s.papel}</div></div><span class="pill p-gray">${s.pct}</span></div>`).join("")}
+   <div class="soc"><div class="si">🏪</div><div class="sn"><div class="snn">Participa de: ${c.loja}</div><div class="snc">Histórico de comissões e penalidades consolidado</div></div></div>
+  </div>
+  <div class="card"><h3>🎬 Histórico &amp; alterações societárias</h3><div class="csub">Versionamento temporal — alerta + vigência de cada mudança</div>
+   <div class="tl" style="margin-top:12px">${hist.map(e=>`<div class="tlitem"><div class="node" style="background:#fff;color:${e.c}">${e.ic}</div><div class="box"><div class="bh"><div class="bt" style="font-size:12.5px">${e.t}</div><div class="bd">${e.date}</div></div><div class="bx">${e.d}</div></div></div>`).join("")}</div>
+  </div>
+ </div>`;
+}
+
+/* ============== ROUTER ============== */
+function parse(){const h=location.hash.replace(/^#\/?/,"")||"dashboard";const [path,qs]=h.split("?");const q=Object.fromEntries(new URLSearchParams(qs||""));const parts=path.split("/");return {path:parts[0],id:parts[1],q};}
+function render(){
+ const {path,id,q}=parse();
+ // nav
+ $("#nav").innerHTML=NAV.map(n=>`<a href="#/${n.id}" title="${n.lbl}" class="${path===n.id||(path==='unidades'&&n.id==='lojas')||((path==='pessoa'||path==='cnpj')&&n.id==='pessoas')||(path==='logbook'&&n.id==='historico')?'on':''}"><span class="ic">${n.ic}</span>${n.lbl}${n.novo?'<span class="tagnew">NOVO</span>':''}</a>`).join("");
+ const labels={dashboard:"Dashboard",rede:"Mapa da Rede",lojas:"Unidades",pessoas:"Pessoas & CNPJ",previas:"Prévias",processos:"Processos",penalty:"Comissão & Penalty",carteira:"Carteira",visitas:"Visitas",alertas:"Alertas",blacklist:"Blacklist",historico:"Histórico",logbook:"Histórico",config:"Configurações",unidades:"Unidades",pessoa:"Pessoas & CNPJ",cnpj:"Pessoas & CNPJ"};
+ let crumb=`<b>${labels[path]||"Dashboard"}</b>`;
+ let html="";
+ switch(path){
+  case "dashboard":html=Dashboard();break;
+  case "rede":html=Rede(q);break;
+  case "lojas":html=Lojas(q);break;
+  case "unidades":{const u=LOJAS.find(x=>x.id===id)||LOJAS[0];crumb=`Unidades › <b>${u.nome}</b>`;html=Unidade(id,q.tab);break;}
+  case "pessoas":html=Pessoas(q);break;
+  case "processos":html=Processos(q);break;
+  case "carteira":html=Carteira();break;
+  case "visitas":html=Visitas(q);break;
+  case "alertas":html=Alertas();break;
+  case "blacklist":html=Blacklist(q);break;
+  case "pessoa":{const pp=PESSOAS.find(x=>String(x.id)===String(id))||PESSOAS[0];crumb=`Pessoas & CNPJ › <b>${pp.nome}</b>`;html=PessoaDetalhe(id);break;}
+  case "cnpj":{const cc=CNPJS.find(x=>x.id===id)||CNPJS[0];crumb=`Pessoas & CNPJ › <b>${cc.razao}</b>`;html=CnpjDetalhe(id);break;}
+  case "previas":html=Previas();break;
+  case "historico":html=HistLog(q);break;
+  case "logbook":html=HistLog({v:"logbook"});break;
+  case "config":html=Config();break;
+  default:html=Dashboard();
+ }
+ $("#crumb").innerHTML="Novo CRM › "+crumb;
+ const _bell=document.querySelector(".bell b");if(_bell)_bell.textContent=ALERTAS.length;
+ const v=$("#view");v.innerHTML=html;v.scrollTop=0;
+ if(path==="rede"){const vw=(q&&q.view)||"grafo";requestAnimationFrame(()=>{if(vw==="sunburst")animateSunburst();else if(vw==="treemap")animateTreemap();else if(vw==="grafo")animateRede();});}
+}
+function animateRede(){
+ const svg=document.getElementById("gsvg"); if(!svg) return;
+ const edges=[...svg.querySelectorAll(".gedge")];
+ const nodes=[...svg.querySelectorAll(".gnode")];
+ const panel=[...document.querySelectorAll(".gpanel .gt,.gpanel .gs,.gpanel .gr,.gpanel .ce,.gpanel .conn,.gpanel .btn")];
+ // ESTADO FINAL (sempre aplicado — garante visibilidade mesmo se a animação não rodar)
+ const rest=()=>{
+   edges.forEach(l=>{l.style.strokeDasharray=l.dataset.soc==="1"?"5 3":"none";l.style.strokeDashoffset="0";});
+   nodes.forEach(n=>{n.style.opacity=n.getAttribute("opacity")||"1";n.style.transform="";n.style.transition="";});
+   panel.forEach(p=>{p.style.opacity="1";p.style.transform="none";});
+ };
+ rest();
+ if(typeof anime==="undefined"||document.hidden) return; // sem animação: já está visível
+ anime.suspendWhenDocumentHidden=false;
+ // entrada: arestas se desenham
+ edges.forEach(l=>{l.style.strokeDasharray="";});
+ anime({targets:edges, strokeDashoffset:[anime.setDashoffset,0], easing:"easeInOutSine", duration:750, delay:anime.stagger(28),
+   complete:()=>edges.forEach(l=>{l.style.strokeDasharray=l.dataset.soc==="1"?"5 3":"none";l.style.strokeDashoffset="0";})});
+ // entrada: nós com stagger elástico
+ nodes.forEach(n=>{n.style.opacity="0";n.style.transition="none";});
+ anime({targets:nodes, opacity:el=>parseFloat(el.getAttribute("opacity")||"1"), scale:[0.3,1],
+   duration:760, delay:anime.stagger(40,{start:160}), easing:"easeOutElastic(1,.6)", complete:rest});
+ // anel: só anima o(s) selecionado(s)
+ const activeRings=[...svg.querySelectorAll(".gring")].filter(r=>r.getAttribute("opacity")!=="0");
+ if(activeRings.length){anime({targets:activeRings, strokeDashoffset:[0,-28], loop:true, duration:2400, easing:"linear"});anime({targets:activeRings, scale:[1,1.12], opacity:[0.95,0.4], direction:"alternate", loop:true, duration:1300, easing:"easeInOutSine"});}
+ // painel lateral desliza
+ panel.forEach(p=>{p.style.opacity="0";});
+ anime({targets:panel, translateY:[12,0], opacity:[0,1], delay:anime.stagger(45,{start:280}), duration:480, easing:"easeOutQuad", complete:rest});
+ setTimeout(rest,2200); // rede de segurança: se a animação travar, reexibe tudo
+}
+function deselectGraph(svg){
+ gCurSel="";
+ GNODES.forEach(n=>{const g=svg.querySelector('.gnode[data-sel="'+n.id+'"]');if(!g)return;
+   g.style.opacity="1";g.setAttribute("opacity","1");
+   const ring=g.querySelector('.gring');if(ring){ring.style.opacity="0";ring.setAttribute("opacity","0");}
+   const shape=g.querySelector('polygon,rect,circle:not(.gring)');if(shape){shape.setAttribute("stroke-width", n.t==="macro"?2:(n.t==="loja"?1.8:1.6));}
+   const txt=g.querySelector('.gnlabel');if(txt&&n.t!=="macro"){txt.setAttribute("fill","#857a70");txt.setAttribute("font-weight","600");}
+ });
+ [...svg.querySelectorAll('.gedge')].forEach(l=>{l.style.opacity="0.5";l.setAttribute("stroke-width",2);});
+ [...document.querySelectorAll('.gfilters button')].forEach(b=>b.classList.toggle('on', b.dataset.fil==='todos'));
+ if(typeof anime!=="undefined")anime.remove([...svg.querySelectorAll('.gring')]);
+ const panel=document.getElementById("gpanel");if(panel){panel.innerHTML=graphPanel("");}
+ try{history.replaceState(null,"","#/rede?view=grafo");}catch(e){}
+}
+function selectGraphNode(id){
+ const svg=document.getElementById("gsvg"); if(!svg) return;
+ if(id===gCurSel){ deselectGraph(svg); return; }
+ gCurSel=id;
+ const conn=nid=> nid===id||GEDGES.some(e=>(e.f===id&&e.t===nid)||(e.t===id&&e.f===nid));
+ GNODES.forEach(n=>{
+   const g=svg.querySelector('.gnode[data-sel="'+n.id+'"]'); if(!g) return;
+   const ok=conn(n.id), isS=n.id===id;
+   g.style.opacity=ok?"1":"0.1"; g.setAttribute("opacity", ok?"1":"0.1");
+   const ring=g.querySelector('.gring'); if(ring){ring.style.opacity=isS?"1":"0"; ring.setAttribute("opacity",isS?"1":"0");}
+   const shape=g.querySelector('polygon,rect,circle:not(.gring)'); if(shape){shape.setAttribute("stroke-width", isS?3:(n.t==="macro"?2:(n.t==="loja"?1.8:1.6)));}
+   const txt=g.querySelector('.gnlabel'); if(txt&&n.t!=="macro"){txt.setAttribute("fill", isS?"#211A15":"#857a70"); txt.setAttribute("font-weight", isS?"700":"600");}
+ });
+ [...svg.querySelectorAll('.gedge')].forEach(l=>{const on=conn(l.dataset.a)&&conn(l.dataset.b); l.style.opacity=on?"0.5":"0.06"; l.setAttribute("stroke-width", on?2:1);});
+ [...document.querySelectorAll('.gfilters button')].forEach(b=>b.classList.toggle('on', b.dataset.fil==='todos'));
+ const panel=document.getElementById("gpanel"); if(panel){panel.innerHTML=graphPanel(id); if(typeof anime!=="undefined"){anime({targets:panel.children,translateY:[8,0],opacity:[0,1],delay:anime.stagger(28),duration:320,easing:"easeOutQuad"});}}
+ const rings=[...svg.querySelectorAll('.gring')];
+ if(typeof anime!=="undefined"){ anime.remove(rings); rings.forEach(r=>{const p=r.closest('.gnode'); r.style.opacity=(p&&p.getAttribute('data-sel')===id)?"1":"0";});
+   const sr=svg.querySelector('.gnode[data-sel="'+id+'"] .gring'); if(sr){anime({targets:sr,strokeDashoffset:[0,-28],loop:true,duration:2400,easing:"linear"});anime({targets:sr,scale:[1,1.14],opacity:[1,0.45],direction:"alternate",loop:true,duration:1300,easing:"easeInOutSine"});}
+   const gn=svg.querySelector('.gnode[data-sel="'+id+'"]'); if(gn){gn.style.transformBox="fill-box";gn.style.transformOrigin="center";anime({targets:gn,scale:[0.86,1],duration:420,easing:"easeOutBack"});}
+ }
+ try{history.replaceState(null,"","#/rede?view=grafo&sel="+id);}catch(e){}
+}
+// busca dinâmica de unidades
+document.addEventListener("input",e=>{
+ if(e.target&&e.target.id==="unitSearch"){
+   const q=e.target.value.trim().toLowerCase();
+   const rows=[...document.querySelectorAll("#unitTable tbody tr[data-search]")];
+   let vis=0;
+   rows.forEach(r=>{const ok=!q||(r.getAttribute("data-search")||"").indexOf(q)>=0;r.style.display=ok?"":"none";if(ok)vis++;});
+   const nr=document.getElementById("unitNoResult"); if(nr) nr.style.display=(q&&vis===0)?"":"none";
+   const ct=document.getElementById("unitCount"); if(ct) ct.textContent=(q?vis:rows.length)+" unidades";
+ }
+});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeModal();closeSheet();}});
+document.addEventListener("change",e=>{
+ const id=e.target&&e.target.id;
+ if(id==="filRegional"){fillSelect("filEstado",estadosOf(e.target.value),"Todos os estados");fillSelect("filCidade",[],"Todas as cidades");fillSelect("filUnidade",[],"Todas as unidades");}
+ else if(id==="filEstado"){fillSelect("filCidade",cidadesOf(selVal("filRegional"),e.target.value),"Todas as cidades");fillSelect("filUnidade",[],"Todas as unidades");}
+ else if(id==="filCidade"){fillSelect("filUnidade",unidadesOf(selVal("filRegional"),selVal("filEstado"),e.target.value),"Todas as unidades");}
+ else if(id==="clToggle"){const b=document.getElementById("vtabChecklist");if(b){if(e.target.checked){b.disabled=false;switchVtab("checklist");}else{b.disabled=true;switchVtab("dados");}}}
+ else if(id==="vfilRegional"){fillSelect("vfilEstado",vEstadosOf(e.target.value),"Todos os estados");fillSelect("vfilCidade",[],"Todas as cidades");fillSelect("vfilUnidade",[],"Todas as unidades");}
+ else if(id==="vfilEstado"){fillSelect("vfilCidade",vCidadesOf(selVal("vfilRegional"),e.target.value),"Todas as cidades");fillSelect("vfilUnidade",[],"Todas as unidades");}
+ else if(id==="vfilCidade"){fillSelect("vfilUnidade",vUnidadesOf(selVal("vfilRegional"),selVal("vfilEstado"),e.target.value),"Todas as unidades");}
+});
+// delegated clicks
+document.addEventListener("click",e=>{
+ const ntg=e.target.closest("#navToggle");
+ if(ntg){const app=document.querySelector(".app");const col=app.classList.toggle("nav-collapsed");ntg.textContent=col?"»":"«";ntg.title=col?"Expandir menu":"Recolher menu";return;}
+ const modalBtn=e.target.closest("[data-modal]");
+ if(modalBtn){const t=modalBtn.dataset.modal;
+   if(t==="fila-previas")openModal("Fila de prévias · "+totalPrevias()+" no processo",filaPreviasHtml());
+   else if(t==="visitas-pendentes")openModal("Unidades pendentes de visita",visitasPendentesHtml());
+   else if(t==="visitas-realizadas")openModal("Visitas realizadas no ano",visitasRealizadasHtml());
+   else if(t==="bl-registros")openModal("Blacklist — Registros",blackModalHtml(BLACK,"Amostra dos +135 registros da base unificada (Credenciamento + Antecipay)."));
+   else if(t==="bl-crime")openModal("Blacklist — Crime (irreversível)",blackModalHtml(BL_CRIME,"41 registros por processo criminal — bloqueio permanente."));
+   else if(t==="bl-bloq")openModal("Blacklist — Tentativas bloqueadas",blackModalHtml(BL_BLOQ,"312 tentativas de reentrada barradas automaticamente."));
+   else if(t==="bl-soc")openModal("Blacklist — Vínculo societário",blackModalHtml(BL_SOC,"18 sócios com restrição inseridos por integração societária."));
+   return;}
+ if(e.target.closest("[data-modal-close]")||e.target.id==="modal"){closeModal();return;}
+ const sheetBtn=e.target.closest("[data-sheet]");
+ if(sheetBtn){openSheet("Notificações · "+ALERTAS.length,alertsSheetHtml());return;}
+ if(e.target.closest("[data-sheet-close]")||e.target.id==="sheet"){closeSheet();return;}
+ if(e.target.closest("[data-fil-previas]")){applyPreviaFilter();return;}
+ if(e.target.closest("[data-fil-clear]")){clearPreviaFilter();return;}
+ const pvRow=e.target.closest("[data-pv]");
+ if(pvRow){openModal("Dados do PV · "+pvRow.dataset.pv,pvDetailHtml(pvRow.dataset.pv));return;}
+ const hv=e.target.closest("[data-histview]");
+ if(hv){location.hash=hv.dataset.histview==="logbook"?"#/historico?v=logbook":"#/historico";return;}
+ const vtabBtn=e.target.closest("[data-vtab]");
+ if(vtabBtn){if(!vtabBtn.disabled)switchVtab(vtabBtn.dataset.vtab);return;}
+ const regv=e.target.closest("[data-regvisita]");
+ if(regv){openModal("Registrar Visita",regVisitaHtml(regv.dataset.regvisita),true);return;}
+ const vfilBtn=e.target.closest("[data-vfil]");
+ if(vfilBtn){const ty=vfilBtn.dataset.vfil;const cont=document.getElementById("vtable");if(cont)cont.innerHTML=(ty==="pendentes"?visPendentesTableHtml():visRealizadasTableHtml());return;}
+ const vfilClr=e.target.closest("[data-vfil-clear]");
+ if(vfilClr){const ty=vfilClr.dataset.vfilClear;const r=document.getElementById("vfilRegional");if(r)r.value="Todas";fillSelect("vfilEstado",[],"Todos os estados");fillSelect("vfilCidade",[],"Todas as cidades");fillSelect("vfilUnidade",[],"Todas as unidades");const cont=document.getElementById("vtable");if(cont)cont.innerHTML=(ty==="pendentes"?visPendentesTableHtml():visRealizadasTableHtml());return;}
+ const ptab=e.target.closest("[data-ptab]");
+ if(ptab){const cd=findPrevia(ptab.dataset.prev);if(cd){const tb=document.querySelector(".mtab-body");if(tb)tb.innerHTML=previaTabContent(cd,ptab.dataset.ptab);document.querySelectorAll(".mtabs button").forEach(b=>b.classList.toggle("on",b.dataset.ptab===ptab.dataset.ptab));}return;}
+ const prevCard=e.target.closest("[data-prev]");
+ if(prevCard){const cd=findPrevia(prevCard.dataset.prev);if(cd)openModal("Dados do Candidato",previaModalBody(cd,"dados"),true);return;}
+ const unit=e.target.closest("[data-unit]");
+ const tabBtn=e.target.closest("[data-tab]");
+ const go=e.target.closest("[data-go]");
+ const selNode=e.target.closest("[data-sel]");
+ const viewBtn=e.target.closest("[data-view]");
+ const regBtn=e.target.closest("[data-regiao]");
+ if(regBtn){location.hash=`#/lojas?regiao=${encodeURIComponent(regBtn.dataset.regiao)}`;return;}
+ const nivelBtn=e.target.closest("[data-nivel]");
+ if(nivelBtn){location.hash=`#/pessoas?nivel=${encodeURIComponent(nivelBtn.dataset.nivel)}`;return;}
+ const filBtn=e.target.closest("[data-fil]");
+ if(filBtn){location.hash=`#/rede?view=grafo&f=${filBtn.dataset.fil}`;return;}
+ const sbEl=e.target.closest("[data-sb]");
+ if(sbEl){const val=sbEl.dataset.sb;const cur=(new URLSearchParams((location.hash.split("?")[1]||""))).get("sb")||"";location.hash=(!val||val===cur)?"#/rede?view=sunburst":`#/rede?view=sunburst&sb=${val}`;return;}
+ const tmEl=e.target.closest("[data-tm]");
+ if(tmEl){location.hash=`#/rede?view=treemap&tm=${tmEl.dataset.tm}`;return;}
+ const person=e.target.closest("[data-person]");
+ const cnpjEl=e.target.closest("[data-cnpj]");
+ if(person){location.hash=`#/pessoa/${person.dataset.person}`;return;}
+ if(cnpjEl){location.hash=`#/cnpj/${cnpjEl.dataset.cnpj}`;return;}
+ if(viewBtn){location.hash=`#/rede?view=${viewBtn.dataset.view}`;return;}
+ if(tabBtn){location.hash=`#/unidades/${tabBtn.dataset.unit}?tab=${tabBtn.dataset.tab}`;return;}
+ if(unit){closeModal();location.hash=`#/unidades/${unit.dataset.unit}`;return;}
+ if(go){closeSheet();closeModal();location.hash=`#/${go.dataset.go}`;return;}
+ if(selNode){selectGraphNode(selNode.dataset.sel);return;}
+});
+window.addEventListener("hashchange",render);
+render();
+</script>
+</body>
+</html>

@@ -13,7 +13,7 @@ Detalhamento completo de cada página (abas, filtros, overlays, dados, dependên
 | 0.5 | Fundação de motion (GSAP) | — | — | ✅ | Instalar GSAP + `@gsap/react`, registrar plugins, criar `usePageEntrance` e aplicar microinterações CSS (hover/foco/press) em `Button`/`Input`/`Card`. Feito logo após o Login (única tela real) para provar a infraestrutura antes do App Shell, sem precisar retrofit depois |
 | 2 | App Shell | — | PRD-00 | ✅ | Sidebar, topbar, painel de alertas e guard de rota. Todas as páginas seguintes dependem dele. Divergências do PRD (decisão do usuário): sem busca global; módulos 4-11 apontam para `ComingSoon` em vez de rota inexistente |
 | 3 | Dashboard | `/` | PRD-01 | ✅ | Home do sistema. Valida os componentes de card, pill e KPI e a navegação para as listas. Além do PRD: card de evolução com ApexCharts (decisão do usuário — o subtítulo do PRD promete "evolução" mas a spec não detalha) |
-| 4 | Unidades (lista + detalhe) | `/unidades`, `/unidades/:id` | PRD-02 | ⬜ | ⭐ Etapa mais pesada e de maior retorno: cria abas, timeline, tabela de carteiras com toggle de órfãs, comissionamento e societária |
+| 4 | Unidades (lista + detalhe) | `/unidades`, `/unidades/:id` | PRD-02 | ✅ | ⭐ Etapa mais pesada e de maior retorno: cria abas, timeline, tabela de carteiras com toggle de órfãs, comissionamento e societária. Componentes em `src/components/entity-detail/` — reutilizáveis por PVs (etapa 5) por instrução explícita do PRD-04 §5 |
 | 5 | PVs (lista + detalhe) | `/pvs`, `/pvs/:id` | PRD-04 | ⬜ | Reaproveitamento quase total da etapa 4 — custo baixo se feito na sequência, com o contexto fresco |
 | 6 | Consultores (lista + detalhe) | `/consultores`, `/consultores/:id` | PRD-03 | ⬜ | Reaproveita abas e timeline; adiciona avatar por nível, visão econômica e vínculos |
 | 7 | Ocorrências | `/ocorrencias` | PRD-06 | ⬜ | Logbook central. Cria o bloco de anotação privada e o padrão de modal de detalhe/resolução |
@@ -47,6 +47,6 @@ Cada etapa só é considerada concluída após passar pelo fluxo definido no [`C
 Seis pontos aguardam decisão e estão registrados em `sitemap.json` → `questoesEmAberto`. Os que afetam o roteiro:
 
 - **Q04 — Botão "Ver no Grafo" (etapas 5 e 6):** previsto nos cabeçalhos de PV e Consultor, mas nenhum PRD especifica a visualização em grafo nem existe rota para ela.
-- **Q05 — Abas sem detalhamento (etapas 4, 5 e 6):** "Dados Financeiros", "Consultores Vinculados", "Avaliação 360º" e "Estrutura Organizacional" (do PV) são apenas nomeadas nos PRDs.
+- **Q05 — Abas sem detalhamento:** resolvida para Unidade na etapa 4 ("Dados Financeiros", "Consultores Vinculados", "Avaliação 360º" — ver `MEMORY.md` 2026-07-22). Componentes ficam em `src/components/entity-detail/`, reaproveitáveis; "Estrutura Organizacional" do PV (etapas 5/6) segue em aberto — conteúdo é diferente (hierarquia de consultores subordinados, não de PVs).
 
 Q01 (paleta de cores) já foi **resolvida**: segue-se sempre o `design-system/` oficial.

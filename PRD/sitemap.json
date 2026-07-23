@@ -17,7 +17,7 @@
     "componentes": [
       {
         "nome": "Sidebar",
-        "detalhe": "Largura fixa 236px, fundo gradiente da marca. 9 itens de menu na ordem: Dashboard, Unidades, Consultores, PVs, Prévias, Ocorrências, Visitas, Relatórios, Configurações. Rodapé com perfil do usuário logado (nome + papel)."
+        "detalhe": "Largura fixa 236px, fundo gradiente da marca. 9 itens de menu na ordem: Dashboard, Unidades, PVs, Consultores, Prévias, Ocorrências, Visitas, Relatórios, Configurações (ordem ajustada pelo usuário em 2026-07-23 — PVs sobe para logo abaixo de Unidades; ver MEMORY.md). Rodapé com perfil do usuário logado (nome + papel)."
       },
       {
         "nome": "Topbar",
@@ -1008,7 +1008,8 @@
       "descricao": "Algumas abas são apenas nomeadas, sem especificação de conteúdo: 'Dados Financeiros' e 'Consultores Vinculados' (Unidade e PV), 'Avaliação 360º' (Unidade e Consultor), 'Estrutura Organizacional' (PV).",
       "impacto": "Médio — exigirá decisões de design durante a implementação.",
       "recomendacao": "Implementar com base nos padrões das abas já detalhadas e validar com o usuário na entrega de cada módulo.",
-      "status": "pendente"
+      "status": "parcialmente resolvida",
+      "decisao": "Resolvida para Unidade na etapa 4 (2026-07-22): 'Dados Financeiros' (stat cards + gráfico, padrão de EvolutionChart.tsx), 'Consultores Vinculados' (lista em linhas divididas com Avatar) e 'Avaliação 360º' (critérios com Progress) implementados em src/components/entity-detail/. Ver MEMORY.md. Ainda pendente: 'Estrutura Organizacional' do PV (etapas 5/6) — conteúdo diferente (hierarquia de consultores subordinados, não de PVs)."
     },
     {
       "id": "Q06",

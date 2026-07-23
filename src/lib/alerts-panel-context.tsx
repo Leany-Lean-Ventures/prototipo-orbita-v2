@@ -12,9 +12,10 @@ const AlertsPanelContext = React.createContext<
 >(undefined);
 
 /**
- * Estado do painel de alertas (Sheet), levantado para fora do AppHeader
- * para que qualquer página (ex.: o KPI "Alertas críticos" do Dashboard)
- * também possa abri-lo, sem duplicar o Sheet nem prop-drill via Outlet.
+ * Estado do painel de alertas (Sheet), compartilhado no nível do AppShell
+ * — o sino fica no `AppSidebar`, mas qualquer página (ex.: o KPI "Alertas
+ * críticos" do Dashboard) também pode abri-lo, sem duplicar o Sheet nem
+ * prop-drill via Outlet.
  */
 export function AlertsPanelProvider({
   children,

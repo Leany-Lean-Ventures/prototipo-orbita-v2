@@ -13,8 +13,8 @@ import {
 
 /**
  * Fonte única dos itens do menu principal (PRD-00 §4.1). Usada pelo
- * AppSidebar e pelo breadcrumb do AppHeader (lookup de label pela rota
- * ativa) — atualizar aqui ao adicionar uma página nova.
+ * AppSidebar e por `resolveNavLabel` (título das páginas "Em construção") —
+ * atualizar aqui ao adicionar uma página nova.
  */
 export interface NavItem {
   label: string;
@@ -25,8 +25,8 @@ export interface NavItem {
 export const navItems: NavItem[] = [
   { label: "Dashboard", path: "/", icon: LayoutDashboard },
   { label: "Unidades", path: "/unidades", icon: Store },
-  { label: "Consultores", path: "/consultores", icon: Users },
   { label: "PVs", path: "/pvs", icon: Building2 },
+  { label: "Consultores", path: "/consultores", icon: Users },
   { label: "Prévias", path: "/previas", icon: ClipboardList },
   { label: "Ocorrências", path: "/ocorrencias", icon: AlertTriangle },
   { label: "Visitas", path: "/visitas", icon: MapPin },
@@ -35,9 +35,10 @@ export const navItems: NavItem[] = [
 ];
 
 /**
- * Resolve o label de navegação para uma rota, usado no breadcrumb.
- * Faz match exato primeiro; cai para o prefixo mais longo (rotas de
- * detalhe futuras, ex.: /unidades/:id) em seguida.
+ * Resolve o label de navegação para uma rota — usado pelo título das
+ * páginas "Em construção" (`ComingSoon.tsx`). Faz match exato primeiro;
+ * cai para o prefixo mais longo (rotas de detalhe, ex.: /unidades/:id)
+ * em seguida.
  */
 export function resolveNavLabel(pathname: string): string {
   const exact = navItems.find((item) => item.path === pathname);

@@ -127,14 +127,11 @@ const Dashboard = () => {
           <h3 className="mb-4 font-display text-base font-bold text-foreground">
             Alertas que exigem ação
           </h3>
-          <div className="space-y-3">
+          <div className="divide-y divide-border">
             {alerts.map((alert) => {
               const Icon = alert.icon;
               return (
-                <div
-                  key={alert.id}
-                  className="flex items-center gap-3 rounded-lg border border-border p-3"
-                >
+                <div key={alert.id} className="flex items-center gap-3 py-3 first:pt-0 last:pb-0">
                   <span
                     className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-muted text-muted-foreground"
                     aria-hidden="true"
@@ -177,14 +174,11 @@ const Dashboard = () => {
               <ChevronRight className="ml-1 h-3.5 w-3.5" />
             </Button>
           </div>
-          <div className="space-y-3">
+          <div className="divide-y divide-border">
             {ocorrenciasRecentes.map((occ) => {
               const Icon = occ.icon;
               return (
-                <div
-                  key={occ.id}
-                  className="flex items-start gap-3 rounded-lg border border-border p-3"
-                >
+                <div key={occ.id} className="flex items-start gap-3 py-3 first:pt-0 last:pb-0">
                   <span
                     className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${OCORRENCIA_COLOR[occ.colorTheme]}`}
                     aria-hidden="true"
