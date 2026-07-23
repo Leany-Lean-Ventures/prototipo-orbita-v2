@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { ChevronRight, BarChart3, CircleCheck } from "lucide-react";
+import { ChevronRight, BarChart3, CircleCheck, TriangleAlert, ClipboardList } from "lucide-react";
 
 import { usePageEntrance } from "@/hooks/use-page-entrance";
 import { useAlertsPanel } from "@/lib/alerts-panel-context";
@@ -14,6 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { SectionHeader } from "@/components/ui/section-header";
 import { KpiCard } from "@/components/dashboard/KpiCard";
 import { EvolutionChart } from "@/components/dashboard/EvolutionChart";
 
@@ -71,7 +72,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div ref={entranceRef} className="space-y-6">
+    <div ref={entranceRef} className="space-y-8">
       <div className="dashboard-header flex flex-wrap items-start justify-between gap-3">
         <div>
           <h1 className="font-display text-2xl font-bold text-foreground">
@@ -114,7 +115,7 @@ const Dashboard = () => {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {kpis.map((kpi) => (
           <KpiCard key={kpi.id} kpi={kpi} onClick={() => handleKpiClick(kpi)} />
         ))}
@@ -124,9 +125,11 @@ const Dashboard = () => {
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <Card className="dashboard-lists p-6">
-          <h3 className="mb-4 font-display text-base font-bold text-foreground">
-            Alertas que exigem ação
-          </h3>
+          <SectionHeader
+            icon={TriangleAlert}
+            title="Alertas que exigem ação"
+            subtitle="Itens críticos pendentes de resolução"
+          />
           <div className="divide-y divide-border">
             {alerts.map((alert) => {
               const Icon = alert.icon;
@@ -160,20 +163,22 @@ const Dashboard = () => {
         </Card>
 
         <Card className="dashboard-lists p-6">
-          <div className="mb-4 flex items-center justify-between">
-            <h3 className="font-display text-base font-bold text-foreground">
-              Últimas Ocorrências
-            </h3>
-            <Button
-              variant="link"
-              size="sm"
-              className="h-auto p-0 text-xs uppercase"
-              onClick={() => navigate("/ocorrencias")}
-            >
-              Ver todas
-              <ChevronRight className="ml-1 h-3.5 w-3.5" />
-            </Button>
-          </div>
+          <SectionHeader
+            icon={ClipboardList}
+            title="Últimas Ocorrências"
+            subtitle="Feed de eventos recentes da rede"
+            actions={
+              <Button
+                variant="link"
+                size="sm"
+                className="h-auto p-0 text-xs uppercase"
+                onClick={() => navigate("/ocorrencias")}
+              >
+                Ver todas
+                <ChevronRight className="ml-1 h-3.5 w-3.5" />
+              </Button>
+            }
+          />
           <div className="divide-y divide-border">
             {ocorrenciasRecentes.map((occ) => {
               const Icon = occ.icon;
