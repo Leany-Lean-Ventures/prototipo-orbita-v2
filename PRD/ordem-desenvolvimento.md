@@ -14,10 +14,10 @@ Detalhamento completo de cada página (abas, filtros, overlays, dados, dependên
 | 2 | App Shell | — | PRD-00 | ✅ | Sidebar, topbar, painel de alertas e guard de rota. Todas as páginas seguintes dependem dele. Divergências do PRD (decisão do usuário): sem busca global; módulos 4-11 apontam para `ComingSoon` em vez de rota inexistente |
 | 3 | Dashboard | `/` | PRD-01 | ✅ | Home do sistema. Valida os componentes de card, pill e KPI e a navegação para as listas. Além do PRD: card de evolução com ApexCharts (decisão do usuário — o subtítulo do PRD promete "evolução" mas a spec não detalha) |
 | 4 | Unidades (lista + detalhe) | `/unidades`, `/unidades/:id` | PRD-02 | ✅ | ⭐ Etapa mais pesada e de maior retorno: cria abas, timeline, tabela de carteiras com toggle de órfãs, comissionamento e societária. Componentes em `src/components/entity-detail/` — reutilizáveis por PVs (etapa 5) por instrução explícita do PRD-04 §5 |
-| 5 | PVs (lista + detalhe) | `/pvs`, `/pvs/:id` | PRD-04 | ⬜ | Reaproveitamento quase total da etapa 4 — custo baixo se feito na sequência, com o contexto fresco |
-| 6 | Consultores (lista + detalhe) | `/consultores`, `/consultores/:id` | PRD-03 | ⬜ | Reaproveita abas e timeline; adiciona avatar por nível, visão econômica e vínculos |
-| 7 | Ocorrências | `/ocorrencias` | PRD-06 | ⬜ | Logbook central. Cria o bloco de anotação privada e o padrão de modal de detalhe/resolução |
-| 8 | Visitas | `/visitas` | PRD-07 | ⬜ | Depende do padrão de ocorrências (visitas alimentam o Logbook) e reutiliza a anotação privada e o formulário condicional |
+| 5 | PVs (lista + detalhe) | `/pvs`, `/pvs/:id` | PRD-04 | ✅ | Reaproveitamento quase total da etapa 4 — custo baixo se feito na sequência, com o contexto fresco |
+| 6 | Consultores (lista + detalhe) | `/consultores`, `/consultores/:id` | PRD-03 | ✅ | Reaproveita abas e timeline; adiciona avatar por nível, visão econômica e vínculos |
+| 7 | Ocorrências | `/ocorrencias` | PRD-06 | ✅ | Logbook central. Cria o bloco de anotação privada e o padrão de modal de detalhe/resolução |
+| 8 | Visitas | `/visitas` | PRD-07 | ✅ | Depende do padrão de ocorrências (visitas alimentam o Logbook) e reutiliza a anotação privada e o formulário condicional |
 | 9 | Prévias | `/previas` | PRD-05 | ⬜ | Kanban é um padrão visual novo e isolado; depende do autocomplete sobre a base de consultores |
 | 10 | Relatórios | `/relatorios` | PRD-08 | ⬜ | Consome dados já modelados nos módulos anteriores |
 | 11 | Configurações | `/configuracoes` | PRD-09 | ⬜ | Módulo mais simples, majoritariamente informativo |

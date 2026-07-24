@@ -20,43 +20,36 @@ Protótipo de interface web do projeto Órbita para a Ademicon. Stack: Vite + Re
 
 **Regra geral:** tokens do `design-system/` sempre têm prioridade sobre sugestões genéricas de qualquer skill abaixo. Skills preenchem lacunas (padrões de UX, motion, gráficos) que o design system não cobre — não substituem os tokens de marca já definidos.
 
-## Skills disponíveis (`.claude/skills/`)
+## Skills disponíveis (`.kiro/skills/`)
 
-Use estas skills ao criar ou revisar qualquer tela:
+Skills de design e desenvolvimento instaladas via `npx skills add ... --agent kiro-cli`. O Kiro ativa automaticamente cada skill quando o contexto da conversa é relevante (baseado no campo `description` do `SKILL.md`). Também podem ser invocadas explicitamente via `/nome-da-skill` no chat.
 
 ### `ui-ux-pro-max`
-Base de dados local (estilos, paletas, tipografia, padrões de UX, ícones, motion GSAP, gráficos) pesquisável por script Python. Use no início do trabalho de cada tela nova para:
-- Validar padrões de UX/acessibilidade por categoria de prioridade (contraste, touch target, layout responsivo, formulários, navegação, gráficos)
+Base de dados local (estilos, paletas, tipografia, padrões de UX, ícones, motion GSAP, gráficos) pesquisável. Use no início do trabalho de cada tela nova para:
+- Validar padrões de UX/acessibilidade por categoria de prioridade
 - Consultar recomendações específicas de stack (`--stack react` ou `--stack shadcn`)
 - Consultar padrões de motion GSAP quando a tela precisar de animação
 
-Invocação:
-```bash
-python .claude/skills/ui-ux-pro-max/scripts/search.py "<consulta>" --domain <dominio>
-```
 Combine com os tokens do `design-system/` — se a skill sugerir uma cor/fonte que conflite com a marca Ademicon, os tokens do design system vencem.
 
 ### `frontend-design`
-Guia de direção de design para evitar telas "genéricas de IA". Use ao desenhar a composição de uma tela nova (hero, hierarquia tipográfica, estrutura, motion, copy) para garantir que a execução tenha intenção, dentro dos limites do design system (paleta, tipografia e raios já são fixos pela marca — a skill orienta composição e hierarquia, não substitui os tokens).
+Guia de direção de design para evitar telas "genéricas de IA". Use ao desenhar a composição de uma tela nova (hero, hierarquia tipográfica, estrutura, motion, copy) para garantir que a execução tenha intenção, dentro dos limites do design system.
 
 ### `web-design-guidelines`
-Skill de revisão (Vercel Web Interface Guidelines). Use **depois** de implementar uma tela, para auditar o código contra boas práticas de interface (acessibilidade, estados, responsividade). Busca as regras mais recentes via rede antes de cada revisão.
-
-### `webapp-testing`
-Toolkit Playwright para testar a aplicação rodando de verdade no navegador: screenshots, interação com elementos, logs do console. Use **depois** de implementar uma tela para validar visualmente (golden path + estados/erros) com o servidor de dev (`npm run dev`) ativo — fecha o loop que a revisão estática de código (`web-design-guidelines`) não cobre.
-
-Scripts em `.claude/skills/webapp-testing/scripts/with_server.py` (gerencia o ciclo de vida do servidor) e exemplos em `.claude/skills/webapp-testing/examples/`. Rodar `--help` antes de usar qualquer script.
-
-### `skill-creator`
-Meta-skill para criar/editar/otimizar skills do projeto. Use quando surgir uma necessidade recorrente que as skills atuais não cobrem bem (ex.: um fluxo específico de leitura de PRD + design-system que vale empacotar como skill própria do Órbita) — não para o dia a dia de construção de tela.
+Skill de revisão (Vercel Web Interface Guidelines). Use **depois** de implementar uma tela, para auditar o código contra boas práticas de interface (acessibilidade, estados, responsividade).
 
 ### `gsap-core`, `gsap-react`, `gsap-timeline`, `gsap-scrolltrigger`, `gsap-performance`
-Skills oficiais do GreenSock para a biblioteca de animação adotada pelo design-system (`design-system/context/input-DESIGN.md` §7). Use ao implementar qualquer animação GSAP (ver seção "Motion e microinterações" abaixo para quando usar GSAP vs. CSS puro):
+Skills oficiais do GreenSock para a biblioteca de animação adotada pelo design-system. Use ao implementar qualquer animação GSAP:
 - `gsap-core` — API base (`gsap.to/from/fromTo`, easing, stagger, `gsap.matchMedia()`)
-- `gsap-react` — integração com React (`useGSAP`, `scope`, cleanup automático) — **preferir sempre a `useGSAP` em vez de `useEffect` puro**
+- `gsap-react` — integração com React (`useGSAP`, `scope`, cleanup automático) — **preferir sempre `useGSAP` em vez de `useEffect` puro**
 - `gsap-timeline` — sequenciamento (timelines, labels, position parameters)
 - `gsap-scrolltrigger` — reveals ao rolar a página (conteúdo abaixo da dobra)
 - `gsap-performance` — otimização (`gsap.quickTo`, transforms vs. layout)
+
+### Instalação de novas skills
+```bash
+npx skills add <owner/repo> --skill <nome> --agent kiro-cli -y
+```
 
 ## Motion e microinterações
 
@@ -116,8 +109,12 @@ Padrão estabelecido na etapa 4 (Unidades) para qualquer módulo com rota `/modu
 
 ## Abas e cabeçalho de página
 
-- **Visual padrão de qualquer `Tabs` do sistema: pílula vermelha preenchida no item ativo** (`data-[state=active]:bg-primary data-[state=active]:text-primary-foreground`, definido uma única vez em `TabsTrigger` — `src/components/ui/tabs.tsx`) sobre uma trilha arredondada clara (`TabsList`: `bg-muted p-1 rounded-lg`). Decisão de 2026-07-22 (ver `MEMORY.md`), baseada na nav em pílulas do V1 exportado (`orbita-v1-paginas-exportadas/HTML/01 - Painel.html`). Como é o primitivo compartilhado, qualquer uso de `Tabs` (as 8 abas de `UnidadeDetalhe` inclusive) já herda esse visual — **nunca sobrescrever a cor do estado ativo por `Tabs` individual**.
+- **Componente `Tabs` (`src/components/ui/tabs.tsx`) tem duas variantes**, propagadas via React Context do `TabsList` para os `TabsTrigger`:
+  - `variant="primary"` (default) — para seletores no topo de página (slot `tabs` do `PageHeader`): trilha `bg-muted/30 p-1 rounded-xl`; item ativo com **pílula branca** (`bg-card text-foreground font-semibold shadow-sm`). Nunca usar `bg-primary` no ativo — isso foi substituído.
+  - `variant="secondary"` — para abas internas de conteúdo (ex.: as 8 abas de `UnidadeDetalhe`): lista transparente com `border-b border-border`; item ativo com **underline vermelho** (`border-b-2 border-primary text-primary`), sem background. Suporta ícone Lucide como children (`<TabsTrigger><Icon /> Label</TabsTrigger>`).
 - **`src/components/layout/PageHeader.tsx`** — cabeçalho padrão de página (`title`, `subtitle`, `tabs?`, `actions?`): título/subtítulo à esquerda, `tabs`/`actions` à direita. Usar sempre que uma página nova precisar de um seletor de abas no cabeçalho (ex.: `UnidadesLista.tsx` → "Lista de Unidades" / "Mapa de Vínculos") em vez de montar um `<h1>`/`<p>` manual. Quando a página tiver abas, o `TabsList` fica no slot `tabs` do `PageHeader` e os `TabsContent` ficam abaixo, todos dentro do mesmo `<Tabs value=... onValueChange=...>` — Radix não exige que `List` e `Content` fiquem lado a lado na árvore.
+- **`src/components/entity-detail/EntityHeroHeader.tsx`** — header hero para páginas de detalhe que têm imagem de fundo. Props: `backgroundImage`, `avatarUrl?`, `avatarFallback`, `verified?`, `tag`, `location`, `name`, `subtitle?`, `indicator?`. Usado em `UnidadeDetalhe.tsx`. Para módulos sem imagem hero (ex.: Consultor com avatar mas sem background de cidade), usar `EntityDetailHeader.tsx` (o card simples que continua disponível).
+- **`src/components/entity-detail/EntityDetailHeader.tsx`** — cabeçalho de card simples para entidades sem hero (PV, Consultor). Props: `nome`, `statusLabel`, `statusVariant`, `facts[]`, `actions?`, `indicator?`. Não foi removido, segue disponível.
 
 ## Gráficos e dados de página (Dashboard e módulos futuros)
 

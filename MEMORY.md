@@ -19,6 +19,78 @@ Registro de decisões, definições e aprendizados acumulados ao longo do projet
 
 ## Decisões
 
+### 2026-07-23 — OrganizacionalTree redesenhada: ícones/cores por tipo, tree lines, expand/collapse, eye button, documento, avatar
+**Decisão:** o componente `OrganizacionalTree.tsx` foi reescrito com design premium:
+1. **Ícones e cores por tipo:** Loja = Store/primary (vermelho), PV = Building2/blue-500, Consultor = UserCircle/secondary (verde). Legenda no topo do container.
+2. **Linhas de conexão** verticais e horizontais (border `bg-border`) ligando pai→filho visualmente.
+3. **Expand/collapse** com chevron animado (`transition-transform`, `-rotate-90` quando colapsado) e animação de altura (`max-h` + `opacity` com `transition-all duration-200`).
+4. **Botão de olho** (`Eye`) aparece no hover à direita — navega para `/pvs/:id` ou `/consultores/:id`.
+5. **Documento:** CNPJ para PVs, CPF para consultores, exibido na linha em texto discreto.
+6. **Avatar miniatura** para consultores que têm `avatarUrl` (bordas arredondadas `rounded-xl`).
+7. **Hover premium:** borda lateral colorida por tipo aparece com `opacity-0 → 1`, background `bg-muted/30`.
+8. **Estrutura de dados** migrada de flat array para árvore (`children?: OrganizacionalNode[]`). L001 tem a árvore completa; L002-L008 mantêm flat (sem children) — o componente suporta ambos.
+**Motivo:** pedido do usuário — melhorar entendimento visual da hierarquia com design de referência (linhas de ligação + expand/collapse).
+**Status:** vigente.
+
+### 2026-07-23 — Padrão de "SectionHeader" obrigatório em todo container com conteúdo
+**Decisão:** todo `<Card>` que contenha conteúdo (lista, tabela, gráfico, seção) **deve** ter um header padronizado via `<SectionHeader>` (`src/components/ui/section-header.tsx`). Anatomia:
+- **Esquerda:** ícone Lucide em container `h-9 w-9 rounded-xl bg-muted/40` + título (`text-sm font-semibold`) + subtítulo obrigatório (`text-xs text-muted-foreground`).
+- **Direita (opcional):** slot `actions` para botões de ação ou filtros.
+- Classe `mb-6` separa o header do conteúdo abaixo.
+Exceções: stat cards (gradient icon card) e o card de resumo executivo do Dashboard não usam SectionHeader — têm design próprio. Aplicado em: Dashboard (evolução, alertas, ocorrências), UnidadeDetalhe (avaliação 360, rankings, carteiras, histórico, financeiro, e todas as seções da aba Estrutura).
+**Motivo:** pedido do usuário — "em todo container, header com ícone + título + subtítulo obrigatório + ações à direita".
+**Status:** vigente.
+
+### 2026-07-23 — KPI cards do Dashboard refatorados para gradient icon card
+**Decisão:** os 5 KPI cards do Dashboard (`src/components/dashboard/KpiCard.tsx`) foram refatorados para o padrão "gradient icon card" (decisão anterior). O card de alerta (`isAlert: true`) mantém fundo sólido `bg-primary` mas ganhou os círculos decorativos em branco/10 e o ícone em container `bg-white/20 rounded-2xl`. Os cards normais seguem a mesma anatomia dos stat cards de Dados Básicos: ícone gradiente 12x12 + circles decorativos + valor 3xl + label + progress bar.
+**Motivo:** pedido do usuário — "refatore os cards do dashboard para o padrão que definimos".
+**Status:** vigente.
+
+### 2026-07-23 — Padrão de "stat card com personalidade" (gradient icon card) adotado como componente recorrente
+**Decisão:** o estilo de card de métrica criado para a aba "Dados Básicos" da Unidade vira **padrão reutilizável** para qualquer KPI/stat card futuro no projeto. Componente oficial: `src/components/ui/stat-card.tsx` (`<StatCard>`). Props: `icon` (LucideIcon), `label` (string, exibido uppercase), `children` (valor/conteúdo), `color` (hex). Anatomia:
+- `<Card className="relative overflow-hidden p-6">`
+- **Decoração:** 2 círculos gradientes no canto superior direito (`absolute -right-4 -top-4 h-24 w-24 rounded-full` + um menor `h-16 w-16`). Sutil, marca personalidade sem preencher o card.
+- **Layout:** `flex items-start justify-between` — label + valor à esquerda, ícone à **direita**.
+- **Ícone:** `h-12 w-12 rounded-2xl shadow-lg` com gradiente do tom cheio ao 80% (`linear-gradient(135deg, {cor}, {cor}cc)`), ícone Lucide branco `h-6 w-6`.
+- **Label:** `text-[10px] font-bold uppercase tracking-widest text-muted-foreground` no topo.
+- **Valor:** `text-3xl font-bold tracking-tight text-foreground mt-1`.
+- Cores por contexto: `#dc2626` (primary/vermelho), `#8bc34b` (secondary/verde), `#f59e0b` (amber), `#3b82f6` (azul), `#8b5cf6` (violeta).
+Usar `<StatCard>` em vez de reimplementar o padrão inline. Todos os stat cards do projeto devem usar esse componente.
+**Motivo:** pedido do usuário — "salve este componente para poder se tornar padrão e seguir seu uso em todo o sistema".
+**Status:** vigente.
+
+### 2026-07-23 — Diretriz de processo: registrar padrões e diretrizes do usuário no MEMORY.md automaticamente
+**Decisão:** sempre que o usuário aprovar um padrão visual, estabelecer uma diretriz de design ou indicar uma preferência recorrente, registrar imediatamente no `MEMORY.md` como uma entrada de decisão — sem esperar ser perguntado. Consultar `MEMORY.md` no início de cada trabalho novo para resgatar as diretrizes já estabelecidas.
+**Motivo:** pedido explícito do usuário.
+**Status:** vigente.
+
+### 2026-07-23 — Página de detalhe da Unidade reorganizada: 5 abas em vez de 8, aba "Dados Básicos" como default
+**Decisão:** a estrutura de abas de `UnidadeDetalhe.tsx` foi reduzida de 8 para 5:
+1. **Dados Básicos** (nova, default) — bento grid com 5 blocos: dados de contato/endereço, tamanho da rede (cards com PVs e consultores), Avaliação 360 em gráfico de **área** (migrado da aba separada), ranking de consultores (por faturamento) e ranking de carteiras ativas.
+2. **Estrutura Organizacional** (consolidada) — reúne as 4 abas que eram separadas: hierarquia organizacional (árvore), consultores vinculados, estrutura societária e comissionamento (M3). Cada bloco é uma seção com título dentro de um fluxo vertical de Cards.
+3. **Carteiras Associadas** — mantida como estava (tabela com toggle de órfãs).
+4. **Dados Financeiros** — mantida como estava.
+5. **Histórico** — mantida como estava (timeline).
+
+Abas removidas como entidades independentes: Estrutura Organizacional (virou seção), Consultores Vinculados (virou seção), Comissionamento (virou seção), Estrutura Societária (virou seção), Avaliação 360º (migrou para o bento grid de Dados Básicos).
+
+Novos componentes: `DadosBasicosPanel.tsx` e `EstruturaConsolidadaPanel.tsx` em `src/components/entity-detail/`. Novos campos no mock: `dadosContato` (endereço, bairro, CEP, telefone, email, horário), `faturamento` em cada consultor vinculado, `historicoScores` em avaliacao360.
+**Motivo:** pedido direto do usuário — simplificar a navegação consolidando dados relacionados e criando uma "home" da unidade com visão geral.
+**Status:** vigente.
+
+### 2026-07-23 — Skills migradas de `.claude/skills/` para `.kiro/skills/` + steering file criado
+**Decisão:** as 8 skills do projeto (ui-ux-pro-max, frontend-design, web-design-guidelines, gsap-core, gsap-react, gsap-timeline, gsap-scrolltrigger, gsap-performance) foram instaladas em `.kiro/skills/` via `npx skills add ... --agent kiro-cli`. O arquivo `.kiro/steering/project-workflow.md` (inclusion: always) guia o uso das skills no fluxo de trabalho — mesmo papel que a seção "Skills" do CLAUDE.md exercia no Claude Code. O Kiro ativa skills automaticamente baseado no campo `description` do SKILL.md ou via invocação explícita `/nome-da-skill`. Skills que dependiam de scripts Python (`ui-ux-pro-max/scripts/search.py`) e a skill `webapp-testing` (Playwright) não foram migradas porque a execução de scripts Python arbitrários não é suportada da mesma forma — o conteúdo de referência dessas skills continua acessível via leitura direta dos arquivos em `.kiro/skills/`.
+**Motivo:** migração do projeto de Claude Code para Kiro IDE.
+**Status:** vigente.
+
+### 2026-07-23 — Redesign visual da página de Unidades: hero header, duas variantes de Tabs, coluna renomeada
+**Decisão:** três mudanças coordenadas na página de Unidades, alinhando com o protótipo V1 (`orbita-v1-paginas-exportadas/HTML/02 - Unidades.html`):
+1. **Tabs com duas variantes** (`src/components/ui/tabs.tsx`): `variant="primary"` (default, para `PageHeader`) usa trilha `bg-muted/30 rounded-xl` com pílula ativa branca (`bg-card text-foreground shadow-sm`) — substitui a pílula vermelha anterior. `variant="secondary"` (para abas internas de detalhe) usa underline transparente com `border-b-2 border-primary text-primary` no item ativo, suportando ícone Lucide como children. A variante é propagada do `TabsList` para cada `TabsTrigger` via React Context, sem precisar anotar cada trigger individualmente.
+2. **Header hero** (`src/components/entity-detail/EntityHeroHeader.tsx`): substitui o `EntityDetailHeader` (card simples) na página de detalhe da Unidade. Padrão visual do V1: `rounded-2xl overflow-hidden` com imagem de fundo + gradiente `from-slate-900/95 via-slate-900/80 to-slate-900/60`, avatar circular 80/96px com `border-4 border-white/20 shadow-2xl` + badge de verificação verde, tag `bg-primary` vermelha, nome em branco, localidade em `white/60`, subtítulo do gestor. Slot `indicator` no lado direito recebe o `RatingDonut` (que ganhou prop `onDark` para funcionar sobre fundo escuro — track branco 15%, label branco). Imagens copiadas do V1 para `public/images/unidades/`. Cada unidade no mock ganhou campos `heroImage` e `gestorAvatar?`.
+3. **Coluna "Dono (LL)" renomeada para "Licenciado"** na tabela de `UnidadesLista.tsx`.
+**Motivo:** pedido direto do usuário, com referência visual do V1 e print de exemplo para o estilo de tabs.
+**Status:** vigente. `EntityDetailHeader` não foi removido — segue disponível para módulos que não tenham imagem hero (ex.: futuramente Consultores, que tem avatar mas não background).
+
 ### 2026-07-23 — Ordem do menu lateral: PVs sobe para logo abaixo de Unidades
 **Decisão:** ordem dos 9 itens de `src/components/shell/nav-items.ts` alterada de `Dashboard, Unidades, Consultores, PVs, ...` para `Dashboard, Unidades, PVs, Consultores, Prévias, Ocorrências, Visitas, Relatórios, Configurações`. `PRD/sitemap.json` (`shell.componentes[0].detalhe`) atualizado para não divergir do menu real.
 **Motivo:** pedido direto do usuário.
@@ -44,7 +116,7 @@ Registro de decisões, definições e aprendizados acumulados ao longo do projet
 5. **Padrão de tabs do sistema formalizado:** o usuário anexou um print pedindo que o seletor de abas tenha pílula vermelha preenchida no item ativo sobre uma trilha arredondada clara — visual que bate exatamente com a nav antiga do V1 exportado (`orbita-v1-paginas-exportadas/HTML/01 - Painel.html`: `bg-muted/30 p-1 rounded-xl` + pílula ativa `bg-primary text-primary-foreground`). Em vez de criar um componente novo, o primitivo já existente `src/components/ui/tabs.tsx` (`TabsTrigger`) teve só a cor do estado ativo trocada de `bg-background` (pílula branca sutil) para `bg-primary text-primary-foreground font-semibold` — isso propaga automaticamente para **todo uso existente de `Tabs`**, inclusive as 8 abas de `UnidadeDetalhe.tsx`, cumprindo "esse será o padrão de tabs do sistema" sem duplicar componente.
 6. **`PageHeader`** (`src/components/layout/PageHeader.tsx`): novo componente de cabeçalho de página parametrizado (`title`, `subtitle`, `tabs?`, `actions?`) — a pedido explícito do usuário para deixar essa área "pronta para abas" em qualquer página futura. `UnidadesLista.tsx` foi o primeiro a usar; PVs/Consultores (quando ganharem uma visão de grafo análoga) devem reaproveitar em vez de recriar o cabeçalho.
 **Motivo:** pedido direto do usuário, que identificou a lacuna comparando com o protótipo de referência mais antigo.
-**Status:** vigente.
+**Status:** vigente. Observação: o item 5 (pílula vermelha como padrão único) foi **supersedido** pela decisão de 2026-07-23 que introduz duas variantes (primary = pílula branca, secondary = underline) — ver entrada acima.
 
 ### 2026-07-22 — `AppHeader` removido: sino de alertas e menu do usuário migram para a `AppSidebar`
 **Decisão:** `src/components/shell/AppHeader.tsx` foi **deletado**. O que ele continha migrou:
@@ -197,4 +269,9 @@ Roteamento reestruturado em `src/App.tsx` para uma rota de layout (`<Route eleme
 ### 2026-07-22 — PRDs como fonte de verdade funcional
 **Decisão:** `PRD/` (já existente no diretório do projeto, versionado) contém a especificação funcional por módulo — `PRD-00` a `PRD-09`, mais `data-schema.json` e `form-schemas.json`. Toda tela nova deve começar pela leitura do PRD correspondente.
 **Motivo:** evitar inventar comportamento/dado que já está especificado. Exemplo já aplicado: PRD-08 (Relatórios) define explicitamente que exportação PDF/CSV é só mock/preview no protótipo, não lógica real — isso guiou a decisão de não instalar skills `pdf`/`xlsx`.
+**Status:** vigente.
+
+### 2026-07-24 — Termo "Logbook" proibido no sistema
+**Decisão:** a palavra "Logbook" (ou "logbook") **nunca** deve ser usada em qualquer texto renderizado no sistema — labels, subtítulos, descriptions, placeholders, tooltips. Substituir sempre por "Histórico" ou "histórico da unidade/rede" conforme o contexto. O módulo de Ocorrências refere-se ao histórico da rede, não a um "logbook".
+**Motivo:** decisão explícita do usuário — termo técnico que não faz sentido para o público-alvo do sistema.
 **Status:** vigente.

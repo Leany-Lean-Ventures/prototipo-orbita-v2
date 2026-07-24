@@ -213,7 +213,7 @@ const UnidadesLista = () => {
                     <TableHead>Código</TableHead>
                     <TableHead>Nome</TableHead>
                     <TableHead>Localização</TableHead>
-                    <TableHead>Dono (LL)</TableHead>
+                    <TableHead>Licenciado</TableHead>
                     <TableHead>Rating</TableHead>
                     <TableHead>Status</TableHead>
                   </TableRow>

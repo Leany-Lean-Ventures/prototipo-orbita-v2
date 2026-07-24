@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Eye, ChevronDown } from "lucide-react";
+import { Eye, ChevronDown, BriefcaseBusiness } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
@@ -165,15 +165,19 @@ function TreeNode({ node, isLast, depth }: TreeNodeProps) {
         )}
 
         {/* Icon or Avatar */}
-        {(node.tipo === "consultor" || node.tipo === "socio") ? (
-          <div className={cn("h-10 w-10 shrink-0 overflow-hidden rounded-full border-2", node.tipo === "socio" ? "border-amber-500/20 bg-amber-500/10" : "border-secondary/20 bg-secondary/10")}>
+        {node.tipo === "socio" ? (
+          <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full border-2 border-amber-500/20 bg-amber-500/10">
             {node.avatarUrl ? (
               <img src={node.avatarUrl} alt={node.nome} className="h-full w-full object-cover" />
             ) : (
-              <div className="flex h-full w-full items-center justify-center text-xs font-semibold text-secondary">
+              <div className="flex h-full w-full items-center justify-center text-xs font-semibold text-amber-600">
                 {node.nome.split(" ").map(w => w[0]).join("").slice(0, 2)}
               </div>
             )}
+          </div>
+        ) : node.tipo === "consultor" ? (
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-secondary/10">
+            <BriefcaseBusiness className="h-5 w-5 text-secondary" />
           </div>
         ) : (
           <div className={cn("flex h-10 w-10 shrink-0 items-center justify-center rounded-xl", config.bgColor)}>
@@ -192,7 +196,12 @@ function TreeNode({ node, isLast, depth }: TreeNodeProps) {
             <p className="truncate text-xs text-muted-foreground">{node.responsavel}</p>
             {node.documento && (
               <span className="hidden text-[10px] text-muted-foreground/60 sm:inline">
-                {(node.tipo === "consultor" || node.tipo === "socio") ? "CPF" : "CNPJ"}: {node.documento}
+                CNPJ: {node.documento}
+              </span>
+            )}
+            {node.matricula && (
+              <span className="hidden text-[10px] text-muted-foreground/60 sm:inline">
+                Mat: {node.matricula}
               </span>
             )}
           </div>

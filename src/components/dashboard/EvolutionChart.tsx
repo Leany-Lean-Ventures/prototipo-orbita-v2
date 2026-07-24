@@ -1,7 +1,9 @@
 import Chart from "react-apexcharts";
 import type { ApexOptions } from "apexcharts";
+import { BarChart3 } from "lucide-react";
 
 import { Card } from "@/components/ui/card";
+import { SectionHeader } from "@/components/ui/section-header";
 import { prefersReducedMotion } from "@/lib/motion";
 import { evolucaoSerie } from "@/lib/mock-data/dashboard";
 
@@ -82,10 +84,11 @@ const series = [
 export function EvolutionChart() {
   return (
     <Card className="evolution-chart p-6">
-      <h3 className="font-display text-base font-bold text-foreground">
-        Evolução de Faturamento e Vendas
-      </h3>
-      <p className="mb-4 text-xs text-muted-foreground">Últimos 6 meses</p>
+      <SectionHeader
+        icon={BarChart3}
+        title="Evolução de Faturamento e Vendas"
+        subtitle="Últimos 6 meses"
+      />
       {/* Dado crítico disponível como texto (design-system §12) — o gráfico não é a única forma de acesso à tendência. */}
       <p className="sr-only">
         Faturamento evoluiu de R$ {evolucaoSerie.faturamentoMilhoes[0]} milhões em{" "}

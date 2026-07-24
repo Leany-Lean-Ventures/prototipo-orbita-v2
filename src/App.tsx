@@ -10,6 +10,12 @@ import Login from "@/pages/Login";
 import UnidadesLista from "@/pages/UnidadesLista";
 import UnidadeDetalhe from "@/pages/UnidadeDetalhe";
 import ComingSoon from "@/pages/ComingSoon";
+import PVsLista from "@/pages/PVsLista";
+import PVDetalhe from "@/pages/PVDetalhe";
+import ConsultoresLista from "@/pages/ConsultoresLista";
+import ConsultorDetalhe from "@/pages/ConsultorDetalhe";
+import OcorrenciasPage from "@/pages/OcorrenciasPage";
+import VisitasPage from "@/pages/VisitasPage";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -32,11 +38,13 @@ const App = () => (
               <Route path="/" element={<Dashboard />} />
               <Route path="/unidades" element={<UnidadesLista />} />
               <Route path="/unidades/:id" element={<UnidadeDetalhe />} />
-              <Route path="/consultores" element={<ComingSoon />} />
-              <Route path="/pvs" element={<ComingSoon />} />
+              <Route path="/consultores" element={<ConsultoresLista />} />
+              <Route path="/consultores/:id" element={<ConsultorDetalhe />} />
+              <Route path="/pvs" element={<PVsLista />} />
+              <Route path="/pvs/:id" element={<PVDetalhe />} />
               <Route path="/previas" element={<ComingSoon />} />
-              <Route path="/ocorrencias" element={<ComingSoon />} />
-              <Route path="/visitas" element={<ComingSoon />} />
+              <Route path="/ocorrencias" element={<OcorrenciasPage />} />
+              <Route path="/visitas" element={<VisitasPage />} />
               <Route path="/relatorios" element={<ComingSoon />} />
               <Route path="/configuracoes" element={<ComingSoon />} />
             </Route>

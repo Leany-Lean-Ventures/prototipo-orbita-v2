@@ -1,6 +1,7 @@
 import Chart from "react-apexcharts";
 import type { ApexOptions } from "apexcharts";
 
+import { cn } from "@/lib/utils";
 import { prefersReducedMotion } from "@/lib/motion";
 import type { Rating } from "@/lib/mock-data/unidades";
 
@@ -15,9 +16,11 @@ const RATING_COLOR: Record<Rating, string> = {
 interface RatingDonutProps {
   rating: Rating;
   score: number;
+  /** Render on a dark background (hero header) — uses white text for the score label. */
+  onDark?: boolean;
 }
 
-export function RatingDonut({ rating, score }: RatingDonutProps) {
+export function RatingDonut({ rating, score, onDark = false }: RatingDonutProps) {
   const options: ApexOptions = {
     chart: {
       type: "radialBar",
@@ -29,7 +32,7 @@ export function RatingDonut({ rating, score }: RatingDonutProps) {
     plotOptions: {
       radialBar: {
         hollow: { size: "62%" },
-        track: { background: "hsl(214 32% 91%)" },
+        track: { background: onDark ? "rgba(255,255,255,0.15)" : "hsl(214 32% 91%)" },
         dataLabels: {
           name: { show: false },
           value: {
@@ -37,7 +40,7 @@ export function RatingDonut({ rating, score }: RatingDonutProps) {
             offsetY: 8,
             fontSize: "32px",
             fontWeight: 700,
-            color: "hsl(var(--foreground))",
+            color: onDark ? "#ffffff" : "hsl(var(--foreground))",
             formatter: () => rating,
           },
         },
@@ -49,7 +52,7 @@ export function RatingDonut({ rating, score }: RatingDonutProps) {
   return (
     <div className="flex flex-col items-center gap-1">
       <Chart options={options} series={[score]} type="radialBar" width={140} height={140} />
-      <p className="-mt-2 text-xs font-semibold text-muted-foreground">{score}/100</p>
+      <p className={cn("-mt-2 text-xs font-semibold", onDark ? "text-white/70" : "text-muted-foreground")}>{score}/100</p>
       {/* Dado crítico sempre disponível como texto (design-system §12) */}
       <p className="sr-only">{`Rating ${rating}, score ${score} de 100.`}</p>
     </div>

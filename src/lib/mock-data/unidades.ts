@@ -100,9 +100,11 @@ export interface OrganizacionalNode {
   depth: number;
   /** Type of entity for icon/color differentiation. */
   tipo: OrganizacionalTipo;
-  /** CNPJ for PV or CPF for consultor. */
+  /** CNPJ for PV/Loja/Consultor. */
   documento?: string;
-  /** Avatar URL for consultores. */
+  /** Matrícula code. */
+  matricula?: string;
+  /** Avatar URL for sócios. */
   avatarUrl?: string;
   /** % de participação societária (sócios). */
   participacaoPct?: number;
@@ -124,7 +126,9 @@ export interface FinanceiroInfo {
 export interface ConsultorVinculado {
   id: string;
   nome: string;
-  iniciais: string;
+  razaoSocial: string;
+  cnpj: string;
+  matricula: string;
   nivel: string;
   carteiraQtd: number;
   /** Faturamento individual para ranking (R$). */
@@ -160,6 +164,7 @@ export interface DadosContatoInfo {
 export interface UnidadeDetalhe {
   id: string;
   nome: string;
+  matricula: string;
   status: UnidadeStatus;
   cidade: string;
   estado: string;
@@ -175,6 +180,8 @@ export interface UnidadeDetalhe {
   /** Dados de contato e endereço. */
   dadosContato: DadosContatoInfo;
   organizacional: OrganizacionalNode[];
+  /** Sócios da unidade (exibidos na modal, não na hierarquia). */
+  socios: { nome: string; nivelLabel: string; documento?: string }[];
   financeiro: FinanceiroInfo;
   consultoresVinculados: ConsultorVinculado[];
   carteiras: Carteira[];
@@ -201,6 +208,7 @@ export const unidadesDetalhe: Record<string, UnidadeDetalhe> = {
   L001: {
     id: "L001",
     nome: "SP-Centro",
+    matricula: "M-10001",
     status: "Ativo",
     cidade: "São Paulo",
     estado: "SP",
@@ -221,37 +229,39 @@ export const unidadesDetalhe: Record<string, UnidadeDetalhe> = {
     },
     organizacional: [
       {
-        id: "L001", nome: "Unidade SP-Centro", nivelLabel: "Licenciado 3.5", responsavel: "João Silva", depth: 0, tipo: "loja",
-        documento: "12.345.678/0001-90",
+        id: "L001", nome: "Unidade SP-Centro", nivelLabel: "Licenciado 3.5", responsavel: "Alpha Consultoria Ltda", depth: 0, tipo: "loja",
+        documento: "12.345.678/0001-90", matricula: "M-10001",
         children: [
-          { id: "S001", nome: "Roberto Almeida", nivelLabel: "Gestor Responsável", responsavel: "Sócio", depth: 1, tipo: "socio", documento: "111.222.333-44", avatarUrl: "https://i.pravatar.cc/80?img=3", participacaoPct: 50, comissaoPct: 3.5 },
-          { id: "S002", nome: "Ana Paula Silva", nivelLabel: "Sócio", responsavel: "Sócio", depth: 1, tipo: "socio", documento: "222.333.444-55", avatarUrl: "https://i.pravatar.cc/80?img=25", participacaoPct: 30, comissaoPct: 2.0 },
-          { id: "S003", nome: "Ricardo Mendonça", nivelLabel: "Sócio", responsavel: "Sócio", depth: 1, tipo: "socio", documento: "333.444.555-66", avatarUrl: "https://i.pravatar.cc/80?img=8", participacaoPct: 20, comissaoPct: 1.5 },
           {
-            id: "PV-1042", nome: "PV Alpha", nivelLabel: "Autorizado 2.5", responsavel: "Carlos Oliveira", depth: 1, tipo: "pv",
-            documento: "23.456.789/0001-11",
+            id: "PV-1042", nome: "PV Alpha", nivelLabel: "Autorizado 2.5", responsavel: "Alpha Consórcios LTDA", depth: 1, tipo: "pv",
+            documento: "23.456.789/0001-11", matricula: "M-20042",
             children: [
-              { id: "C001", nome: "Maria Santos", nivelLabel: "Consultor", responsavel: "Maria Santos", depth: 2, tipo: "consultor", documento: "123.456.789-00", avatarUrl: "https://i.pravatar.cc/80?img=5" },
-              { id: "C005", nome: "Fernanda Lima", nivelLabel: "Consultor", responsavel: "Fernanda Lima", depth: 2, tipo: "consultor", documento: "234.567.890-11", avatarUrl: "https://i.pravatar.cc/80?img=9" },
+              { id: "C001", nome: "MS Assessoria Ltda", nivelLabel: "Consultor", responsavel: "MS Assessoria Ltda", depth: 2, tipo: "consultor", documento: "55.123.456/0001-01", matricula: "M-30001" },
+              { id: "C005", nome: "FL Participações ME", nivelLabel: "Consultor", responsavel: "FL Participações ME", depth: 2, tipo: "consultor", documento: "55.234.567/0001-02", matricula: "M-30005" },
             ],
           },
           {
-            id: "PV-1055", nome: "PV Vega", nivelLabel: "Autorizado 2.2", responsavel: "Beatriz Souza", depth: 1, tipo: "pv",
-            documento: "34.567.890/0001-22",
+            id: "PV-1055", nome: "PV Vega", nivelLabel: "Autorizado 2.2", responsavel: "Vega Assessoria ME", depth: 1, tipo: "pv",
+            documento: "34.567.890/0001-22", matricula: "M-20055",
             children: [
-              { id: "C003", nome: "Beatriz Souza", nivelLabel: "Consultor", responsavel: "Beatriz Souza", depth: 2, tipo: "consultor", documento: "345.678.901-22", avatarUrl: "https://i.pravatar.cc/80?img=16" },
-              { id: "C006", nome: "Rafael Costa", nivelLabel: "Consultor", responsavel: "Rafael Costa", depth: 2, tipo: "consultor", documento: "456.789.012-33", avatarUrl: "https://i.pravatar.cc/80?img=12" },
+              { id: "C003", nome: "BS Investimentos Ltda", nivelLabel: "Consultor", responsavel: "BS Investimentos Ltda", depth: 2, tipo: "consultor", documento: "55.345.678/0001-03", matricula: "M-30003" },
+              { id: "C006", nome: "RC Consórcios ME", nivelLabel: "Consultor", responsavel: "RC Consórcios ME", depth: 2, tipo: "consultor", documento: "55.456.789/0001-04", matricula: "M-30006" },
             ],
           },
           {
-            id: "PV-2091", nome: "PV Zeta", nivelLabel: "Autorizado 2.0", responsavel: "Diego Farias", depth: 2, tipo: "pv",
-            documento: "45.678.901/0001-33",
+            id: "PV-2091", nome: "PV Zeta", nivelLabel: "Autorizado 2.0", responsavel: "Zeta Negócios ME", depth: 2, tipo: "pv",
+            documento: "45.678.901/0001-33", matricula: "M-20091",
             children: [
-              { id: "C004", nome: "Diego Farias", nivelLabel: "Consultor", responsavel: "Diego Farias", depth: 3, tipo: "consultor", documento: "567.890.123-44", avatarUrl: "https://i.pravatar.cc/80?img=11" },
+              { id: "C004", nome: "DF Consórcios ME", nivelLabel: "Consultor", responsavel: "DF Consórcios ME", depth: 3, tipo: "consultor", documento: "55.567.890/0001-05", matricula: "M-30004" },
             ],
           },
         ],
       },
+    ],
+    socios: [
+      { nome: "Roberto Almeida", nivelLabel: "Gestor Responsável", documento: "111.222.333/0001-44" },
+      { nome: "Ana Paula Silva", nivelLabel: "Sócio", documento: "222.333.444/0001-55" },
+      { nome: "Ricardo Mendonça", nivelLabel: "Sócio", documento: "333.444.555/0001-66" },
     ],
     financeiro: {
       faturamentoConsolidado: 512400,
@@ -262,16 +272,16 @@ export const unidadesDetalhe: Record<string, UnidadeDetalhe> = {
       vendasSerie: [48, 51, 53, 56, 58, 61],
     },
     consultoresVinculados: [
-      { id: "C001", nome: "Maria Santos", iniciais: "MS", nivel: "Autorizado 2.5", carteiraQtd: 22, faturamento: 198500 },
-      { id: "C002", nome: "Carlos Oliveira", iniciais: "CO", nivel: "Autorizado 2.5", carteiraQtd: 19, faturamento: 172300 },
-      { id: "C003", nome: "Beatriz Souza", iniciais: "BS", nivel: "Autorizado 2.2", carteiraQtd: 15, faturamento: 141600 },
-      { id: "C004", nome: "Diego Farias", iniciais: "DF", nivel: "Autorizado 2.0", carteiraQtd: 12, faturamento: 108000 },
-      { id: "C005", nome: "Fernanda Lima", iniciais: "FL", nivel: "Autorizado 2.5", carteiraQtd: 18, faturamento: 162000 },
-      { id: "C006", nome: "Rafael Costa", iniciais: "RC", nivel: "Autorizado 2.2", carteiraQtd: 14, faturamento: 126000 },
-      { id: "C007", nome: "Juliana Mendes", iniciais: "JM", nivel: "Autorizado 2.0", carteiraQtd: 9, faturamento: 81000 },
-      { id: "C008", nome: "André Pereira", iniciais: "AP", nivel: "Autorizado 2.2", carteiraQtd: 11, faturamento: 99000 },
-      { id: "C009", nome: "Camila Rocha", iniciais: "CR", nivel: "Autorizado 2.5", carteiraQtd: 16, faturamento: 144000 },
-      { id: "C010", nome: "Lucas Martins", iniciais: "LM", nivel: "Autorizado 2.0", carteiraQtd: 8, faturamento: 72000 },
+      { id: "C001", nome: "Maria Santos", razaoSocial: "MS Assessoria Ltda", cnpj: "55.123.456/0001-01", matricula: "M-30001", nivel: "Autorizado 2.5", carteiraQtd: 22, faturamento: 198500 },
+      { id: "C002", nome: "Carlos Oliveira", razaoSocial: "Alpha Consórcios LTDA", cnpj: "23.456.789/0001-11", matricula: "M-20042", nivel: "Autorizado 2.5", carteiraQtd: 19, faturamento: 172300 },
+      { id: "C003", nome: "Beatriz Souza", razaoSocial: "BS Investimentos Ltda", cnpj: "55.345.678/0001-03", matricula: "M-30003", nivel: "Autorizado 2.2", carteiraQtd: 15, faturamento: 141600 },
+      { id: "C004", nome: "Diego Farias", razaoSocial: "DF Consórcios ME", cnpj: "55.567.890/0001-05", matricula: "M-30004", nivel: "Autorizado 2.0", carteiraQtd: 12, faturamento: 108000 },
+      { id: "C005", nome: "Fernanda Lima", razaoSocial: "FL Participações ME", cnpj: "55.234.567/0001-02", matricula: "M-30005", nivel: "Autorizado 2.5", carteiraQtd: 18, faturamento: 162000 },
+      { id: "C006", nome: "Rafael Costa", razaoSocial: "RC Consórcios ME", cnpj: "55.456.789/0001-04", matricula: "M-30006", nivel: "Autorizado 2.2", carteiraQtd: 14, faturamento: 126000 },
+      { id: "C007", nome: "Juliana Mendes", razaoSocial: "JM Assessoria ME", cnpj: "55.678.901/0001-07", matricula: "M-30007", nivel: "Autorizado 2.0", carteiraQtd: 9, faturamento: 81000 },
+      { id: "C008", nome: "André Pereira", razaoSocial: "AP Investimentos", cnpj: "55.789.012/0001-08", matricula: "M-30008", nivel: "Autorizado 2.2", carteiraQtd: 11, faturamento: 99000 },
+      { id: "C009", nome: "Camila Rocha", razaoSocial: "CR Consórcios Ltda", cnpj: "55.890.123/0001-09", matricula: "M-30009", nivel: "Autorizado 2.5", carteiraQtd: 16, faturamento: 144000 },
+      { id: "C010", nome: "Lucas Martins", razaoSocial: "LM Participações ME", cnpj: "55.901.234/0001-10", matricula: "M-30010", nivel: "Autorizado 2.0", carteiraQtd: 8, faturamento: 72000 },
     ],
     carteiras: [
       { id: "CRT-01", cliente: "Empresa X", status: "Ativa", consultor: "Maria Santos", orfa: false },
@@ -296,6 +306,7 @@ export const unidadesDetalhe: Record<string, UnidadeDetalhe> = {
       ],
       penalidades: [
         { motivo: "Comunicação visual desatualizada", descontoPct: 1.5, vigenciaFim: "Dez 2026" },
+        { motivo: "Atraso reincidente em relatório mensal", descontoPct: 0.5, vigenciaFim: "Set 2026" },
       ],
     },
     avaliacao360: {
@@ -337,6 +348,7 @@ export const unidadesDetalhe: Record<string, UnidadeDetalhe> = {
   L002: {
     id: "L002",
     nome: "Campinas",
+    matricula: "M-10002",
     status: "Ativo",
     cidade: "Campinas",
     estado: "SP",
@@ -367,8 +379,8 @@ export const unidadesDetalhe: Record<string, UnidadeDetalhe> = {
       vendasSerie: [39, 40, 42, 44, 45, 47],
     },
     consultoresVinculados: [
-      { id: "C010", nome: "Tiago Almeida", iniciais: "TA", nivel: "Autorizado 2.7", carteiraQtd: 18, faturamento: 162000 },
-      { id: "C011", nome: "Larissa Prado", iniciais: "LP", nivel: "Autorizado 2.2", carteiraQtd: 12, faturamento: 108000 },
+      { id: "C010", nome: "Tiago Almeida", razaoSocial: "TA Consórcios Ltda", cnpj: "56.100.200/0001-10", matricula: "M-30010", nivel: "Autorizado 2.7", carteiraQtd: 18, faturamento: 162000 },
+      { id: "C011", nome: "Larissa Prado", razaoSocial: "LP Assessoria ME", cnpj: "56.200.300/0001-11", matricula: "M-30011", nivel: "Autorizado 2.2", carteiraQtd: 12, faturamento: 108000 },
     ],
     carteiras: [
       { id: "CRT-20", cliente: "Metalúrgica Souza", status: "Ativa", consultor: "Tiago Almeida", orfa: false },
@@ -402,15 +414,22 @@ export const unidadesDetalhe: Record<string, UnidadeDetalhe> = {
       { razao: "Reis Participações Ltda", cnpj: "23.456.789/0001-11", papel: "Licenciado Lojista", pct: 100, status: "Ativo" },
     ],
     historico: [
-      { data: "Mai 2026", icon: ClipboardCheck, color: "gray", titulo: "Checklist gerencial semestral", desc: "Rating A mantido (87 pts)." },
-      { data: "Nov 2024", icon: Handshake, color: "green", titulo: "Visita técnica de acompanhamento", desc: "Consultoria de expansão de carteira." },
-      { data: "Ago 2019", icon: Store, color: "blue", titulo: "Abertura da unidade", desc: "Início de operação em Campinas." },
+      { data: "Mai 2026", icon: ClipboardCheck, color: "gray", titulo: "Checklist gerencial semestral", desc: "Rating A mantido (87 pts).", tipo: "avaliacao", detalhe: { responsavel: "Roberto Almeida", observacao: "Todos os indicadores acima da média. Ponto de destaque: carteira cresceu 18% no semestre.", acao: "Manter acompanhamento padrão." } },
+      { data: "Abr 2026", icon: Trophy, color: "green", titulo: "Tiago Almeida → Top consultor trimestral", desc: "Maior faturamento individual do trimestre.", tipo: "promocao", detalhe: { responsavel: "Sistema", observacao: "Faturamento de R$ 162.000 no Q1 2026.", acao: "Bonificação aplicada." } },
+      { data: "Mar 2026", icon: Handshake, color: "green", titulo: "Visita de acompanhamento", desc: "Revisão de metas e carteiras para o segundo trimestre.", tipo: "visita", detalhe: { responsavel: "Roberto Almeida", observacao: "Meta ajustada para 50 vendas/mês. Expansão de PV Orion avaliada.", acao: "Proposta de expansão enviada." } },
+      { data: "Fev 2026", icon: Flag, color: "amber", titulo: "Alerta de carteira órfã", desc: "3 carteiras sem consultor atribuído identificadas.", tipo: "ocorrencia", status: "Resolvido", detalhe: { responsavel: "Marina Reis", observacao: "Carteiras migradas de consultor desligado.", acao: "Redistribuição concluída em 5 dias.", dataResolucao: "Fev 2026" } },
+      { data: "Jan 2026", icon: RefreshCw, color: "blue", titulo: "Renovação de contrato operacional", desc: "Contrato renovado por 24 meses com reajuste de 4,5%.", tipo: "evento", detalhe: { responsavel: "Jurídico Ademicon", observacao: "Renovação automática conforme cláusula contratual.", acao: "Contrato assinado e registrado." } },
+      { data: "Nov 2025", icon: ClipboardCheck, color: "gray", titulo: "Checklist gerencial trimestral", desc: "Rating A (85 pts). Leve melhora em comunicação visual.", tipo: "avaliacao", detalhe: { responsavel: "Roberto Almeida", observacao: "Adequação visual da fachada concluída.", acao: "Nenhuma pendência." } },
+      { data: "Set 2025", icon: Handshake, color: "green", titulo: "Visita técnica de auditoria", desc: "Auditoria semestral de conformidade documental.", tipo: "visita", detalhe: { responsavel: "Equipe de Auditoria", observacao: "Toda documentação em conformidade. Nenhum achado.", acao: "Relatório positivo enviado." } },
+      { data: "Jul 2025", icon: Flag, color: "red", titulo: "Penalidade por atraso de prévia", desc: "Desconto de 0,5% aplicado por 60 dias.", tipo: "penalidade", status: "Resolvido", detalhe: { responsavel: "Diretoria", observacao: "SLA de resposta de prévia excedido em 3 dias.", acao: "Penalidade encerrada em Set 2025.", dataResolucao: "Set 2025" } },
+      { data: "Ago 2019", icon: Store, color: "blue", titulo: "Abertura da unidade", desc: "Início de operação em Campinas.", tipo: "evento", detalhe: { responsavel: "Diretoria", observacao: "Marina Reis assume como licenciada lojista. Endereço: Rua Barão de Jaguara, 1100.", acao: "Operação iniciada com 1 consultor." } },
     ],
   },
 
   L003: {
     id: "L003",
     nome: "Curitiba-Norte",
+    matricula: "M-10003",
     status: "Ativo",
     cidade: "Curitiba",
     estado: "PR",
@@ -441,7 +460,7 @@ export const unidadesDetalhe: Record<string, UnidadeDetalhe> = {
       vendasSerie: [30, 31, 32, 33, 35, 36],
     },
     consultoresVinculados: [
-      { id: "C020", nome: "Renata Lopes", iniciais: "RL", nivel: "Autorizado 2.5", carteiraQtd: 13, faturamento: 117000 },
+      { id: "C020", nome: "Renata Lopes", razaoSocial: "RL Negócios Ltda", cnpj: "57.100.200/0001-20", matricula: "M-30020", nivel: "Autorizado 2.5", carteiraQtd: 13, faturamento: 117000 },
     ],
     carteiras: [
       { id: "CRT-30", cliente: "Auto Peças Sul", status: "Ativa", consultor: "Renata Lopes", orfa: false },
@@ -477,15 +496,21 @@ export const unidadesDetalhe: Record<string, UnidadeDetalhe> = {
       { razao: "Dias & Cia Ltda", cnpj: "34.567.890/0001-22", papel: "Licenciado Lojista", pct: 100, status: "Ativo" },
     ],
     historico: [
-      { data: "Abr 2026", icon: ClipboardCheck, color: "gray", titulo: "Checklist gerencial trimestral", desc: "Rating B, queda de 3 pts vs. ciclo anterior." },
-      { data: "Fev 2026", icon: Flag, color: "amber", titulo: "SLA de prévia vencido", desc: "Segunda ocorrência no trimestre.", status: "Resolvido" },
-      { data: "Jan 2021", icon: Store, color: "blue", titulo: "Abertura da unidade", desc: "Início de operação em Curitiba - região Norte." },
+      { data: "Abr 2026", icon: ClipboardCheck, color: "gray", titulo: "Checklist gerencial trimestral", desc: "Rating B, queda de 3 pts vs. ciclo anterior.", tipo: "avaliacao", detalhe: { responsavel: "Roberto Almeida", observacao: "Queda em cumprimento de metas e comunicação visual. Necessário plano de ação.", acao: "Reunião com gestor agendada para Mai 2026." } },
+      { data: "Fev 2026", icon: Flag, color: "amber", titulo: "SLA de prévia vencido", desc: "Segunda ocorrência no trimestre.", tipo: "ocorrencia", status: "Resolvido", detalhe: { responsavel: "Fernando Dias", observacao: "Resposta a prévia excedeu SLA em 5 dias úteis.", acao: "Penalidade de 1% aplicada por reincidência.", dataResolucao: "Mar 2026" } },
+      { data: "Jan 2026", icon: Handshake, color: "green", titulo: "Visita de início de ano", desc: "Alinhamento de metas para 2026.", tipo: "visita", detalhe: { responsavel: "Roberto Almeida", observacao: "Definidas metas de 36 vendas/mês e expansão de 2 consultores.", acao: "Plano de ação registrado." } },
+      { data: "Nov 2025", icon: Flag, color: "amber", titulo: "SLA de prévia vencido (1ª ocorrência)", desc: "Resposta fora do prazo de 48h.", tipo: "ocorrencia", status: "Resolvido", detalhe: { responsavel: "Fernando Dias", observacao: "Prévia respondida com 72h de atraso.", acao: "Advertência registrada.", dataResolucao: "Nov 2025" } },
+      { data: "Set 2025", icon: ClipboardCheck, color: "gray", titulo: "Checklist gerencial trimestral", desc: "Rating B (79 pts). Estável.", tipo: "avaliacao", detalhe: { responsavel: "Roberto Almeida", observacao: "Sem alterações significativas. Comunicação visual ainda abaixo.", acao: "Prazo para adequação: Dez 2025." } },
+      { data: "Jul 2025", icon: Trophy, color: "green", titulo: "Renata Lopes → Autorizado 2.5", desc: "Promoção por atingimento de metas consecutivas.", tipo: "promocao", detalhe: { responsavel: "Diretoria", observacao: "3 trimestres consecutivos acima da meta.", acao: "Certificado emitido." } },
+      { data: "Mai 2025", icon: Handshake, color: "green", titulo: "Visita técnica de auditoria", desc: "Auditoria de conformidade.", tipo: "visita", detalhe: { responsavel: "Equipe de Auditoria", observacao: "Documentação OK. Fachada com pendência menor.", acao: "Prazo de 30 dias para adequação." } },
+      { data: "Jan 2021", icon: Store, color: "blue", titulo: "Abertura da unidade", desc: "Início de operação em Curitiba - região Norte.", tipo: "evento", detalhe: { responsavel: "Diretoria", observacao: "Fernando Dias assume como licenciado lojista.", acao: "Operação iniciada." } },
     ],
   },
 
   L004: {
     id: "L004",
     nome: "RJ-Barra",
+    matricula: "M-10004",
     status: "Suspenso",
     cidade: "Rio de Janeiro",
     estado: "RJ",
@@ -515,7 +540,7 @@ export const unidadesDetalhe: Record<string, UnidadeDetalhe> = {
       vendasSerie: [28, 26, 24, 23, 21, 20],
     },
     consultoresVinculados: [
-      { id: "C030", nome: "Gustavo Ramos", iniciais: "GR", nivel: "Autorizado 2.2", carteiraQtd: 7, faturamento: 63000 },
+      { id: "C030", nome: "Gustavo Ramos", razaoSocial: "GR Participações Ltda", cnpj: "58.100.200/0001-30", matricula: "M-30030", nivel: "Autorizado 2.2", carteiraQtd: 7, faturamento: 63000 },
     ],
     carteiras: [
       { id: "CRT-40", cliente: "Imobiliária Atlântica", status: "Inativa", consultor: null, orfa: true },
@@ -553,15 +578,21 @@ export const unidadesDetalhe: Record<string, UnidadeDetalhe> = {
       { razao: "RJ Capital Participações", cnpj: "45.678.902/0001-44", papel: "Sócio", pct: 45, status: "Inativo" },
     ],
     historico: [
-      { data: "Jul 2026", icon: Flag, color: "red", titulo: "Suspensão temporária", desc: "Pendências societárias não regularizadas no prazo.", status: "Aberto" },
-      { data: "Mar 2026", icon: RefreshCw, color: "amber", titulo: "Mudança societária não comunicada", desc: "Alteração de quadro sem notificação prévia.", status: "Aberto" },
-      { data: "Set 2017", icon: Store, color: "blue", titulo: "Abertura da unidade", desc: "Início de operação no Rio de Janeiro - Barra." },
+      { data: "Jul 2026", icon: Flag, color: "red", titulo: "Suspensão temporária", desc: "Pendências societárias não regularizadas no prazo.", tipo: "penalidade", status: "Aberto", detalhe: { responsavel: "Diretoria", observacao: "Prazo de regularização expirou em Jun 2026. Unidade suspensa até resolução.", acao: "Aguardando documentação do novo quadro societário." } },
+      { data: "Jun 2026", icon: ClipboardCheck, color: "gray", titulo: "Checklist gerencial — não realizado", desc: "Checklist cancelado por suspensão.", tipo: "avaliacao", detalhe: { responsavel: "Roberto Almeida", observacao: "Unidade em processo de suspensão. Checklist não aplicável.", acao: "Reagendar após regularização." } },
+      { data: "Mar 2026", icon: RefreshCw, color: "amber", titulo: "Mudança societária não comunicada", desc: "Alteração de quadro sem notificação prévia.", tipo: "ocorrencia", status: "Aberto", detalhe: { responsavel: "Jurídico Ademicon", observacao: "Identificada saída de sócio sem comunicação formal à Ademicon.", acao: "Notificação extrajudicial enviada." } },
+      { data: "Jan 2026", icon: Handshake, color: "green", titulo: "Visita de acompanhamento", desc: "Verificação de conformidade operacional.", tipo: "visita", detalhe: { responsavel: "Roberto Almeida", observacao: "Operação funcionando normalmente. Documentação societária pendente de atualização.", acao: "Prazo de 90 dias para regularização." } },
+      { data: "Nov 2025", icon: ClipboardCheck, color: "gray", titulo: "Checklist gerencial trimestral", desc: "Rating B (73 pts). Queda significativa.", tipo: "avaliacao", detalhe: { responsavel: "Roberto Almeida", observacao: "Queda em conformidade documental e comunicação visual.", acao: "Plano de ação emergencial solicitado." } },
+      { data: "Ago 2025", icon: Flag, color: "amber", titulo: "Atraso no pagamento de royalties", desc: "Parcela de Jul/2025 em aberto por 15 dias.", tipo: "ocorrencia", status: "Resolvido", detalhe: { responsavel: "Financeiro", observacao: "Pagamento regularizado com multa.", acao: "Monitoramento financeiro intensificado.", dataResolucao: "Ago 2025" } },
+      { data: "Mai 2025", icon: Handshake, color: "green", titulo: "Visita técnica de auditoria", desc: "Auditoria semestral realizada.", tipo: "visita", detalhe: { responsavel: "Equipe de Auditoria", observacao: "Divergências encontradas na documentação societária.", acao: "Relatório enviado com prazo de 60 dias." } },
+      { data: "Set 2017", icon: Store, color: "blue", titulo: "Abertura da unidade", desc: "Início de operação no Rio de Janeiro - Barra.", tipo: "evento", detalhe: { responsavel: "Diretoria", observacao: "Patrícia Nogueira assume como licenciada lojista.", acao: "Operação iniciada com 3 consultores." } },
     ],
   },
 
   L005: {
     id: "L005",
     nome: "BH-Savassi",
+    matricula: "M-10005",
     status: "Ativo",
     cidade: "Belo Horizonte",
     estado: "MG",
@@ -591,7 +622,7 @@ export const unidadesDetalhe: Record<string, UnidadeDetalhe> = {
       vendasSerie: [21, 22, 22, 23, 24, 25],
     },
     consultoresVinculados: [
-      { id: "C040", nome: "Priscila Gomes", iniciais: "PG", nivel: "Autorizado 2.0", carteiraQtd: 5, faturamento: 45000 },
+      { id: "C040", nome: "Priscila Gomes", razaoSocial: "PG Consórcios ME", cnpj: "59.100.200/0001-40", matricula: "M-30040", nivel: "Autorizado 2.0", carteiraQtd: 5, faturamento: 45000 },
     ],
     carteiras: [
       { id: "CRT-50", cliente: "Mercearia Central", status: "Ativa", consultor: "Priscila Gomes", orfa: false },
@@ -636,6 +667,7 @@ export const unidadesDetalhe: Record<string, UnidadeDetalhe> = {
   L006: {
     id: "L006",
     nome: "Porto Alegre-Moinhos",
+    matricula: "M-10006",
     status: "Ativo",
     cidade: "Porto Alegre",
     estado: "RS",
@@ -713,6 +745,7 @@ export const unidadesDetalhe: Record<string, UnidadeDetalhe> = {
   L007: {
     id: "L007",
     nome: "Brasília-Asa Sul",
+    matricula: "M-10007",
     status: "Inativo",
     cidade: "Brasília",
     estado: "DF",
@@ -781,6 +814,7 @@ export const unidadesDetalhe: Record<string, UnidadeDetalhe> = {
   L008: {
     id: "L008",
     nome: "Salvador-Barra",
+    matricula: "M-10008",
     status: "Ativo",
     cidade: "Salvador",
     estado: "BA",

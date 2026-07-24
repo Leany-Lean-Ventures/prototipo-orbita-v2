@@ -1,8 +1,9 @@
 import Chart from "react-apexcharts";
 import type { ApexOptions } from "apexcharts";
-import { DollarSign, ShoppingCart, UserPlus, type LucideIcon } from "lucide-react";
+import { DollarSign, ShoppingCart, UserPlus, BarChart3, type LucideIcon } from "lucide-react";
 
 import { Card } from "@/components/ui/card";
+import { SectionHeader } from "@/components/ui/section-header";
 import { useCountUp } from "@/hooks/use-count-up";
 import { prefersReducedMotion } from "@/lib/motion";
 import type { FinanceiroInfo } from "@/lib/mock-data/unidades";
@@ -15,26 +16,26 @@ interface StatCardProps {
   label: string;
   value: number;
   prefix?: string;
+  color: string;
 }
 
-function StatCard({ icon: Icon, label, value, prefix }: StatCardProps) {
+function StatCard({ icon: Icon, label, value, prefix, color }: StatCardProps) {
   const valueRef = useCountUp(value);
   return (
-    <Card className="flex items-center gap-4 p-6">
-      <span
-        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary"
-        aria-hidden="true"
-      >
-        <Icon className="h-5 w-5" />
-      </span>
-      <div className="min-w-0">
-        <p className="truncate text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-          {label}
-        </p>
-        <p className="font-display text-xl font-bold tabular-nums text-foreground">
-          {prefix}
-          <span ref={valueRef}>0</span>
-        </p>
+    <Card className="relative overflow-hidden p-6">
+      <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full" style={{ background: `linear-gradient(135deg, ${color}33, ${color}0d)` }} />
+      <div className="absolute -right-1 -top-1 h-16 w-16 rounded-full" style={{ background: `linear-gradient(135deg, ${color}1a, transparent)` }} />
+      <div className="relative flex items-start justify-between">
+        <div>
+          <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{label}</p>
+          <p className="mt-1 font-display text-3xl font-bold tabular-nums tracking-tight text-foreground">
+            {prefix}
+            <span ref={valueRef}>0</span>
+          </p>
+        </div>
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl shadow-lg" style={{ background: `linear-gradient(135deg, ${color}, ${color}cc)` }}>
+          <Icon className="h-6 w-6 text-white" />
+        </div>
       </div>
     </Card>
   );
@@ -107,15 +108,18 @@ export function FinanceiroPanel({ info }: FinanceiroPanelProps) {
           label="Faturamento consolidado"
           value={info.faturamentoConsolidado}
           prefix="R$ "
+          color="#dc2626"
         />
-        <StatCard icon={ShoppingCart} label="Ticket médio" value={info.ticketMedio} prefix="R$ " />
-        <StatCard icon={UserPlus} label="Novos clientes (mês)" value={info.novosClientesMes} />
+        <StatCard icon={ShoppingCart} label="Ticket médio" value={info.ticketMedio} prefix="R$ " color="#8bc34b" />
+        <StatCard icon={UserPlus} label="Novos clientes (mês)" value={info.novosClientesMes} color="#3b82f6" />
       </div>
 
       <Card className="p-6">
-        <h4 className="mb-4 text-sm font-semibold text-foreground">
-          Evolução de faturamento e vendas
-        </h4>
+        <SectionHeader
+          icon={BarChart3}
+          title="Evolução de faturamento e vendas"
+          subtitle="Comparativo dos últimos 6 meses"
+        />
         <p className="sr-only">
           Faturamento evoluiu de R$ {info.faturamentoSerie[0].toLocaleString("pt-BR")} em{" "}
           {info.meses[0]} para R$ {info.faturamentoSerie[info.faturamentoSerie.length - 1].toLocaleString("pt-BR")} em{" "}

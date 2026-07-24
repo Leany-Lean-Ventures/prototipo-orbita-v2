@@ -4,8 +4,9 @@ import { Bell, User, LogOut } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { useAlertsPanel } from "@/lib/alerts-panel-context";
 import { alerts } from "@/lib/mock-data/alerts";
+import ademIconVermelho from "@/assets/brand/ademicon-icone-vermelho.svg";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -29,7 +30,8 @@ export function AppSidebar() {
   return (
     <aside className="sticky top-4 flex h-[calc(100vh-2rem)] w-[236px] shrink-0 flex-col overflow-hidden rounded-2xl border border-white/50 bg-card/80 shadow-soft backdrop-blur-md dark:border-white/5">
       <div className="flex h-16 items-center justify-between px-5">
-        <span className="font-display text-lg font-bold text-sidebar-foreground">
+        <span className="flex items-center gap-2 font-display text-lg font-bold text-sidebar-foreground">
+          <img src={ademIconVermelho} alt="" className="h-5 w-5" />
           Órbita
         </span>
         <Button
@@ -80,6 +82,7 @@ export function AppSidebar() {
               className="flex items-center gap-3 border-t border-sidebar-border p-4 text-left transition-colors duration-micro ease-micro hover:bg-sidebar-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
             >
               <Avatar className="h-8 w-8 border-2 border-card shadow-md">
+                <AvatarImage src="https://i.pravatar.cc/40?img=68" alt={user.name} />
                 <AvatarFallback>{user.avatar}</AvatarFallback>
               </Avatar>
               <div className="min-w-0 flex-1">
