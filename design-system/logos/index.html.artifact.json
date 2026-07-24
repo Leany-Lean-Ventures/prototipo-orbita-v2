@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "logos/index.html",
+  "entry": "logos/index.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-07-20T19:12:33.442Z",
+  "updatedAt": "2026-07-20T19:12:33.442Z",
+  "metadata": {
+    "inferred": true,
+    "reconciled": true
+  }
+}

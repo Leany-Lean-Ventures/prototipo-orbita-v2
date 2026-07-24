@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "system/kit.dark.html",
+  "entry": "system/kit.dark.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-07-18T20:11:41.234Z",
+  "updatedAt": "2026-07-18T20:11:41.234Z",
+  "metadata": {
+    "inferred": true,
+    "reconciled": true
+  }
+}

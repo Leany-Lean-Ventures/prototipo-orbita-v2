@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "system/kit.html",
+  "entry": "system/kit.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-07-18T20:11:41.249Z",
+  "updatedAt": "2026-07-18T20:11:41.249Z",
+  "metadata": {
+    "inferred": true,
+    "reconciled": true
+  }
+}

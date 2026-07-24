@@ -1,0 +1,26 @@
+{
+  "candidateId": "98e616f9-5a9f-4a44-95df-6a934ff7817e",
+  "projectId": "brand-design-system-ademicon-dashboard-orbita-v2-1-79963a",
+  "runId": "fe4a7afd-ea00-47b7-a71b-a082e93ba806",
+  "conversationId": "c0719edf-a9b9-4354-a3b1-ebec8843d2e7",
+  "provenance": {
+    "summary": "Detected from README.md, SKILL.md after a successful run.",
+    "detectedAt": 1784408222177
+  },
+  "sourceRefs": [
+    {
+      "kind": "file",
+      "value": "README.md",
+      "label": "README.md",
+      "size": 7076,
+      "copied": true
+    },
+    {
+      "kind": "file",
+      "value": "SKILL.md",
+      "label": "SKILL.md",
+      "size": 6521,
+      "copied": true
+    }
+  ]
+}

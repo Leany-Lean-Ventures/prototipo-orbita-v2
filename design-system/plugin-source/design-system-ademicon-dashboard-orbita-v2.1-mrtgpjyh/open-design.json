@@ -1,0 +1,22 @@
+{
+  "$schema": "https://open-design.ai/schemas/plugin.v1.json",
+  "specVersion": "1.0.0",
+  "name": "design-system-ademicon-dashboard-orbita-v2.1-mrtgpjyh",
+  "title": "Design System — Ademicon Dashboard (ORBITA) · v2.1",
+  "version": "0.1.0",
+  "description": "**Guia de estilos e design** do produto Ademicon (ORBITA) — a linguagem visual que garante consistência ao criar qualquer componente ou tela nova. Descreve **design, não conteúdo**.",
+  "od": {
+    "kind": "skill",
+    "taskKind": "new-generation",
+    "context": {
+      "skills": [
+        {
+          "path": "./SKILL.md"
+        }
+      ]
+    },
+    "capabilities": [
+      "prompt:inject"
+    ]
+  }
+}

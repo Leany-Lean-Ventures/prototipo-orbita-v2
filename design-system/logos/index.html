@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Marca Ademicon — variações</title>
+<style>
+  :root{
+    --canvas:#f2f2f2; --card:#ffffff; --fg:#344256; --muted:#566376;
+    --border:#e1e7ef; --primary:#dc2626; --negative:#1a1a1a;
+    --display:'Montserrat',system-ui,-apple-system,'Segoe UI','Helvetica Neue',Arial,sans-serif;
+    --body:'IBM Plex Sans',ui-sans-serif,system-ui,-apple-system,'Segoe UI',Arial,sans-serif;
+  }
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
+  *{box-sizing:border-box;margin:0}
+  body{background:var(--canvas);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;
+    padding:48px 24px 64px}
+  .wrap{max-width:1120px;margin:0 auto}
+  header{margin-bottom:32px}
+  .kicker{font:700 10px/1 var(--display);letter-spacing:.14em;text-transform:uppercase;color:var(--primary)}
+  h1{font:700 30px/1.2 var(--display);letter-spacing:-.02em;margin:8px 0 6px}
+  .sub{color:var(--muted);max-width:60ch}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:24px;margin-top:32px}
+  .card{background:var(--card);border:1px solid rgba(255,255,255,.5);border-radius:24px;
+    box-shadow:0 10px 25px -5px rgba(0,0,0,.04),0 8px 10px -6px rgba(0,0,0,.04);overflow:hidden;
+    display:flex;flex-direction:column}
+  .stage{height:200px;display:flex;align-items:center;justify-content:center;padding:36px}
+  .stage.light{background:var(--card)}
+  .stage.tinted{background:var(--canvas);border-bottom:1px solid var(--border)}
+  .stage.dark{background:var(--negative)}
+  .stage img{max-width:100%;max-height:100%;display:block}
+  .meta{padding:16px 20px 20px;border-top:1px solid var(--border)}
+  .meta h2{font:700 15px/1.3 var(--display);letter-spacing:-.01em}
+  .meta .role{font:700 10px/1 var(--display);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+  .files{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .chip{font:600 12px/1 var(--body);color:var(--fg);background:var(--canvas);border:1px solid var(--border);
+    border-radius:999px;padding:6px 10px}
+  .chip.neg{color:#fff;background:var(--negative);border-color:var(--negative)}
+  .rules{margin-top:40px;background:var(--card);border:1px solid var(--border);border-radius:24px;padding:24px 28px;
+    box-shadow:0 10px 25px -5px rgba(0,0,0,.04),0 8px 10px -6px rgba(0,0,0,.04)}
+  .rules h3{font:700 18px/1.3 var(--display);letter-spacing:-.01em;margin-bottom:12px}
+  .rules ul{margin:0;padding-left:18px}
+  .rules li{margin:6px 0}
+  .rules b{color:var(--primary)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header data-od-id="page-header">
+    <div class="kicker">Ademicon · identidade</div>
+    <h1>Marca — variações</h1>
+    <p class="sub">Extraídas de <code>brand-book-ademicon.svg</code>. Versão <b>positiva</b> (colorida) para fundos
+      claros; versão <b>negativa</b> (branca) para fundos escuros ou fotos com overlay. SVG é a fonte vetorial;
+      PNG é conveniência.</p>
+  </header>
+
+  <section class="grid" data-od-id="logo-grid">
+    <article class="card" data-od-id="logo-horizontal-color">
+      <div class="stage light"><img src="ademicon-logo-horizontal-color.svg" alt="Logo horizontal Ademicon colorido"></div>
+      <div class="meta"><div class="role">Horizontal · positivo</div><h2>Assinatura principal</h2>
+        <div class="files"><span class="chip">ademicon-logo-horizontal-color.svg</span><span class="chip">.png</span></div></div>
+    </article>
+
+    <article class="card" data-od-id="logo-horizontal-white">
+      <div class="stage dark"><img src="ademicon-logo-horizontal-white.svg" alt="Logo horizontal Ademicon branco"></div>
+      <div class="meta"><div class="role">Horizontal · negativo</div><h2>Sobre fundo escuro</h2>
+        <div class="files"><span class="chip neg">ademicon-logo-horizontal-white.svg</span><span class="chip neg">.png</span></div></div>
+    </article>
+
+    <article class="card" data-od-id="logo-vertical-color">
+      <div class="stage light"><img src="ademicon-logo-vertical-color.svg" alt="Logo vertical Ademicon colorido"></div>
+      <div class="meta"><div class="role">Vertical · positivo</div><h2>Empilhada</h2>
+        <div class="files"><span class="chip">ademicon-logo-vertical-color.svg</span><span class="chip">.png</span></div></div>
+    </article>
+
+    <article class="card" data-od-id="logo-vertical-white">
+      <div class="stage dark"><img src="ademicon-logo-vertical-white.svg" alt="Logo vertical Ademicon branco"></div>
+      <div class="meta"><div class="role">Vertical · negativo</div><h2>Empilhada, fundo escuro</h2>
+        <div class="files"><span class="chip neg">ademicon-logo-vertical-white.svg</span><span class="chip neg">.png</span></div></div>
+    </article>
+
+    <article class="card" data-od-id="favicon-color">
+      <div class="stage tinted"><img src="ademicon-favicon.svg" alt="Favicon Ademicon (símbolo) colorido" style="height:120px"></div>
+      <div class="meta"><div class="role">Favicon · positivo</div><h2>Símbolo isolado</h2>
+        <div class="files"><span class="chip">ademicon-favicon.svg</span><span class="chip">.png</span></div></div>
+    </article>
+
+    <article class="card" data-od-id="favicon-white">
+      <div class="stage dark"><img src="ademicon-favicon-white.svg" alt="Favicon Ademicon (símbolo) negativo" style="height:120px"></div>
+      <div class="meta"><div class="role">Favicon · negativo</div><h2>Símbolo, fundo escuro/vermelho</h2>
+        <div class="files"><span class="chip neg">ademicon-favicon-white.svg</span><span class="chip neg">.png</span></div></div>
+    </article>
+  </section>
+
+  <section class="rules" data-od-id="usage-rules">
+    <h3>Regras de uso</h3>
+    <ul>
+      <li><b>Positivo</b> em fundo claro (canvas <code>#f2f2f2</code> ou card branco); <b>negativo</b> em fundo escuro ou foto — nesta, sempre com overlay que garanta contraste.</li>
+      <li>Cor da marca: vermelho Ademicon <code>#dc2626</code>. Não recolorir, distorcer, rotacionar nem aplicar sombra/glow no logo.</li>
+      <li>Respeitar área de proteção (mín. a altura do símbolo ao redor) e tamanho mínimo legível.</li>
+      <li>Favicon = apenas o símbolo (sem wordmark). SVG é a fonte; PNG serve para onde vetor não é aceito.</li>
+      <li>Preservar os arquivos originais — não redesenhar a marca nem substituir por placeholder.</li>
+    </ul>
+  </section>
+</div>
+</body>
+</html>
