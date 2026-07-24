@@ -5,7 +5,6 @@ import {
   ClipboardCheck,
   Trophy,
   RefreshCw,
-  type LucideIcon,
 } from "lucide-react";
 
 import type {
@@ -21,7 +20,8 @@ export type ConsultorStatus = "Ativo" | "Inativo" | "Descredenciado";
 export interface ConsultorListItem {
   id: string;
   nome: string;
-  cpf: string;
+  razaoSocial: string;
+  cnpj: string;
   matricula: string;
   nivel: string;
   lojaPrincipal: string;
@@ -68,14 +68,14 @@ export interface ComissionamentoConsultor {
 export interface ConsultorDetalhe {
   id: string;
   nome: string;
-  cpf: string;
+  razaoSocial: string;
+  cnpj: string;
   matricula: string;
   nivel: string;
   lojaPrincipal: { id: string; nome: string };
-  indicador: { id: string; nome: string } | null;
+  indicador: { id: string; nome: string; razaoSocial: string } | null;
   ingresso: string;
   status: ConsultorStatus;
-  avatarUrl?: string;
   dadosBasicos: DadosBasicosConsultor;
   vinculos: VinculoItem[];
   visaoEconomica: VisaoEconomica;
@@ -87,18 +87,18 @@ export interface ConsultorDetalhe {
 // --------------- List data ---------------
 
 export const consultoresList: ConsultorListItem[] = [
-  { id: "C001", nome: "Maria Santos", cpf: "***.456.789-**", matricula: "M-00101", nivel: "Consultor", lojaPrincipal: "SP-Centro", lojaPrincipalId: "L001", empresas: 1, status: "Ativo" },
-  { id: "C002", nome: "Carlos Oliveira", cpf: "***.567.890-**", matricula: "M-00102", nivel: "Autorizado 2.5", lojaPrincipal: "SP-Centro", lojaPrincipalId: "L001", empresas: 2, status: "Ativo" },
-  { id: "C003", nome: "Beatriz Souza", cpf: "***.678.901-**", matricula: "M-00103", nivel: "Autorizado 2.2", lojaPrincipal: "SP-Centro", lojaPrincipalId: "L001", empresas: 1, status: "Ativo" },
-  { id: "C004", nome: "Diego Farias", cpf: "***.789.012-**", matricula: "M-00104", nivel: "Autorizado 2.0", lojaPrincipal: "SP-Centro", lojaPrincipalId: "L001", empresas: 1, status: "Ativo" },
-  { id: "C005", nome: "Fernanda Lima", cpf: "***.890.123-**", matricula: "M-00105", nivel: "Consultor", lojaPrincipal: "SP-Centro", lojaPrincipalId: "L001", empresas: 1, status: "Ativo" },
-  { id: "C006", nome: "Rafael Costa", cpf: "***.901.234-**", matricula: "M-00106", nivel: "Consultor", lojaPrincipal: "SP-Centro", lojaPrincipalId: "L001", empresas: 1, status: "Ativo" },
-  { id: "C007", nome: "Juliana Mendes", cpf: "***.012.345-**", matricula: "M-00107", nivel: "Consultor", lojaPrincipal: "SP-Centro", lojaPrincipalId: "L001", empresas: 1, status: "Inativo" },
-  { id: "C008", nome: "André Pereira", cpf: "***.123.456-**", matricula: "M-00108", nivel: "Consultor", lojaPrincipal: "SP-Centro", lojaPrincipalId: "L001", empresas: 1, status: "Ativo" },
-  { id: "C009", nome: "Camila Rocha", cpf: "***.234.567-**", matricula: "M-00109", nivel: "Autorizado 2.5", lojaPrincipal: "Campinas", lojaPrincipalId: "L002", empresas: 2, status: "Ativo" },
-  { id: "C010", nome: "Lucas Martins", cpf: "***.345.678-**", matricula: "M-00110", nivel: "Consultor", lojaPrincipal: "Campinas", lojaPrincipalId: "L002", empresas: 1, status: "Ativo" },
-  { id: "C011", nome: "Renata Lopes", cpf: "***.456.789-**", matricula: "M-00111", nivel: "Autorizado 2.5", lojaPrincipal: "Curitiba-Norte", lojaPrincipalId: "L003", empresas: 1, status: "Ativo" },
-  { id: "C012", nome: "Pedro Costa", cpf: "***.567.890-**", matricula: "M-00112", nivel: "Autorizado 2.0", lojaPrincipal: "Curitiba-Norte", lojaPrincipalId: "L003", empresas: 1, status: "Descredenciado" },
+  { id: "C001", nome: "Maria Santos", razaoSocial: "MS Assessoria Ltda", cnpj: "55.123.456/0001-01", matricula: "M-00101", nivel: "Consultor", lojaPrincipal: "SP-Centro", lojaPrincipalId: "L001", empresas: 1, status: "Ativo" },
+  { id: "C002", nome: "Carlos Oliveira", razaoSocial: "Alpha Consórcios LTDA", cnpj: "23.456.789/0001-11", matricula: "M-00102", nivel: "Autorizado 2.5", lojaPrincipal: "SP-Centro", lojaPrincipalId: "L001", empresas: 2, status: "Ativo" },
+  { id: "C003", nome: "Beatriz Souza", razaoSocial: "BS Investimentos Ltda", cnpj: "55.345.678/0001-03", matricula: "M-00103", nivel: "Autorizado 2.2", lojaPrincipal: "SP-Centro", lojaPrincipalId: "L001", empresas: 1, status: "Ativo" },
+  { id: "C004", nome: "Diego Farias", razaoSocial: "DF Consórcios ME", cnpj: "55.567.890/0001-05", matricula: "M-00104", nivel: "Autorizado 2.0", lojaPrincipal: "SP-Centro", lojaPrincipalId: "L001", empresas: 1, status: "Ativo" },
+  { id: "C005", nome: "Fernanda Lima", razaoSocial: "FL Participações ME", cnpj: "55.234.567/0001-02", matricula: "M-00105", nivel: "Consultor", lojaPrincipal: "SP-Centro", lojaPrincipalId: "L001", empresas: 1, status: "Ativo" },
+  { id: "C006", nome: "Rafael Costa", razaoSocial: "RC Consórcios ME", cnpj: "55.456.789/0001-04", matricula: "M-00106", nivel: "Consultor", lojaPrincipal: "SP-Centro", lojaPrincipalId: "L001", empresas: 1, status: "Ativo" },
+  { id: "C007", nome: "Juliana Mendes", razaoSocial: "JM Assessoria ME", cnpj: "55.678.901/0001-07", matricula: "M-00107", nivel: "Consultor", lojaPrincipal: "SP-Centro", lojaPrincipalId: "L001", empresas: 1, status: "Inativo" },
+  { id: "C008", nome: "André Pereira", razaoSocial: "AP Investimentos", cnpj: "55.789.012/0001-08", matricula: "M-00108", nivel: "Consultor", lojaPrincipal: "SP-Centro", lojaPrincipalId: "L001", empresas: 1, status: "Ativo" },
+  { id: "C009", nome: "Camila Rocha", razaoSocial: "CR Consórcios Ltda", cnpj: "55.890.123/0001-09", matricula: "M-00109", nivel: "Autorizado 2.5", lojaPrincipal: "Campinas", lojaPrincipalId: "L002", empresas: 2, status: "Ativo" },
+  { id: "C010", nome: "Lucas Martins", razaoSocial: "LM Participações ME", cnpj: "55.901.234/0001-10", matricula: "M-00110", nivel: "Consultor", lojaPrincipal: "Campinas", lojaPrincipalId: "L002", empresas: 1, status: "Ativo" },
+  { id: "C011", nome: "Renata Lopes", razaoSocial: "RL Negócios Ltda", cnpj: "57.100.200/0001-20", matricula: "M-00111", nivel: "Autorizado 2.5", lojaPrincipal: "Curitiba-Norte", lojaPrincipalId: "L003", empresas: 1, status: "Ativo" },
+  { id: "C012", nome: "Pedro Costa", razaoSocial: "PC Negócios ME", cnpj: "57.200.300/0001-21", matricula: "M-00112", nivel: "Autorizado 2.0", lojaPrincipal: "Curitiba-Norte", lojaPrincipalId: "L003", empresas: 1, status: "Descredenciado" },
 ];
 
 // --------------- Detail data ---------------
@@ -107,14 +107,14 @@ export const consultoresDetalhe: Record<string, ConsultorDetalhe> = {
   C001: {
     id: "C001",
     nome: "Maria Santos",
-    cpf: "123.456.789-00",
+    razaoSocial: "MS Assessoria Ltda",
+    cnpj: "55.123.456/0001-01",
     matricula: "M-00101",
     nivel: "Consultor",
     lojaPrincipal: { id: "L001", nome: "SP-Centro" },
-    indicador: { id: "C002", nome: "Carlos Oliveira" },
+    indicador: { id: "C002", nome: "Carlos Oliveira", razaoSocial: "Alpha Consórcios LTDA" },
     ingresso: "Jan 2021",
     status: "Ativo",
-    avatarUrl: "https://i.pravatar.cc/80?img=5",
     dadosBasicos: {
       rg: "40.936.565-8",
       nascimento: "12/03/1992",
@@ -143,10 +143,10 @@ export const consultoresDetalhe: Record<string, ConsultorDetalhe> = {
       penalidades: [],
     },
     carteiras: [
-      { id: "CRT-50", cliente: "Empresa Z", status: "Ativa", consultor: "Maria Santos", orfa: false },
-      { id: "CRT-51", cliente: "Tech Solutions", status: "Ativa", consultor: "Maria Santos", orfa: false },
-      { id: "CRT-52", cliente: "Consórcio Alfa", status: "Ativa", consultor: "Maria Santos", orfa: false },
-      { id: "CRT-53", cliente: "Grupo Beta", status: "Inativa", consultor: "Maria Santos", orfa: false },
+      { id: "CRT-50", cliente: "Empresa Z", status: "Ativa", consultor: "MS Assessoria Ltda", pvMatricula: "M-20042", qtdClientes: 24, valor: 125300, orfa: false },
+      { id: "CRT-51", cliente: "Tech Solutions", status: "Ativa", consultor: "MS Assessoria Ltda", pvMatricula: "M-20042", qtdClientes: 21, valor: 109600, orfa: false },
+      { id: "CRT-52", cliente: "Consórcio Alfa", status: "Ativa", consultor: "MS Assessoria Ltda", pvMatricula: "M-20042", qtdClientes: 16, valor: 83500, orfa: false },
+      { id: "CRT-53", cliente: "Grupo Beta", status: "Inativa", consultor: "MS Assessoria Ltda", pvMatricula: "M-20042", qtdClientes: 5, valor: 26100, orfa: false },
     ],
     historico: [
       { data: "Jun 2026", icon: Trophy, color: "green", titulo: "Top 1 faturamento do PV", desc: "Maior faturamento individual no trimestre.", tipo: "promocao", detalhe: { responsavel: "Sistema", observacao: "Faturamento de R$ 108.000 no Q2 2026.", acao: "Bonificação aplicada." } },
@@ -160,14 +160,14 @@ export const consultoresDetalhe: Record<string, ConsultorDetalhe> = {
   C002: {
     id: "C002",
     nome: "Carlos Oliveira",
-    cpf: "234.567.890-11",
+    razaoSocial: "Alpha Consórcios LTDA",
+    cnpj: "23.456.789/0001-11",
     matricula: "M-00102",
     nivel: "Autorizado 2.5",
     lojaPrincipal: { id: "L001", nome: "SP-Centro" },
     indicador: null,
     ingresso: "Mar 2018",
     status: "Ativo",
-    avatarUrl: "https://i.pravatar.cc/80?img=7",
     dadosBasicos: {
       rg: "32.456.789-1",
       nascimento: "04/07/1985",
@@ -197,9 +197,9 @@ export const consultoresDetalhe: Record<string, ConsultorDetalhe> = {
       penalidades: [],
     },
     carteiras: [
-      { id: "CRT-60", cliente: "Capital Invest", status: "Ativa", consultor: "Carlos Oliveira", orfa: false },
-      { id: "CRT-61", cliente: "Prime Assets", status: "Ativa", consultor: "Carlos Oliveira", orfa: false },
-      { id: "CRT-62", cliente: "Oliveira & Filhos", status: "Ativa", consultor: "Carlos Oliveira", orfa: false },
+      { id: "CRT-60", cliente: "Capital Invest", status: "Ativa", consultor: "Alpha Consórcios LTDA", pvMatricula: "M-20042", qtdClientes: 31, valor: 162800, orfa: false },
+      { id: "CRT-61", cliente: "Prime Assets", status: "Ativa", consultor: "Alpha Consórcios LTDA", pvMatricula: "M-20042", qtdClientes: 19, valor: 99800, orfa: false },
+      { id: "CRT-62", cliente: "Oliveira & Filhos", status: "Ativa", consultor: "Alpha Consórcios LTDA", pvMatricula: "M-20042", qtdClientes: 14, valor: 73500, orfa: false },
     ],
     historico: [
       { data: "Mai 2026", icon: ClipboardCheck, color: "gray", titulo: "Avaliação semestral", desc: "Score de 92/100. Performance excepcional.", tipo: "avaliacao", detalhe: { responsavel: "Roberto Almeida", observacao: "Líder em faturamento e mentoria de equipe.", acao: "Análise de promoção para 2.7 em andamento." } },
@@ -213,14 +213,14 @@ export const consultoresDetalhe: Record<string, ConsultorDetalhe> = {
   C003: {
     id: "C003",
     nome: "Beatriz Souza",
-    cpf: "345.678.901-22",
+    razaoSocial: "BS Investimentos Ltda",
+    cnpj: "55.345.678/0001-03",
     matricula: "M-00103",
     nivel: "Autorizado 2.2",
     lojaPrincipal: { id: "L001", nome: "SP-Centro" },
-    indicador: { id: "C002", nome: "Carlos Oliveira" },
+    indicador: { id: "C002", nome: "Carlos Oliveira", razaoSocial: "Alpha Consórcios LTDA" },
     ingresso: "Ago 2021",
     status: "Ativo",
-    avatarUrl: "https://i.pravatar.cc/80?img=16",
     dadosBasicos: {
       rg: "45.678.901-2",
       nascimento: "15/11/1990",
@@ -249,8 +249,8 @@ export const consultoresDetalhe: Record<string, ConsultorDetalhe> = {
       penalidades: [],
     },
     carteiras: [
-      { id: "CRT-70", cliente: "Investe Mais LTDA", status: "Ativa", consultor: "Beatriz Souza", orfa: false },
-      { id: "CRT-71", cliente: "Costa & Filhos", status: "Ativa", consultor: "Beatriz Souza", orfa: false },
+      { id: "CRT-70", cliente: "Investe Mais LTDA", status: "Ativa", consultor: "BS Investimentos Ltda", pvMatricula: "M-20055", qtdClientes: 18, valor: 95100, orfa: false },
+      { id: "CRT-71", cliente: "Costa & Filhos", status: "Ativa", consultor: "BS Investimentos Ltda", pvMatricula: "M-20055", qtdClientes: 15, valor: 79200, orfa: false },
     ],
     historico: [
       { data: "Mai 2026", icon: Flag, color: "green", titulo: "Meta mensal atingida", desc: "Faturamento acima de 100% da meta.", tipo: "evento", detalhe: { responsavel: "Beatriz Souza", observacao: "R$ 50.000 contra meta de R$ 45.000.", acao: "Bonificação aplicada." } },

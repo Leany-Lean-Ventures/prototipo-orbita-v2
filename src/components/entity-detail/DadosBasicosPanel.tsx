@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Users, Store, Trophy, TrendingUp, Briefcase, Star, Eye } from "lucide-react";
+import { Users, Store, Trophy, TrendingUp, Briefcase, BriefcaseBusiness, Star, Eye } from "lucide-react";
 import Chart from "react-apexcharts";
 import type { ApexOptions } from "apexcharts";
 
@@ -256,16 +256,12 @@ export function DadosBasicosPanel({
                     <div className="flex h-7 w-7 items-center justify-center rounded-full bg-muted text-[11px] font-bold text-foreground">
                       {consultorPage * PAGE_SIZE + index + 1}
                     </div>
-                    <div className="h-8 w-8 shrink-0 overflow-hidden rounded-full border border-secondary/20 bg-secondary/10">
-                      <img
-                        src={`https://i.pravatar.cc/40?u=${consultor.id}`}
-                        alt={consultor.nome}
-                        className="h-full w-full object-cover"
-                      />
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-secondary/20 bg-secondary/10">
+                      <BriefcaseBusiness className="h-4 w-4 text-secondary" aria-hidden="true" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-[13px] font-medium text-foreground">{consultor.nome}</p>
-                      <p className="text-[11px] text-muted-foreground">{consultor.carteiraQtd} carteiras</p>
+                      <p className="truncate text-[13px] font-medium text-foreground">{consultor.razaoSocial}</p>
+                      <p className="text-[11px] text-muted-foreground">{consultor.matricula} • {consultor.carteiraQtd} carteiras</p>
                     </div>
                     <span className="text-[12px] font-semibold text-foreground">
                       {new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 }).format(consultor.faturamento ?? 0)}
@@ -275,7 +271,7 @@ export function DadosBasicosPanel({
                       size="icon"
                       className="h-7 w-7 shrink-0 text-muted-foreground hover:text-foreground"
                       onClick={() => navigate(`/consultores/${consultor.id}`)}
-                      aria-label={`Ver perfil de ${consultor.nome}`}
+                      aria-label={`Ver perfil de ${consultor.razaoSocial}`}
                     >
                       <Eye className="h-3.5 w-3.5" />
                     </Button>

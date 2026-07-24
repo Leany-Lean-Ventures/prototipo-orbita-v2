@@ -80,10 +80,10 @@ const ConsultoresLista = () => {
     return consultoresList.filter((c) => {
       if (
         termo &&
-        !c.nome.toLowerCase().includes(termo) &&
+        !c.razaoSocial.toLowerCase().includes(termo) &&
         !c.id.toLowerCase().includes(termo) &&
         !c.matricula.toLowerCase().includes(termo) &&
-        !c.cpf.includes(termo)
+        !c.cnpj.includes(termo)
       ) return false;
       if (loja !== "todos" && c.lojaPrincipal !== loja) return false;
       if (nivel !== "todos" && c.nivel !== nivel) return false;
@@ -102,7 +102,7 @@ const ConsultoresLista = () => {
       <PageHeader
         className="consultores-header"
         title="Pessoas & Consultores"
-        subtitle="Visão unificada por CPF — Matrículas, nível e empresas"
+        subtitle="Visão unificada por CNPJ — Matrículas, nível e empresas"
       />
 
       <Card className="consultores-filtros flex flex-wrap items-center gap-3 p-4">
@@ -112,7 +112,7 @@ const ConsultoresLista = () => {
             aria-hidden="true"
           />
           <Input
-            placeholder="Buscar por nome, CPF ou matrícula…"
+            placeholder="Buscar por razão social, CNPJ ou matrícula…"
             className="pl-9"
             value={busca}
             onChange={(e) => setFiltro("busca", e.target.value)}
@@ -168,9 +168,9 @@ const ConsultoresLista = () => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Nome</TableHead>
+                  <TableHead>Razão Social</TableHead>
                   <TableHead>Matrícula</TableHead>
-                  <TableHead>CPF</TableHead>
+                  <TableHead>CNPJ</TableHead>
                   <TableHead>Nível</TableHead>
                   <TableHead>Loja Principal</TableHead>
                   <TableHead className="text-right">Empresas</TableHead>
@@ -196,11 +196,11 @@ const ConsultoresLista = () => {
                             </div>
                           );
                         })()}
-                        <span className="font-medium text-foreground">{c.nome}</span>
+                        <span className="font-medium text-foreground">{c.razaoSocial}</span>
                       </div>
                     </TableCell>
                     <TableCell className="text-muted-foreground">{c.matricula}</TableCell>
-                    <TableCell className="text-muted-foreground">{c.cpf}</TableCell>
+                    <TableCell className="text-muted-foreground">{c.cnpj}</TableCell>
                     <TableCell>
                       <Badge variant="outline">{c.nivel}</Badge>
                     </TableCell>

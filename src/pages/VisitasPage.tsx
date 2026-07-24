@@ -7,7 +7,6 @@ import {
   visitasDetalhe,
   alertaCobertura,
   type VisitaStatus,
-  type VisitaTipo,
 } from "@/lib/mock-data/visitas";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";

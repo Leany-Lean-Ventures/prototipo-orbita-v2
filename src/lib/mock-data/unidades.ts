@@ -25,6 +25,7 @@ export type Rating = "A" | "B" | "C";
 
 export interface UnidadeListItem {
   id: string;
+  matricula: string;
   nome: string;
   cidade: string;
   estado: string;
@@ -39,6 +40,9 @@ export interface Carteira {
   cliente: string;
   status: "Ativa" | "Inativa";
   consultor: string | null;
+  pvMatricula: string | null;
+  qtdClientes: number;
+  valor: number;
   orfa: boolean;
 }
 
@@ -181,7 +185,7 @@ export interface UnidadeDetalhe {
   dadosContato: DadosContatoInfo;
   organizacional: OrganizacionalNode[];
   /** Sócios da unidade (exibidos na modal, não na hierarquia). */
-  socios: { nome: string; nivelLabel: string; documento?: string }[];
+  socios?: { nome: string; nivelLabel: string; documento?: string }[];
   financeiro: FinanceiroInfo;
   consultoresVinculados: ConsultorVinculado[];
   carteiras: Carteira[];
@@ -192,14 +196,14 @@ export interface UnidadeDetalhe {
 }
 
 export const unidadesList: UnidadeListItem[] = [
-  { id: "L001", nome: "SP-Centro", cidade: "São Paulo", estado: "SP", dono: "João Silva", rating: "A", ratingScore: 94, status: "Ativo" },
-  { id: "L002", nome: "Campinas", cidade: "Campinas", estado: "SP", dono: "Marina Reis", rating: "A", ratingScore: 87, status: "Ativo" },
-  { id: "L003", nome: "Curitiba-Norte", cidade: "Curitiba", estado: "PR", dono: "Fernando Dias", rating: "B", ratingScore: 76, status: "Ativo" },
-  { id: "L004", nome: "RJ-Barra", cidade: "Rio de Janeiro", estado: "RJ", dono: "Patrícia Nogueira", rating: "B", ratingScore: 71, status: "Suspenso" },
-  { id: "L005", nome: "BH-Savassi", cidade: "Belo Horizonte", estado: "MG", dono: "Eduardo Martins", rating: "C", ratingScore: 58, status: "Ativo" },
-  { id: "L006", nome: "Porto Alegre-Moinhos", cidade: "Porto Alegre", estado: "RS", dono: "Camila Torres", rating: "A", ratingScore: 91, status: "Ativo" },
-  { id: "L007", nome: "Brasília-Asa Sul", cidade: "Brasília", estado: "DF", dono: "Ricardo Peixoto", rating: "C", ratingScore: 52, status: "Inativo" },
-  { id: "L008", nome: "Salvador-Barra", cidade: "Salvador", estado: "BA", dono: "Juliana Farias", rating: "B", ratingScore: 79, status: "Ativo" },
+  { id: "L001", matricula: "M-10001", nome: "SP-Centro", cidade: "São Paulo", estado: "SP", dono: "João Silva", rating: "A", ratingScore: 94, status: "Ativo" },
+  { id: "L002", matricula: "M-10002", nome: "Campinas", cidade: "Campinas", estado: "SP", dono: "Marina Reis", rating: "A", ratingScore: 87, status: "Ativo" },
+  { id: "L003", matricula: "M-10003", nome: "Curitiba-Norte", cidade: "Curitiba", estado: "PR", dono: "Fernando Dias", rating: "B", ratingScore: 76, status: "Ativo" },
+  { id: "L004", matricula: "M-10004", nome: "RJ-Barra", cidade: "Rio de Janeiro", estado: "RJ", dono: "Patrícia Nogueira", rating: "B", ratingScore: 71, status: "Suspenso" },
+  { id: "L005", matricula: "M-10005", nome: "BH-Savassi", cidade: "Belo Horizonte", estado: "MG", dono: "Eduardo Martins", rating: "C", ratingScore: 58, status: "Ativo" },
+  { id: "L006", matricula: "M-10006", nome: "Porto Alegre-Moinhos", cidade: "Porto Alegre", estado: "RS", dono: "Camila Torres", rating: "A", ratingScore: 91, status: "Ativo" },
+  { id: "L007", matricula: "M-10007", nome: "Brasília-Asa Sul", cidade: "Brasília", estado: "DF", dono: "Ricardo Peixoto", rating: "C", ratingScore: 52, status: "Inativo" },
+  { id: "L008", matricula: "M-10008", nome: "Salvador-Barra", cidade: "Salvador", estado: "BA", dono: "Juliana Farias", rating: "B", ratingScore: 79, status: "Ativo" },
 ];
 
 const GERENTE = "Roberto Almeida";
@@ -284,18 +288,18 @@ export const unidadesDetalhe: Record<string, UnidadeDetalhe> = {
       { id: "C010", nome: "Lucas Martins", razaoSocial: "LM Participações ME", cnpj: "55.901.234/0001-10", matricula: "M-30010", nivel: "Autorizado 2.0", carteiraQtd: 8, faturamento: 72000 },
     ],
     carteiras: [
-      { id: "CRT-01", cliente: "Empresa X", status: "Ativa", consultor: "Maria Santos", orfa: false },
-      { id: "CRT-02", cliente: "Cliente Y", status: "Inativa", consultor: null, orfa: true },
-      { id: "CRT-03", cliente: "Construtora Alfa", status: "Ativa", consultor: "Carlos Oliveira", orfa: false },
-      { id: "CRT-04", cliente: "Grupo Nortel", status: "Ativa", consultor: null, orfa: true },
-      { id: "CRT-05", cliente: "Indústria Beta", status: "Ativa", consultor: "Beatriz Souza", orfa: false },
-      { id: "CRT-06", cliente: "Logística Express", status: "Ativa", consultor: "Diego Farias", orfa: false },
-      { id: "CRT-07", cliente: "Tech Solutions", status: "Ativa", consultor: "Fernanda Lima", orfa: false },
-      { id: "CRT-08", cliente: "Farmácia Central", status: "Ativa", consultor: "Rafael Costa", orfa: false },
-      { id: "CRT-09", cliente: "Auto Peças Premium", status: "Ativa", consultor: "André Pereira", orfa: false },
-      { id: "CRT-10", cliente: "Restaurante Vila", status: "Ativa", consultor: "Camila Rocha", orfa: false },
-      { id: "CRT-11", cliente: "Padaria Ouro", status: "Ativa", consultor: "Lucas Martins", orfa: false },
-      { id: "CRT-12", cliente: "Clínica Saúde+", status: "Inativa", consultor: null, orfa: true },
+      { id: "CRT-01", cliente: "Empresa X", status: "Ativa", consultor: "MS Assessoria Ltda", pvMatricula: "M-20042", qtdClientes: 24, valor: 121600, orfa: false },
+      { id: "CRT-02", cliente: "Cliente Y", status: "Inativa", consultor: null, pvMatricula: null, qtdClientes: 3, valor: 6100, orfa: true },
+      { id: "CRT-03", cliente: "Construtora Alfa", status: "Ativa", consultor: "Alpha Consórcios LTDA", pvMatricula: "M-20042", qtdClientes: 31, valor: 157100, orfa: false },
+      { id: "CRT-04", cliente: "Grupo Nortel", status: "Ativa", consultor: null, pvMatricula: null, qtdClientes: 9, valor: 18200, orfa: true },
+      { id: "CRT-05", cliente: "Indústria Beta", status: "Ativa", consultor: "BS Investimentos Ltda", pvMatricula: "M-20055", qtdClientes: 18, valor: 91200, orfa: false },
+      { id: "CRT-06", cliente: "Logística Express", status: "Ativa", consultor: "DF Consórcios ME", pvMatricula: "M-20091", qtdClientes: 12, valor: 60800, orfa: false },
+      { id: "CRT-07", cliente: "Tech Solutions", status: "Ativa", consultor: "FL Participações ME", pvMatricula: "M-20042", qtdClientes: 21, valor: 106500, orfa: false },
+      { id: "CRT-08", cliente: "Farmácia Central", status: "Ativa", consultor: "RC Consórcios ME", pvMatricula: "M-20055", qtdClientes: 15, valor: 76100, orfa: false },
+      { id: "CRT-09", cliente: "Auto Peças Premium", status: "Ativa", consultor: "AP Investimentos", pvMatricula: "M-20042", qtdClientes: 11, valor: 55800, orfa: false },
+      { id: "CRT-10", cliente: "Restaurante Vila", status: "Ativa", consultor: "CR Consórcios Ltda", pvMatricula: "M-20055", qtdClientes: 16, valor: 81500, orfa: false },
+      { id: "CRT-11", cliente: "Padaria Ouro", status: "Ativa", consultor: "LM Participações ME", pvMatricula: "M-20091", qtdClientes: 8, valor: 40800, orfa: false },
+      { id: "CRT-12", cliente: "Clínica Saúde+", status: "Inativa", consultor: null, pvMatricula: null, qtdClientes: 2, valor: 4100, orfa: true },
     ],
     comissionamento: {
       basePct: 2.0,
@@ -379,12 +383,12 @@ export const unidadesDetalhe: Record<string, UnidadeDetalhe> = {
       vendasSerie: [39, 40, 42, 44, 45, 47],
     },
     consultoresVinculados: [
-      { id: "C010", nome: "Tiago Almeida", razaoSocial: "TA Consórcios Ltda", cnpj: "56.100.200/0001-10", matricula: "M-30010", nivel: "Autorizado 2.7", carteiraQtd: 18, faturamento: 162000 },
-      { id: "C011", nome: "Larissa Prado", razaoSocial: "LP Assessoria ME", cnpj: "56.200.300/0001-11", matricula: "M-30011", nivel: "Autorizado 2.2", carteiraQtd: 12, faturamento: 108000 },
+      { id: "C110", nome: "Tiago Almeida", razaoSocial: "TA Consórcios Ltda", cnpj: "56.100.200/0001-10", matricula: "M-30010", nivel: "Autorizado 2.7", carteiraQtd: 18, faturamento: 162000 },
+      { id: "C111", nome: "Larissa Prado", razaoSocial: "LP Assessoria ME", cnpj: "56.200.300/0001-11", matricula: "M-30011", nivel: "Autorizado 2.2", carteiraQtd: 12, faturamento: 108000 },
     ],
     carteiras: [
-      { id: "CRT-20", cliente: "Metalúrgica Souza", status: "Ativa", consultor: "Tiago Almeida", orfa: false },
-      { id: "CRT-21", cliente: "Padaria Bom Pão", status: "Ativa", consultor: "Larissa Prado", orfa: false },
+      { id: "CRT-20", cliente: "Metalúrgica Souza", status: "Ativa", consultor: "TA Consórcios Ltda", pvMatricula: "M-20108", qtdClientes: 19, valor: 97400, orfa: false },
+      { id: "CRT-21", cliente: "Padaria Bom Pão", status: "Ativa", consultor: "LP Assessoria ME", pvMatricula: "M-20108", qtdClientes: 13, valor: 66700, orfa: false },
     ],
     comissionamento: {
       basePct: 2.0,
@@ -463,8 +467,8 @@ export const unidadesDetalhe: Record<string, UnidadeDetalhe> = {
       { id: "C020", nome: "Renata Lopes", razaoSocial: "RL Negócios Ltda", cnpj: "57.100.200/0001-20", matricula: "M-30020", nivel: "Autorizado 2.5", carteiraQtd: 13, faturamento: 117000 },
     ],
     carteiras: [
-      { id: "CRT-30", cliente: "Auto Peças Sul", status: "Ativa", consultor: "Renata Lopes", orfa: false },
-      { id: "CRT-31", cliente: "Comércio Araucária", status: "Inativa", consultor: null, orfa: true },
+      { id: "CRT-30", cliente: "Auto Peças Sul", status: "Ativa", consultor: "RL Negócios Ltda", pvMatricula: "M-20200", qtdClientes: 14, valor: 72200, orfa: false },
+      { id: "CRT-31", cliente: "Comércio Araucária", status: "Inativa", consultor: null, pvMatricula: null, qtdClientes: 2, valor: 4100, orfa: true },
     ],
     comissionamento: {
       basePct: 1.8,
@@ -543,8 +547,8 @@ export const unidadesDetalhe: Record<string, UnidadeDetalhe> = {
       { id: "C030", nome: "Gustavo Ramos", razaoSocial: "GR Participações Ltda", cnpj: "58.100.200/0001-30", matricula: "M-30030", nivel: "Autorizado 2.2", carteiraQtd: 7, faturamento: 63000 },
     ],
     carteiras: [
-      { id: "CRT-40", cliente: "Imobiliária Atlântica", status: "Inativa", consultor: null, orfa: true },
-      { id: "CRT-41", cliente: "Studio Fitness RJ", status: "Ativa", consultor: "Gustavo Ramos", orfa: false },
+      { id: "CRT-40", cliente: "Imobiliária Atlântica", status: "Inativa", consultor: null, pvMatricula: null, qtdClientes: 1, valor: 2100, orfa: true },
+      { id: "CRT-41", cliente: "Studio Fitness RJ", status: "Ativa", consultor: "GR Participações Ltda", pvMatricula: null, qtdClientes: 7, valor: 36300, orfa: false },
     ],
     comissionamento: {
       basePct: 1.6,
@@ -625,8 +629,8 @@ export const unidadesDetalhe: Record<string, UnidadeDetalhe> = {
       { id: "C040", nome: "Priscila Gomes", razaoSocial: "PG Consórcios ME", cnpj: "59.100.200/0001-40", matricula: "M-30040", nivel: "Autorizado 2.0", carteiraQtd: 5, faturamento: 45000 },
     ],
     carteiras: [
-      { id: "CRT-50", cliente: "Mercearia Central", status: "Ativa", consultor: "Priscila Gomes", orfa: false },
-      { id: "CRT-51", cliente: "Ateliê Savassi", status: "Inativa", consultor: null, orfa: true },
+      { id: "CRT-50", cliente: "Mercearia Central", status: "Ativa", consultor: "PG Consórcios ME", pvMatricula: null, qtdClientes: 5, valor: 26100, orfa: false },
+      { id: "CRT-51", cliente: "Ateliê Savassi", status: "Inativa", consultor: null, pvMatricula: null, qtdClientes: 1, valor: 2100, orfa: true },
     ],
     comissionamento: {
       basePct: 1.4,
@@ -699,12 +703,12 @@ export const unidadesDetalhe: Record<string, UnidadeDetalhe> = {
       vendasSerie: [45, 47, 49, 51, 54, 57],
     },
     consultoresVinculados: [
-      { id: "C050", nome: "Henrique Bastos", iniciais: "HB", nivel: "Autorizado 2.5", carteiraQtd: 20, faturamento: 180000 },
-      { id: "C051", nome: "Sabrina Kunz", iniciais: "SK", nivel: "Autorizado 2.7", carteiraQtd: 17, faturamento: 153000 },
+      { id: "C050", nome: "Henrique Bastos", razaoSocial: "HB Negócios Ltda", cnpj: "60.100.200/0001-50", matricula: "M-30050", nivel: "Autorizado 2.5", carteiraQtd: 20, faturamento: 180000 },
+      { id: "C051", nome: "Sabrina Kunz", razaoSocial: "SK Consórcios ME", cnpj: "60.200.300/0001-51", matricula: "M-30051", nivel: "Autorizado 2.7", carteiraQtd: 17, faturamento: 153000 },
     ],
     carteiras: [
-      { id: "CRT-60", cliente: "Vinícola Serra Gaúcha", status: "Ativa", consultor: "Henrique Bastos", orfa: false },
-      { id: "CRT-61", cliente: "Frigorífico Pampa", status: "Ativa", consultor: "Sabrina Kunz", orfa: false },
+      { id: "CRT-60", cliente: "Vinícola Serra Gaúcha", status: "Ativa", consultor: "HB Negócios Ltda", pvMatricula: "M-20310", qtdClientes: 22, valor: 115500, orfa: false },
+      { id: "CRT-61", cliente: "Frigorífico Pampa", status: "Ativa", consultor: "SK Consórcios ME", pvMatricula: "M-20322", qtdClientes: 17, valor: 89300, orfa: false },
     ],
     comissionamento: {
       basePct: 2.0,
@@ -776,7 +780,7 @@ export const unidadesDetalhe: Record<string, UnidadeDetalhe> = {
     },
     consultoresVinculados: [],
     carteiras: [
-      { id: "CRT-70", cliente: "Gráfica Capital", status: "Inativa", consultor: null, orfa: true },
+      { id: "CRT-70", cliente: "Gráfica Capital", status: "Inativa", consultor: null, pvMatricula: null, qtdClientes: 1, valor: 2100, orfa: true },
     ],
     comissionamento: {
       basePct: 1.0,
@@ -845,11 +849,11 @@ export const unidadesDetalhe: Record<string, UnidadeDetalhe> = {
       vendasSerie: [33, 34, 35, 36, 38, 40],
     },
     consultoresVinculados: [
-      { id: "C060", nome: "Bruno Cardoso", iniciais: "BC", nivel: "Autorizado 2.2", carteiraQtd: 14, faturamento: 126000 },
+      { id: "C060", nome: "Bruno Cardoso", razaoSocial: "BC Assessoria ME", cnpj: "61.100.200/0001-60", matricula: "M-30060", nivel: "Autorizado 2.2", carteiraQtd: 14, faturamento: 126000 },
     ],
     carteiras: [
-      { id: "CRT-80", cliente: "Restaurante Porto da Barra", status: "Ativa", consultor: "Bruno Cardoso", orfa: false },
-      { id: "CRT-81", cliente: "Pousada Farol", status: "Ativa", consultor: null, orfa: true },
+      { id: "CRT-80", cliente: "Restaurante Porto da Barra", status: "Ativa", consultor: "BC Assessoria ME", pvMatricula: "M-20410", qtdClientes: 20, valor: 106200, orfa: false },
+      { id: "CRT-81", cliente: "Pousada Farol", status: "Ativa", consultor: null, pvMatricula: "M-20410", qtdClientes: 4, valor: 8500, orfa: true },
     ],
     comissionamento: {
       basePct: 1.8,

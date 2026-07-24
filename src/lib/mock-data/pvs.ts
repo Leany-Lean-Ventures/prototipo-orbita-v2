@@ -4,7 +4,6 @@ import {
   Flag,
   ClipboardCheck,
   Trophy,
-  type LucideIcon,
 } from "lucide-react";
 
 import type {
@@ -104,8 +103,8 @@ export const pvsDetalhe: Record<string, PVDetalhe> = {
         children: [
           { id: "S-PV1042-01", nome: "Carlos Oliveira", nivelLabel: "Sócio Administrador", responsavel: "Sócio", depth: 1, tipo: "socio", documento: "123.456.789-00", avatarUrl: "https://i.pravatar.cc/80?img=7", participacaoPct: 60, comissaoPct: 0.8 },
           { id: "S-PV1042-02", nome: "Juliana Mendes", nivelLabel: "Sócio", responsavel: "Sócio", depth: 1, tipo: "socio", documento: "234.567.890-11", avatarUrl: "https://i.pravatar.cc/80?img=25", participacaoPct: 40, comissaoPct: 0.5 },
-          { id: "C001", nome: "Maria Santos", nivelLabel: "Consultor", responsavel: "Maria Santos", depth: 1, tipo: "consultor", documento: "123.456.789-00", avatarUrl: "https://i.pravatar.cc/80?img=5" },
-          { id: "C005", nome: "Fernanda Lima", nivelLabel: "Consultor", responsavel: "Fernanda Lima", depth: 1, tipo: "consultor", documento: "234.567.890-11", avatarUrl: "https://i.pravatar.cc/80?img=9" },
+          { id: "C001", nome: "MS Assessoria Ltda", nivelLabel: "Consultor", responsavel: "Maria Santos", depth: 1, tipo: "consultor", documento: "55.123.456/0001-01", matricula: "M-30001" },
+          { id: "C005", nome: "FL Participações ME", nivelLabel: "Consultor", responsavel: "Fernanda Lima", depth: 1, tipo: "consultor", documento: "55.234.567/0001-02", matricula: "M-30005" },
         ],
       },
     ],
@@ -118,14 +117,14 @@ export const pvsDetalhe: Record<string, PVDetalhe> = {
       vendasSerie: [18, 20, 21, 23, 25, 27],
     },
     consultoresVinculados: [
-      { id: "C001", nome: "Maria Santos", iniciais: "MS", nivel: "Consultor", carteiraQtd: 22, faturamento: 108000 },
-      { id: "C005", nome: "Fernanda Lima", iniciais: "FL", nivel: "Consultor", carteiraQtd: 18, faturamento: 90500 },
+      { id: "C001", nome: "Maria Santos", razaoSocial: "MS Assessoria Ltda", cnpj: "55.123.456/0001-01", matricula: "M-30001", nivel: "Consultor", carteiraQtd: 22, faturamento: 108000 },
+      { id: "C005", nome: "Fernanda Lima", razaoSocial: "FL Participações ME", cnpj: "55.234.567/0001-02", matricula: "M-30005", nivel: "Consultor", carteiraQtd: 18, faturamento: 90500 },
     ],
     carteiras: [
-      { id: "CRT-10", cliente: "Empresa Z", status: "Ativa", consultor: "Maria Santos", orfa: false },
-      { id: "CRT-11", cliente: "Cliente W", status: "Inativa", consultor: null, orfa: true },
-      { id: "CRT-12", cliente: "Tech Solutions", status: "Ativa", consultor: "Fernanda Lima", orfa: false },
-      { id: "CRT-13", cliente: "Consórcio Alfa", status: "Ativa", consultor: "Maria Santos", orfa: false },
+      { id: "CRT-10", cliente: "Empresa Z", status: "Ativa", consultor: "MS Assessoria Ltda", pvMatricula: "M-20042", qtdClientes: 24, valor: 122300, orfa: false },
+      { id: "CRT-11", cliente: "Cliente W", status: "Inativa", consultor: null, pvMatricula: "M-20042", qtdClientes: 3, valor: 6100, orfa: true },
+      { id: "CRT-12", cliente: "Tech Solutions", status: "Ativa", consultor: "FL Participações ME", pvMatricula: "M-20042", qtdClientes: 21, valor: 107000, orfa: false },
+      { id: "CRT-13", cliente: "Consórcio Alfa", status: "Ativa", consultor: "MS Assessoria Ltda", pvMatricula: "M-20042", qtdClientes: 16, valor: 81600, orfa: false },
     ],
     comissionamento: {
       basePct: 0.8,
@@ -181,8 +180,8 @@ export const pvsDetalhe: Record<string, PVDetalhe> = {
         children: [
           { id: "S-PV1055-01", nome: "Beatriz Souza", nivelLabel: "Sócio Administrador", responsavel: "Sócio", depth: 1, tipo: "socio", documento: "345.678.901-22", avatarUrl: "https://i.pravatar.cc/80?img=16", participacaoPct: 70, comissaoPct: 0.5 },
           { id: "S-PV1055-02", nome: "André Pereira", nivelLabel: "Sócio", responsavel: "Sócio", depth: 1, tipo: "socio", documento: "456.789.012-33", avatarUrl: "https://i.pravatar.cc/80?img=12", participacaoPct: 30, comissaoPct: 0.3 },
-          { id: "C003", nome: "Beatriz Souza", nivelLabel: "Consultor", responsavel: "Beatriz Souza", depth: 1, tipo: "consultor", documento: "345.678.901-22", avatarUrl: "https://i.pravatar.cc/80?img=16" },
-          { id: "C006", nome: "Rafael Costa", nivelLabel: "Consultor", responsavel: "Rafael Costa", depth: 1, tipo: "consultor", documento: "456.789.012-33", avatarUrl: "https://i.pravatar.cc/80?img=12" },
+          { id: "C003", nome: "BS Investimentos Ltda", nivelLabel: "Consultor", responsavel: "Beatriz Souza", depth: 1, tipo: "consultor", documento: "55.345.678/0001-03", matricula: "M-30003" },
+          { id: "C006", nome: "RC Consórcios ME", nivelLabel: "Consultor", responsavel: "Rafael Costa", depth: 1, tipo: "consultor", documento: "55.456.789/0001-04", matricula: "M-30006" },
         ],
       },
     ],
@@ -195,13 +194,13 @@ export const pvsDetalhe: Record<string, PVDetalhe> = {
       vendasSerie: [14, 15, 16, 17, 18, 20],
     },
     consultoresVinculados: [
-      { id: "C003", nome: "Beatriz Souza", iniciais: "BS", nivel: "Consultor", carteiraQtd: 15, faturamento: 78000 },
-      { id: "C006", nome: "Rafael Costa", iniciais: "RC", nivel: "Consultor", carteiraQtd: 14, faturamento: 63600 },
+      { id: "C003", nome: "Beatriz Souza", razaoSocial: "BS Investimentos Ltda", cnpj: "55.345.678/0001-03", matricula: "M-30003", nivel: "Consultor", carteiraQtd: 15, faturamento: 78000 },
+      { id: "C006", nome: "Rafael Costa", razaoSocial: "RC Consórcios ME", cnpj: "55.456.789/0001-04", matricula: "M-30006", nivel: "Consultor", carteiraQtd: 14, faturamento: 63600 },
     ],
     carteiras: [
-      { id: "CRT-20", cliente: "Investe Mais LTDA", status: "Ativa", consultor: "Beatriz Souza", orfa: false },
-      { id: "CRT-21", cliente: "Costa & Filhos", status: "Ativa", consultor: "Rafael Costa", orfa: false },
-      { id: "CRT-22", cliente: "Patrimônio Seguro", status: "Inativa", consultor: null, orfa: true },
+      { id: "CRT-20", cliente: "Investe Mais LTDA", status: "Ativa", consultor: "BS Investimentos Ltda", pvMatricula: "M-20055", qtdClientes: 18, valor: 92300, orfa: false },
+      { id: "CRT-21", cliente: "Costa & Filhos", status: "Ativa", consultor: "RC Consórcios ME", pvMatricula: "M-20055", qtdClientes: 15, valor: 76900, orfa: false },
+      { id: "CRT-22", cliente: "Patrimônio Seguro", status: "Inativa", consultor: null, pvMatricula: "M-20055", qtdClientes: 4, valor: 8200, orfa: true },
     ],
     comissionamento: {
       basePct: 0.5,
@@ -254,7 +253,7 @@ export const pvsDetalhe: Record<string, PVDetalhe> = {
         documento: "45.678.901/0001-33",
         children: [
           { id: "S-PV2091-01", nome: "Diego Farias", nivelLabel: "Sócio Administrador", responsavel: "Sócio", depth: 1, tipo: "socio", documento: "567.890.123-44", avatarUrl: "https://i.pravatar.cc/80?img=11", participacaoPct: 100, comissaoPct: 0.4 },
-          { id: "C004", nome: "Diego Farias", nivelLabel: "Consultor", responsavel: "Diego Farias", depth: 1, tipo: "consultor", documento: "567.890.123-44", avatarUrl: "https://i.pravatar.cc/80?img=11" },
+          { id: "C004", nome: "DF Consórcios ME", nivelLabel: "Consultor", responsavel: "Diego Farias", depth: 1, tipo: "consultor", documento: "55.567.890/0001-05", matricula: "M-30004" },
         ],
       },
     ],
@@ -267,11 +266,11 @@ export const pvsDetalhe: Record<string, PVDetalhe> = {
       vendasSerie: [10, 11, 12, 13, 14, 15],
     },
     consultoresVinculados: [
-      { id: "C004", nome: "Diego Farias", iniciais: "DF", nivel: "Consultor", carteiraQtd: 12, faturamento: 108000 },
+      { id: "C004", nome: "Diego Farias", razaoSocial: "DF Consórcios ME", cnpj: "55.567.890/0001-05", matricula: "M-30004", nivel: "Consultor", carteiraQtd: 12, faturamento: 108000 },
     ],
     carteiras: [
-      { id: "CRT-30", cliente: "Grupo Farias", status: "Ativa", consultor: "Diego Farias", orfa: false },
-      { id: "CRT-31", cliente: "Capital Norte", status: "Ativa", consultor: "Diego Farias", orfa: false },
+      { id: "CRT-30", cliente: "Grupo Farias", status: "Ativa", consultor: "DF Consórcios ME", pvMatricula: "M-20091", qtdClientes: 12, valor: 61900, orfa: false },
+      { id: "CRT-31", cliente: "Capital Norte", status: "Ativa", consultor: "DF Consórcios ME", pvMatricula: "M-20091", qtdClientes: 8, valor: 41300, orfa: false },
     ],
     comissionamento: {
       basePct: 0.4,

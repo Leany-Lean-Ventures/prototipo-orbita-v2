@@ -9,8 +9,8 @@ export interface EntityHeroHeaderProps {
   backgroundImage: string;
   /** Avatar image URL. Falls back to initials if not provided. */
   avatarUrl?: string;
-  /** Initials to render inside the avatar when no image is available. */
-  avatarFallback?: string;
+  /** Content rendered inside the avatar when no image is available (initials text or an icon). */
+  avatarFallback?: ReactNode;
   /** Whether to show a verified badge on the avatar. */
   verified?: boolean;
   /** Tag label displayed above the name (e.g. "Unidade Master"). */

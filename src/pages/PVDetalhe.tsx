@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useParams, Navigate } from "react-router-dom";
 import {
   Network,
@@ -5,25 +6,28 @@ import {
   Users,
   Briefcase,
   Clock,
+  AlertTriangle,
 } from "lucide-react";
 
 import { usePageEntrance } from "@/hooks/use-page-entrance";
 import { pvsDetalhe } from "@/lib/mock-data/pvs";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { SectionHeader } from "@/components/ui/section-header";
 import { EntityHeroHeader } from "@/components/entity-detail/EntityHeroHeader";
 import { EstruturaConsolidadaPanel } from "@/components/entity-detail/EstruturaConsolidadaPanel";
 import { FinanceiroPanel } from "@/components/entity-detail/FinanceiroPanel";
 import { CarteirasTable } from "@/components/entity-detail/CarteirasTable";
 import { Timeline } from "@/components/entity-detail/Timeline";
 import { PVConsultoresPanel } from "@/components/entity-detail/PVConsultoresPanel";
+import { NovaOcorrenciaModal } from "@/components/ocorrencias/NovaOcorrenciaModal";
 import ademIconCinza from "@/assets/brand/thumbnail-pv.svg";
 import headerPvBg from "@/assets/header-pv-background.jpg";
 
 const PVDetalhe = () => {
   const { id } = useParams<{ id: string }>();
   const pv = id ? pvsDetalhe[id] : undefined;
+  const [ocorrenciaModalOpen, setOcorrenciaModalOpen] = useState(false);
 
   const entranceRef = usePageEntrance<HTMLDivElement>([
     { selector: ".pv-header", vars: { y: -16, opacity: 0, duration: 0.35 } },
@@ -47,6 +51,17 @@ const PVDetalhe = () => {
         name={pv.nome}
         subtitle={`Gestor: ${pv.gestor}`}
         dadosContato={pv.dadosContato}
+        indicator={
+          <Button
+            variant="outline"
+            size="sm"
+            className="border-white/30 bg-white/10 text-white hover:bg-white/20"
+            onClick={() => setOcorrenciaModalOpen(true)}
+          >
+            <AlertTriangle className="mr-1.5 h-4 w-4" />
+            Registrar Ocorrência
+          </Button>
+        }
       />
 
       <Tabs defaultValue="estrutura" className="pv-tabs">
@@ -87,12 +102,10 @@ const PVDetalhe = () => {
 
         <TabsContent value="carteiras">
           <Card className="p-6">
-            <SectionHeader
-              icon={Briefcase}
-              title="Carteiras"
-              subtitle="Gestão de carteiras vinculadas ao PV com filtro de órfãs"
+            <CarteirasTable
+              carteiras={pv.carteiras}
+              subtitle="Gestão de carteiras vinculadas ao PV"
             />
-            <CarteirasTable carteiras={pv.carteiras} />
           </Card>
         </TabsContent>
 
@@ -106,6 +119,12 @@ const PVDetalhe = () => {
           </Card>
         </TabsContent>
       </Tabs>
+
+      <NovaOcorrenciaModal
+        open={ocorrenciaModalOpen}
+        onOpenChange={setOcorrenciaModalOpen}
+        entidadeFixa={`PV ${pv.nome}`}
+      />
     </div>
   );
 };

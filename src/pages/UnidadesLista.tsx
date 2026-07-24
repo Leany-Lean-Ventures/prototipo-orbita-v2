@@ -107,7 +107,8 @@ const UnidadesLista = () => {
       if (
         termo &&
         !unidade.nome.toLowerCase().includes(termo) &&
-        !unidade.id.toLowerCase().includes(termo)
+        !unidade.id.toLowerCase().includes(termo) &&
+        !unidade.matricula.toLowerCase().includes(termo)
       ) {
         return false;
       }
@@ -210,7 +211,7 @@ const UnidadesLista = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Código</TableHead>
+                    <TableHead>Matrícula</TableHead>
                     <TableHead>Nome</TableHead>
                     <TableHead>Localização</TableHead>
                     <TableHead>Licenciado</TableHead>
@@ -229,7 +230,7 @@ const UnidadesLista = () => {
                         if (event.key === "Enter") goToDetalhe(unidade.id);
                       }}
                     >
-                      <TableCell className="font-medium text-foreground">{unidade.id}</TableCell>
+                      <TableCell className="font-medium text-foreground">{unidade.matricula}</TableCell>
                       <TableCell>{unidade.nome}</TableCell>
                       <TableCell className="text-muted-foreground">
                         {unidade.cidade}/{unidade.estado}

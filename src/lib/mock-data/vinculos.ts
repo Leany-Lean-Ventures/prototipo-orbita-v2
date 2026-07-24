@@ -120,11 +120,12 @@ function buildVinculosGraph(): VinculosGraphData {
         nodes.push({
           id: consultor.id,
           tipo: "consultor",
-          label: consultor.nome,
+          label: consultor.razaoSocial,
           sublabel: consultor.nivel,
           parentId,
           unidadeId: unidade.id,
           meta: {
+            matricula: consultor.matricula,
             nivel: consultor.nivel,
             carteiras: consultor.carteiraQtd,
             unidade: unidade.nome,

@@ -52,10 +52,10 @@ export function NovaOcorrenciaModal({ open, onOpenChange, entidadeFixa }: NovaOc
     { id: "PV-1042", label: "PV Alpha", tipo: "PV" },
     { id: "PV-1055", label: "PV Vega", tipo: "PV" },
     { id: "PV-2091", label: "PV Zeta", tipo: "PV" },
-    { id: "C001", label: "Maria Santos", tipo: "Consultor" },
-    { id: "C002", label: "Carlos Oliveira", tipo: "Consultor" },
-    { id: "C003", label: "Beatriz Souza", tipo: "Consultor" },
-    { id: "C004", label: "Diego Farias", tipo: "Consultor" },
+    { id: "C001", label: "MS Assessoria Ltda", tipo: "Consultor" },
+    { id: "C002", label: "Alpha Consórcios LTDA", tipo: "Consultor" },
+    { id: "C003", label: "BS Investimentos Ltda", tipo: "Consultor" },
+    { id: "C004", label: "DF Consórcios ME", tipo: "Consultor" },
   ], []);
 
   const entidadesFiltradas = useMemo(() => {

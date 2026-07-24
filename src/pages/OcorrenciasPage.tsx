@@ -6,7 +6,6 @@ import {
   ocorrenciasList,
   ocorrenciasDetalhe,
   TIPO_CONFIG,
-  type OcorrenciaItem,
   type OcorrenciaTipo,
   type OcorrenciaStatus,
 } from "@/lib/mock-data/ocorrencias";

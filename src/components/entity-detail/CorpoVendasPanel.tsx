@@ -30,13 +30,12 @@ type TipoFiltro = "todos" | "pv" | "consultor";
 interface CorpoVendasItem {
   id: string;
   nome: string;
+  matricula?: string;
   tipo: "pv" | "consultor";
   nivel: string;
   responsavel: string;
   carteiraQtd?: number;
   faturamento?: number;
-  avatarUrl?: string;
-  iniciais?: string;
 }
 
 interface CorpoVendasPanelProps {
@@ -77,14 +76,13 @@ export function CorpoVendasPanel({ consultoresVinculados, organizacional }: Corp
 
     const consultores: CorpoVendasItem[] = consultoresVinculados.map((c) => ({
       id: c.id,
-      nome: c.nome,
+      nome: c.razaoSocial,
+      matricula: c.matricula,
       tipo: "consultor" as const,
       nivel: c.nivel,
-      responsavel: c.nome,
+      responsavel: c.razaoSocial,
       carteiraQtd: c.carteiraQtd,
       faturamento: c.faturamento,
-      iniciais: c.iniciais,
-      avatarUrl: `https://i.pravatar.cc/40?u=${c.id}`,
     }));
 
     return [...pvs, ...consultores];
@@ -151,6 +149,7 @@ export function CorpoVendasPanel({ consultoresVinculados, organizacional }: Corp
           <TableHeader>
             <TableRow>
               <TableHead>Nome</TableHead>
+              <TableHead>Matrícula</TableHead>
               <TableHead>Tipo</TableHead>
               <TableHead>Nível</TableHead>
               <TableHead className="text-right">Carteiras</TableHead>
@@ -175,6 +174,7 @@ export function CorpoVendasPanel({ consultoresVinculados, organizacional }: Corp
                     <span className="font-medium text-foreground">{item.nome}</span>
                   </div>
                 </TableCell>
+                <TableCell className="text-muted-foreground">{item.matricula ?? "—"}</TableCell>
                 <TableCell>
                   <Badge variant={item.tipo === "pv" ? "outline" : "secondary"} className="text-[11px]">
                     {item.tipo === "pv" ? "PV" : "Consultor"}

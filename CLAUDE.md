@@ -145,3 +145,4 @@ Padrão estabelecido na etapa 4 (Unidades) para qualquer módulo com rota `/modu
 - `npm run lint` — ESLint
 - `npm test` / `npm run test:watch` — Vitest
 - `npm run preview` — pré-visualizar o build
+- **Type-check: `npx tsc --noEmit -p tsconfig.app.json`** — nunca rodar `npx tsc --noEmit` sozinho. O `tsconfig.json` da raiz é um solution file (`files: []` + `references`) e o `tsc` solto não builda projetos referenciados — ele "passa limpo" sem checar um único arquivo, mascarando erros reais (ver `MEMORY.md`, 2026-07-24). Sempre apontar `-p tsconfig.app.json` explicitamente ao validar tipos.

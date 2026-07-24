@@ -33,7 +33,10 @@ export function PVConsultoresPanel({ consultores }: PVConsultoresPanelProps) {
     const termo = busca.trim().toLowerCase();
     if (!termo) return consultores;
     return consultores.filter(
-      (c) => c.nome.toLowerCase().includes(termo) || c.nivel.toLowerCase().includes(termo)
+      (c) =>
+        c.razaoSocial.toLowerCase().includes(termo) ||
+        c.matricula.toLowerCase().includes(termo) ||
+        c.nivel.toLowerCase().includes(termo)
     );
   }, [consultores, busca]);
 
@@ -49,7 +52,7 @@ export function PVConsultoresPanel({ consultores }: PVConsultoresPanelProps) {
         <div className="relative max-w-sm">
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder="Buscar por nome ou nível…"
+            placeholder="Buscar por razão social, matrícula ou nível…"
             className="pl-9"
             value={busca}
             onChange={(e) => setBusca(e.target.value)}
@@ -66,7 +69,8 @@ export function PVConsultoresPanel({ consultores }: PVConsultoresPanelProps) {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Nome</TableHead>
+              <TableHead>Razão Social</TableHead>
+              <TableHead>Matrícula</TableHead>
               <TableHead>Nível</TableHead>
               <TableHead className="text-right">Carteiras</TableHead>
               <TableHead className="text-right">Faturamento</TableHead>
@@ -81,9 +85,10 @@ export function PVConsultoresPanel({ consultores }: PVConsultoresPanelProps) {
                     <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-secondary/10 border border-secondary/20">
                       <BriefcaseBusiness className="h-4 w-4 text-secondary" />
                     </div>
-                    <span className="font-medium text-foreground">{c.nome}</span>
+                    <span className="font-medium text-foreground">{c.razaoSocial}</span>
                   </div>
                 </TableCell>
+                <TableCell className="text-muted-foreground">{c.matricula}</TableCell>
                 <TableCell className="text-muted-foreground">{c.nivel}</TableCell>
                 <TableCell className="text-right text-muted-foreground">{c.carteiraQtd}</TableCell>
                 <TableCell className="text-right text-muted-foreground">
@@ -97,7 +102,7 @@ export function PVConsultoresPanel({ consultores }: PVConsultoresPanelProps) {
                     size="icon"
                     className="h-8 w-8 text-muted-foreground hover:text-foreground"
                     onClick={() => navigate(`/consultores/${c.id}`)}
-                    aria-label={`Ver detalhes de ${c.nome}`}
+                    aria-label={`Ver detalhes de ${c.razaoSocial}`}
                   >
                     <Eye className="h-4 w-4" />
                   </Button>

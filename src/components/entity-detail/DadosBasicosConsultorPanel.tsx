@@ -1,103 +1,92 @@
-import { useState } from "react";
-import { User, Mail, Phone, MapPin, Calendar, FileText, Camera } from "lucide-react";
+import { User, Mail, Phone, MapPin, BriefcaseBusiness, IdCard } from "lucide-react";
 
 import { Card } from "@/components/ui/card";
-import type { DadosBasicosConsultor } from "@/lib/mock-data/consultores";
+import { Badge } from "@/components/ui/badge";
+import type { DadosBasicosConsultor, ConsultorStatus } from "@/lib/mock-data/consultores";
+
+const STATUS_VARIANT: Record<ConsultorStatus, "success" | "outline" | "destructive"> = {
+  Ativo: "success",
+  Inativo: "outline",
+  Descredenciado: "destructive",
+};
 
 interface DadosBasicosConsultorPanelProps {
   dados: DadosBasicosConsultor;
-  indicador: { id: string; nome: string } | null;
+  indicador: { id: string; nome: string; razaoSocial: string } | null;
   ingresso: string;
-  cpf: string;
+  cnpj: string;
   matricula: string;
-  nome: string;
-  avatarUrl?: string;
+  razaoSocial: string;
+  nivel: string;
+  status: ConsultorStatus;
 }
 
 /**
- * Aba "Dados Básicos" do consultor — layout com foto + upload à esquerda,
- * dados cadastrais agrupados em seções visuais à direita.
+ * Aba "Dados Básicos" do consultor — mini header de identidade (ícone
+ * gradiente + nome + matrícula + nível/status) seguido das seções
+ * cadastrais (Identificação, Contato, Endereço).
  */
 export function DadosBasicosConsultorPanel({
   dados,
   indicador,
   ingresso,
-  cpf,
+  cnpj,
   matricula,
-  nome,
-  avatarUrl,
+  razaoSocial,
+  nivel,
+  status,
 }: DadosBasicosConsultorPanelProps) {
-  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
-
-  const initials = nome
-    .split(" ")
-    .map((w) => w[0])
-    .join("")
-    .slice(0, 2);
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => setPhotoPreview(reader.result as string);
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const displayAvatar = photoPreview || avatarUrl;
-
   return (
     <div className="space-y-4">
-      {/* Photo circle centered, overlapping the first card */}
-      <div className="relative flex flex-col items-center">
-        {/* Avatar overlapping */}
-        <div className="relative z-10 mb-[-56px]">
-          <div className="h-40 w-40 overflow-hidden rounded-full border-4 border-background shadow-lg">
-            {displayAvatar ? (
-              <img src={displayAvatar} alt={nome} className="h-full w-full object-cover" />
-            ) : (
-              <div className="flex h-full w-full items-center justify-center bg-secondary/10 text-3xl font-bold text-secondary">
-                {initials}
-              </div>
-            )}
-          </div>
-          <label
-            className="absolute bottom-2 right-2 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-primary text-primary-foreground shadow-md transition-transform hover:scale-110"
-            aria-label="Alterar foto"
-          >
-            <Camera className="h-4 w-4" />
-            <input
-              type="file"
-              accept="image/*"
-              className="sr-only"
-              onChange={handleFileChange}
-            />
-          </label>
-        </div>
+      {/* Mini header de identidade — mesmo padrão de "gradient icon card" do StatCard */}
+      <Card className="relative overflow-hidden p-6">
+        <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-gradient-to-br from-secondary/20 to-secondary/5" />
+        <div className="absolute -right-1 -top-1 h-16 w-16 rounded-full bg-gradient-to-br from-secondary/10 to-transparent" />
 
-        {/* Identificação — first card with top padding for the overlapping avatar */}
-        <Card className="w-full p-5 pt-16">
-          <div className="mb-4 text-center">
-            <p className="text-sm font-semibold text-foreground">{nome}</p>
-            <p className="text-xs text-muted-foreground">{matricula}</p>
+        <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-4">
+            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-secondary to-secondary/80 shadow-lg">
+              <BriefcaseBusiness className="h-7 w-7 text-white" aria-hidden="true" />
+            </div>
+            <div className="min-w-0">
+              <p className="truncate text-lg font-bold tracking-tight text-foreground">
+                {razaoSocial}
+              </p>
+              <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+                <span className="flex items-center gap-1">
+                  <IdCard className="h-3.5 w-3.5" aria-hidden="true" />
+                  {matricula}
+                </span>
+                <span aria-hidden="true">•</span>
+                <span>CNPJ {cnpj}</span>
+              </div>
+            </div>
           </div>
-          <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold text-foreground">
-            <User className="h-4 w-4 text-primary" />
-            Identificação
-          </h3>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            <DataField label="CPF" value={cpf} />
-            <DataField label="RG" value={dados.rg} />
-            <DataField label="Matrícula" value={matricula} />
-            <DataField label="Data de nascimento" value={dados.nascimento} />
-            <DataField label="Data de ingresso" value={ingresso} />
-            <DataField label="Indicador / Formador" value={indicador ? indicador.nome : "—"} />
+
+          <div className="flex shrink-0 items-center gap-2">
+            <Badge variant="outline">{nivel}</Badge>
+            <Badge variant={STATUS_VARIANT[status]}>{status}</Badge>
           </div>
-        </Card>
-      </div>
+        </div>
+      </Card>
+
+      {/* Identificação */}
+      <Card className="p-6">
+        <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold text-foreground">
+          <User className="h-4 w-4 text-primary" />
+          Identificação
+        </h3>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <DataField label="CNPJ" value={cnpj} />
+          <DataField label="RG" value={dados.rg} />
+          <DataField label="Matrícula" value={matricula} />
+          <DataField label="Data de ingresso" value={ingresso} />
+          <DataField label="Indicador / Formador" value={indicador ? indicador.razaoSocial : "—"} />
+        </div>
+      </Card>
 
       {/* Contato */}
-      <Card className="p-5">
+      <Card className="p-6">
         <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold text-foreground">
           <Mail className="h-4 w-4 text-primary" />
           Contato
@@ -109,7 +98,7 @@ export function DadosBasicosConsultorPanel({
       </Card>
 
       {/* Endereço */}
-      <Card className="p-5">
+      <Card className="p-6">
         <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold text-foreground">
           <MapPin className="h-4 w-4 text-primary" />
           Endereço

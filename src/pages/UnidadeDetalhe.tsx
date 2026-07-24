@@ -4,7 +4,6 @@ import {
   LayoutDashboard,
   DollarSign,
   Network,
-  Users,
   UsersRound,
   Briefcase,
   ShieldAlert,
@@ -17,12 +16,10 @@ import { unidadesDetalhe } from "@/lib/mock-data/unidades";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { SectionHeader } from "@/components/ui/section-header";
 import { EntityHeroHeader } from "@/components/entity-detail/EntityHeroHeader";
 import { DadosBasicosPanel } from "@/components/entity-detail/DadosBasicosPanel";
 import { FinanceiroPanel } from "@/components/entity-detail/FinanceiroPanel";
 import { EstruturaConsolidadaPanel } from "@/components/entity-detail/EstruturaConsolidadaPanel";
-import { CorpoVendasPanel } from "@/components/entity-detail/CorpoVendasPanel";
 import { CarteirasTable } from "@/components/entity-detail/CarteirasTable";
 import { PenalidadesPanel } from "@/components/entity-detail/PenalidadesPanel";
 import { Timeline } from "@/components/entity-detail/Timeline";
@@ -146,12 +143,10 @@ const UnidadeDetalhe = () => {
 
         <TabsContent value="carteiras">
           <Card className="p-6">
-            <SectionHeader
-              icon={Briefcase}
-              title="Carteiras"
-              subtitle="Gestão de carteiras vinculadas à unidade com filtro de órfãs"
+            <CarteirasTable
+              carteiras={unidade.carteiras}
+              subtitle="Gestão de carteiras vinculadas à unidade"
             />
-            <CarteirasTable carteiras={unidade.carteiras} />
           </Card>
         </TabsContent>
 

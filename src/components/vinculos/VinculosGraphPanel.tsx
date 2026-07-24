@@ -125,6 +125,7 @@ export function VinculosGraphPanel({ node, connections, onSelect }: VinculosGrap
         )}
         {node.tipo === "consultor" && (
           <>
+            <Fact label="Matrícula" value={String(node.meta.matricula)} />
             <Fact label="Nível" value={String(node.meta.nivel)} />
             <Fact label="Carteiras" value={String(node.meta.carteiras)} />
             <Fact label="Unidade" value={String(node.meta.unidade)} />
