@@ -20,7 +20,7 @@ describe("Login", () => {
 
     await waitFor(() => {
       expect(
-        screen.queryByRole("heading", { name: /acessar o órbita/i })
+        screen.queryByRole("heading", { name: /^órbita$/i })
       ).not.toBeInTheDocument();
     });
     expect(localStorage.getItem("orbita:auth")).not.toBeNull();
@@ -41,7 +41,7 @@ describe("Login", () => {
       await screen.findByText(/e-mail ou senha inválidos/i)
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("heading", { name: /acessar o órbita/i })
+      screen.getByRole("heading", { name: /^órbita$/i })
     ).toBeInTheDocument();
   });
 });

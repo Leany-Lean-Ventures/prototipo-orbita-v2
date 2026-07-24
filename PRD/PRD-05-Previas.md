@@ -2,135 +2,208 @@
 ## Novo CRM Ademicon — Protótipo Órbita
 
 ### 1. Objetivo do Módulo
-O módulo de Prévias gerencia a "esteira" de entrada de novos parceiros (consultores ou empresas) na rede Ademicon. Ele transforma um processo que hoje é feito por e-mail em um fluxo estruturado (Kanban), com controle de prazos (SLA), atribuição de analistas, integração com a Blacklist e captura de dados fundamentais (como o Indicador/Formador) logo na entrada.
+O módulo de Prévias gerencia a esteira de entrada de novos parceiros (consultores ou empresas) na rede Ademicon. Devido ao alto volume de cadastros (milhares de registros), o fluxo utiliza uma interface baseada em **Tabela de Dados de Alta Performance (Data Table)** combinada com um **Painel de Filtros e Ordenação Avançados**, garantindo que os analistas consigam triar, pesquisar e gerenciar com facilidade a entrada de novos credenciados.
 
-### 2. Visão Geral (Kanban) (`/previas`)
+---
 
-#### 2.1. Cabeçalho e Filtros
+### 2. Layout Geral da Página (`/previas`)
+
+A página é dividida em quatro áreas principais:
+1. **Resumo Executivo (Stat Cards):** Métricas consolidadas da esteira.
+2. **Navegação por Etapas (Tabs):** Abas superiores dividindo o status atual das prévias.
+3. **Painel de Filtros e Busca:** Controles avançados de pesquisa e ordenação.
+4. **Tabela de Dados (Data Table):** Listagem densa e paginada dos registros.
+
+---
+
+### 3. Detalhamento dos Componentes
+
+#### 3.1. Cabeçalho Principal
 - **Título:** "Esteira de Prévias"
-- **Subtítulo:** "Gestão do fluxo de credenciamento de novos parceiros."
-- **Ações:** Botão Primário "Nova Prévia".
-- **Barra de Filtros:** 
-  - Regional / Estado / Cidade / Unidade.
-  - Filtro por Analista.
-  - Filtro por Tipo (PF / PJ).
-- **Indicador de Volume:** Texto dinâmico mostrando o total de prévias no filtro atual (ex: "<b>12</b> prévia(s) no filtro").
+- **Subtítulo:** "Gestão e credenciamento de novos parceiros da rede."
+- **Ações:** Botão Primário "Nova Prévia" (abre modal de criação).
 
-#### 2.2. Quadro Kanban (`.kanwrap`)
-O fluxo é dividido em 5 colunas fixas:
+#### 3.2. Resumo de Métricas (Stat Cards)
+No topo da página, são exibidos 4 cards no padrão premium (`StatCard` do projeto) com as métricas do período atual:
+- **Card 1 (Total na Esteira):** Volume total de prévias em andamento.
+- **Card 2 (Alerta de SLA):** Quantidade de prévias com SLA crítico ou estourado.
+- **Card 3 (Aprovados):** Total de parceiros credenciados no mês corrente.
+- **Card 4 (Reprovados):** Total de prévias negadas/reprovadas no mês corrente.
 
-1. **Documental** (Azul): Triagem inicial.
-2. **Retificação** (Âmbar): Aguardando correção do candidato.
-3. **Jurídico** (Violeta): Análise de contratos e restrições.
-4. **Aprovado** (Verde): Processo finalizado com sucesso.
-5. **Reprovado** (Vermelho): Prévia negada (inclui retenção por Blacklist).
+#### 3.3. Navegação por Status (Tabs)
+Uma barra de abas (`Tabs` com `variant="secondary"`) para segmentar rapidamente a tabela por etapa da esteira:
+- **Todas** (Soma de todos os registros ativos)
+- **Documental** (Triagem inicial de documentação)
+- **Retificação** (Aguardando correções/ajustes por parte do candidato)
+- **Jurídico** (Análise detalhada de contratos e restrições)
+- **Aprovadas** (Credenciamentos concluídos com sucesso)
+- **Reprovadas** (Prévia negada ou barrada em triagem/blacklist)
 
-#### 2.3. Cartão da Prévia (`.kcard2`)
-Cada cartão no Kanban representa um candidato e deve exibir:
-- **Tags Superiores:** Tipo (PF/PJ em azul/violeta) e SLA (Pill verde/âmbar/vermelho indicando dias restantes ou atraso).
-- **Nome do Candidato:** Em negrito.
-- **Unidade de Destino:** Onde ele vai atuar.
-- **Analista Responsável:** Nome ou iniciais de quem está tocando o processo.
-- **Ação:** Clicar no cartão abre o painel lateral de detalhes (Slider).
+#### 3.4. Container de Filtros e Ordenação (`.filter-container`)
+Um painel expansível/retrátil robusto localizado logo acima da tabela contendo:
+- **Filtros Rápidos:**
+  - Busca textual (Nome do Candidato, Razão Social, CNPJ/CPF ou Matrícula).
+  - Seleção por Unidade de Destino.
+  - Seleção por Regional de Atuação.
+- **Filtros Avançados (Colapsáveis):**
+  - Tipo de Pessoa (PF / PJ).
+  - Analista Responsável.
+  - Período de Registro (De/Até).
+  - Status do SLA (No Prazo / Alerta / Estourado).
+- **Ordenação Dinâmica:**
+  - Dropdown para definir a prioridade de ordenação:
+    1. *SLA mais crítico* (Padrão)
+    2. *Data de cadastro (Mais recentes)*
+    3. *Data de cadastro (Mais antigos)*
+    4. *Nome do Candidato (A-Z)*
 
-### 3. Painel de Detalhes da Prévia (Slider Lateral)
+---
 
-Ao clicar em um cartão, um painel lateral desliza da direita (`.pvside`), contendo:
+### 4. Tabela de Dados (Data Table)
 
-#### 3.1. Cabeçalho do Painel
-- Status atual da prévia.
-- Botão "Aprovar" e link "🚫 Negar pedido de prévia".
+A listagem deve suportar paginação robusta e ações em lote.
 
-#### 3.2. Dados do Candidato
-- Nome completo.
-- CPF/CNPJ.
-- Data do registro.
-- **Indicador/Formador:** Nome da pessoa que o indicou (dado crucial para a árvore hierárquica futura).
+#### 4.1. Colunas da Tabela
+1. **Checkbox (Seleção):** Para ações em lote.
+2. **Candidato:** Exibe o Nome/Razão Social (em destaque) + CPF/CNPJ (texto discreto).
+3. **Tipo:** Badge indicando `PF` (azul) ou `PJ` (violeta).
+4. **Destino:** Unidade associada + sigla da Regional.
+5. **Analista:** Nome do analista responsável pela triagem.
+6. **Data de Cadastro:** Data em que a prévia deu entrada na esteira.
+7. **SLA:** Pill colorido indicando o prazo restante:
+   - `.p-green` (No Prazo - ex: "4 dias")
+   - `.p-amber` (Alerta - ex: "1 dia")
+   - `.p-red` (Atrasado - ex: "Atrasado 2d")
+8. **Ações:** Botão para visualizar detalhes (abre o Slider Lateral).
 
-#### 3.3. Dados Operacionais
-- Matrícula AVA (se já gerada).
-- BU e Unidade de atuação.
+#### 4.2. Paginação
+- Controles no rodapé da tabela: "Mostrando X-Y de Z registros".
+- Seleção de tamanho de página (10, 20, 50 registros por página).
+- Botões de navegação para página Anterior/Próxima e numeração de páginas.
+
+#### 4.3. Ações em Lote (Bulk Actions Bar)
+Ao selecionar uma ou mais linhas via Checkbox, surge uma barra flutuante no rodapé com ações rápidas:
+- "Atribuir Analista em Lote" (abre seletor rápido).
+- "Exportar Selecionados" (opções Excel / PDF).
+
+---
+
+### 5. Painel de Detalhes da Prévia (Slider Lateral)
+
+Ao clicar em um registro na tabela, abre-se o slider lateral da direita (`.pvside`) contendo:
+
+#### 5.1. Ações Rápidas do Cabeçalho
+- Status atual do processo.
+- Botão "Aprovar Credenciamento" (converte a prévia em consultor ativo se os critérios forem atendidos).
+- Link "🚫 Negar Credenciamento" (exige preenchimento de justificativa).
+
+#### 5.2. Dados do Candidato
+- Nome completo / Razão Social.
+- CPF / CNPJ e dados de contato (E-mail e Telefone).
+- Data de Registro.
+- **Indicador/Formador:** Exibe a Razão Social e Matrícula do Consultor que indicou o novo parceiro (informação fundamental para a estruturação societária da rede).
+
+#### 5.3. Dados Operacionais
+- Matrícula AVA (se gerada).
+- Unidade de atuação designada.
 - Empresa Lojista vinculada.
-- IDs gerados no sistema (se aplicável).
 
-#### 3.4. Blacklist Integrada
-- Um bloco de alerta dentro do painel verificando se o CPF/CNPJ consta na Blacklist da Ademicon.
-- Se constar, o botão de aprovação é bloqueado e o analista deve justificar a recusa.
+#### 5.4. Blacklist Integrada (Regra Crítica)
+- Bloco de alerta de segurança que executa uma verificação contra a base de CPFs/CNPJs bloqueados.
+- Se houver correspondência:
+  - Exibe um banner vermelho proeminente: "⚠️ Candidato em Blacklist".
+  - O botão de aprovação é **bloqueado de forma impeditiva**.
+  - O analista é obrigado a registrar a justificativa de recusa para arquivar a prévia.
 
-### 4. Formulário de Nova Prévia (Modal)
+---
 
-Ao clicar em "Nova Prévia", abre-se um modal com o formulário de entrada.
+### 6. Formulário de Nova Prévia (Modal)
+
+Ao clicar em "Nova Prévia", abre-se um modal com formulário estruturado em etapas ou colunas:
 
 **Campos Obrigatórios:**
-- Tipo de Pessoa (PF ou PJ).
-- Nome Completo / Razão Social.
-- CPF / CNPJ.
-- Email e Telefone.
-- Unidade de Destino (seleção).
-- **Indicador/Formador:** Campo de busca (autocomplete) buscando na base de Consultores ativos. *Regra de negócio: Apenas uma pessoa já cadastrada pode indicar outra.*
-- Anexos (upload de documentos básicos).
+1. **Tipo de Credenciado:** Select (`PF` ou `PJ`).
+2. **Nome/Razão Social:** Input de texto.
+3. **CPF/CNPJ:** Campo formatado de acordo com o tipo selecionado.
+4. **Contato:** E-mail e Telefone comercial.
+5. **Unidade de Destino:** Select buscando unidades ativas da rede.
+6. **Indicador/Formador (Crítico):** Input com **Autocomplete** integrado buscando na base de consultores ativos do sistema. Apenas parceiros credenciados ativos podem indicar novos parceiros.
+7. **Documentos Obrigatórios:** Campo de upload de arquivos (RG, Contrato Social, etc.).
 
-### 5. Estrutura de Dados e Mock (JSON)
+---
+
+### 7. Estrutura de Dados e Mock (JSON)
 
 ```json
 {
-  "kanban": {
-    "Documental": {
-      "color": "blue",
-      "cards": [
-        { "id": "p1", "nome": "Fernanda Costa", "tipo": "PF", "analista": "K.A.", "loja": "SP-Centro", "sla": 3, "slaStatus": "g" },
-        { "id": "p2", "nome": "Alpha Consultoria", "tipo": "PJ", "analista": "G.M.", "loja": "Campinas", "sla": 1, "slaStatus": "a" }
-      ]
+  "previas": [
+    {
+      "id": "p1",
+      "nome": "Fernanda Costa Consultoria LTDA",
+      "tipo": "PJ",
+      "documento": "45.100.200/0001-99",
+      "analista": "Katia Alves",
+      "unidade": "SP-Centro",
+      "regional": "SP-Interior",
+      "dataCadastro": "2026-07-20",
+      "status": "Documental",
+      "slaDias": 3,
+      "slaStatus": "g",
+      "indicador": { "id": "C001", "razaoSocial": "Silva & Associados Negocios", "matricula": "10002" },
+      "matAva": "",
+      "lojista": "ALPHA CONSULTORIA LTDA",
+      "blacklist": false
     },
-    "Retificação": {
-      "color": "amber",
-      "cards": [
-        { "id": "p4", "nome": "Gamma Invest.", "tipo": "PJ", "analista": "L.F.", "loja": "Salvador", "sla": -1, "slaStatus": "r" }
-      ]
+    {
+      "id": "p2",
+      "nome": "Alpha Creditos Financeiros",
+      "tipo": "PJ",
+      "documento": "12.300.400/0001-08",
+      "analista": "Gabriel Mendonca",
+      "unidade": "Campinas",
+      "regional": "SP-Interior",
+      "dataCadastro": "2026-07-23",
+      "status": "Retificação",
+      "slaDias": 1,
+      "slaStatus": "a",
+      "indicador": { "id": "C002", "razaoSocial": "Almeida Promotora de Vendas", "matricula": "10005" },
+      "matAva": "",
+      "lojista": "BETA FINANCIAMENTOS LTDA",
+      "blacklist": false
     },
-    "Jurídico": {
-      "color": "violet",
-      "cards": []
-    },
-    "Aprovado": {
-      "color": "green",
-      "cards": [
-        { "id": "p8", "nome": "Camila Santos", "tipo": "PF", "analista": "L.F.", "loja": "Belém", "sla": 5, "slaStatus": "g" }
-      ]
-    },
-    "Reprovado": {
-      "color": "red",
-      "cards": [
-        { "id": "p10", "nome": "Zeta Negócios", "tipo": "PJ", "analista": "C.L.", "loja": "Natal", "sla": 0, "slaStatus": "r" }
-      ]
+    {
+      "id": "p3",
+      "nome": "Gamma Investimentos PJ",
+      "tipo": "PJ",
+      "documento": "99.888.777/0001-44",
+      "analista": "Luiza Fonseca",
+      "unidade": "Salvador",
+      "regional": "NE-1",
+      "dataCadastro": "2026-07-15",
+      "status": "Jurídico",
+      "slaDias": -2,
+      "slaStatus": "r",
+      "indicador": { "id": "C003", "razaoSocial": "Oliveira & Martins Corp", "matricula": "10012" },
+      "matAva": "",
+      "lojista": "GAMMA HOLDING",
+      "blacklist": true
     }
-  },
-  "detalheMock": {
-    "id": "p1",
-    "nome": "Fernanda Costa",
-    "cpf": "435.999.788-40",
-    "dataRegistro": "08/06/2026",
-    "indicador": { "id": "C001", "nome": "João Silva" },
-    "matAva": "7730049614",
-    "bu": "BU3",
-    "loja": "SP-Centro",
-    "lojista": "ALPHA CONSULTORIA LTDA",
-    "blacklist": false
-  },
-  "formSchema": {
-    "fields": [
-      { "name": "tipo", "type": "select", "options": ["PF", "PJ"], "required": true },
-      { "name": "nome", "type": "text", "label": "Nome Completo", "required": true },
-      { "name": "documento", "type": "text", "label": "CPF/CNPJ", "required": true },
-      { "name": "unidade", "type": "select", "label": "Unidade de Destino", "required": true },
-      { "name": "indicador", "type": "autocomplete", "label": "Indicador/Formador (Buscar consultor)", "required": true }
-    ]
+  ],
+  "filtrosDisponiveis": {
+    "regionais": ["SP-Interior", "SP-Capital", "NE-1", "SUL-2"],
+    "unidades": ["SP-Centro", "Campinas", "Salvador", "Curitiba"],
+    "analistas": ["Katia Alves", "Gabriel Mendonca", "Luiza Fonseca", "Carlos Lima"]
   }
 }
 ```
 
-### 6. Instruções Específicas para o Claude Code
-- Implemente o Kanban usando CSS Grid ou Flexbox para as colunas.
-- O campo "SLA" no cartão deve usar a classe `.p-green` se `slaStatus === 'g'`, `.p-amber` se `'a'` e `.p-red` se `'r'`.
-- O formulário de "Nova Prévia" deve simular o autocomplete do campo "Indicador/Formador", permitindo selecionar um nome (ex: "João Silva"). Este é um requisito crítico levantado no Onboarding.
-- O slider lateral (`.pvside`) deve ser implementado com uma transição CSS suave (`transform: translateX(0)` para mostrar, `translateX(100%)` para esconder).
+---
+
+### 8. Diretrizes de Implementação UI/UX
+
+1. **Responsividade e Performance:** A tabela deve utilizar renderização otimizada para evitar lentidão com milhares de linhas. Utilizar paginação no lado do cliente com dados simulados no mock.
+2. **Estética Premium:**
+   - A barra de filtros deve usar animações de transição suaves ao expandir/colapsar.
+   - Usar ícones apropriados do `lucide-react` para cada coluna e botão de filtro.
+   - Alertas de Blacklist devem usar o padrão de alerta premium do design system (fundo vermelho sutil com borda, ícone e tipografia branca/vermelha escura).
+3. **Tratamento de Prefers-Reduced-Motion:** Transições da barra de filtros e do slider lateral devem respeitar as preferências de acessibilidade do usuário.

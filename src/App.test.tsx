@@ -10,7 +10,7 @@ describe("App", () => {
   it("redireciona para o login quando não autenticado", () => {
     render(<App />);
     expect(
-      screen.getByRole("heading", { name: /acessar o órbita/i })
+      screen.getByRole("heading", { name: /^órbita$/i })
     ).toBeInTheDocument();
   });
 });

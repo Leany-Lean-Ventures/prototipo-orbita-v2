@@ -53,9 +53,13 @@ export interface CascataItem {
 }
 
 export interface Penalidade {
+  id: string;
   motivo: string;
   descontoPct: number;
   vigenciaFim: string;
+  descricao?: string;
+  dataAplicacao?: string;
+  aplicadoPor?: string;
 }
 
 export interface ComissionamentoInfo {
@@ -91,6 +95,8 @@ export interface HistoricoItem {
     observacao?: string;
     acao?: string;
     dataResolucao?: string;
+    /** Referencia a Penalidade.id — habilita o botão "Ver penalidade" quando tipo === "penalidade". */
+    penalidadeId?: string;
   };
 }
 
@@ -302,15 +308,31 @@ export const unidadesDetalhe: Record<string, UnidadeDetalhe> = {
       { id: "CRT-12", cliente: "Clínica Saúde+", status: "Inativa", consultor: null, pvMatricula: null, qtdClientes: 2, valor: 4100, orfa: true },
     ],
     comissionamento: {
-      basePct: 2.0,
+      basePct: 3.5,
       cascata: [
         { nivel: "Licenciado 3.5", pct: 2.0, qtd: 1 },
         { nivel: "Autorizado 2.5", pct: 0.8, qtd: 5 },
         { nivel: "Autorizado 2.2", pct: 0.5, qtd: 8 },
       ],
       penalidades: [
-        { motivo: "Comunicação visual desatualizada", descontoPct: 1.5, vigenciaFim: "Dez 2026" },
-        { motivo: "Atraso reincidente em relatório mensal", descontoPct: 0.5, vigenciaFim: "Set 2026" },
+        {
+          id: "PEN-L001-01",
+          motivo: "Conflito entre sócios",
+          descontoPct: 0.4,
+          vigenciaFim: "Dez 2026",
+          descricao: "Divergência entre os sócios da unidade quanto à gestão administrativa, impactando a conformidade operacional até a resolução do quadro societário.",
+          dataAplicacao: "10/10/2026",
+          aplicadoPor: "Roberto Almeida",
+        },
+        {
+          id: "PEN-L001-02",
+          motivo: "Transferência de consultor para unidade Campinas",
+          descontoPct: 1.6,
+          vigenciaFim: "Set 2026",
+          descricao: "Consultor vinculado transferido para outra unidade sem comunicação prévia, gerando desconto sobre a comissão até a regularização do vínculo.",
+          dataAplicacao: "02/09/2026",
+          aplicadoPor: "Roberto Almeida",
+        },
       ],
     },
     avaliacao360: {
@@ -338,7 +360,7 @@ export const unidadesDetalhe: Record<string, UnidadeDetalhe> = {
       { data: "Jun 2026", icon: ClipboardCheck, color: "gray", titulo: "Checklist gerencial semestral", desc: "Rating A mantido (94 pts).", tipo: "avaliacao", detalhe: { responsavel: "Roberto Almeida", observacao: "Desempenho consistente em todos os critérios. Destaque para cumprimento de metas (98/100).", acao: "Nenhuma ação necessária." } },
       { data: "Mai 2026", icon: Handshake, color: "green", titulo: "Visita técnica realizada", desc: "Consultoria sobre expansão de PV Zeta.", tipo: "visita", detalhe: { responsavel: "Roberto Almeida", observacao: "PV Zeta com potencial para upgrade de nível. Sugerida meta trimestral de 15 carteiras.", acao: "Enviar proposta de meta ao gestor do PV." } },
       { data: "Abr 2026", icon: Trophy, color: "green", titulo: "Maria Santos → Top 1 faturamento", desc: "Maior faturamento individual da unidade no trimestre.", tipo: "promocao", detalhe: { responsavel: "Sistema", observacao: "Faturamento de R$ 198.500 no trimestre. Superou meta em 12%.", acao: "Bonificação trimestral aplicada." } },
-      { data: "Mar 2026", icon: Flag, color: "red", titulo: "Comunicação visual desatualizada", desc: "Penalidade aplicada: desconto de 1,5% na comissão.", tipo: "penalidade", status: "Aberto", detalhe: { responsavel: "Diretoria", observacao: "Fachada e materiais internos fora do padrão atualizado em Jan/2026. Prazo de adequação: 90 dias.", acao: "Regularizar até Dez 2026 para remoção da penalidade." } },
+      { data: "Mar 2026", icon: Flag, color: "red", titulo: "Conflito entre sócios", desc: "Penalidade aplicada: desconto de 0,4% na comissão.", tipo: "penalidade", status: "Aberto", detalhe: { responsavel: "Diretoria", observacao: "Divergência entre os sócios da unidade quanto à gestão administrativa, impactando a conformidade operacional.", acao: "Regularizar até Dez 2026 para remoção da penalidade.", penalidadeId: "PEN-L001-01" } },
       { data: "Fev 2026", icon: RefreshCw, color: "blue", titulo: "Atualização de contrato societário", desc: "Alteração no percentual de participação dos sócios registrada.", tipo: "evento", detalhe: { responsavel: "Jurídico Ademicon", observacao: "João Silva passou de 70% para 60%. Beta Soluções ME de 30% para 40%.", acao: "Contrato atualizado no sistema." } },
       { data: "Jan 2026", icon: Store, color: "blue", titulo: "Inauguração PV Zeta", desc: "Novo ponto de venda subordinado à unidade SP-Centro.", tipo: "evento", detalhe: { responsavel: "Roberto Almeida", observacao: "PV Zeta inicia operação com Diego Farias como gestor. Meta inicial: 8 carteiras em 6 meses.", acao: "Acompanhamento mensal nos primeiros 90 dias." } },
       { data: "Nov 2025", icon: ClipboardCheck, color: "gray", titulo: "Checklist gerencial trimestral", desc: "Rating A mantido (92 pts).", tipo: "avaliacao", detalhe: { responsavel: "Roberto Almeida", observacao: "Leve queda em comunicação visual (de 85 para 78). Demais critérios estáveis.", acao: "Notificar sobre adequação visual." } },
@@ -477,7 +499,7 @@ export const unidadesDetalhe: Record<string, UnidadeDetalhe> = {
         { nivel: "Autorizado 2.5", pct: 0.8, qtd: 2 },
       ],
       penalidades: [
-        { motivo: "SLA de prévia vencido reincidente", descontoPct: 1.0, vigenciaFim: "Set 2026" },
+        { id: "PEN-L003-01", motivo: "SLA de prévia vencido reincidente", descontoPct: 1.0, vigenciaFim: "Set 2026" },
       ],
     },
     avaliacao360: {
@@ -557,8 +579,8 @@ export const unidadesDetalhe: Record<string, UnidadeDetalhe> = {
         { nivel: "Autorizado 2.2", pct: 0.5, qtd: 1 },
       ],
       penalidades: [
-        { motivo: "Mudança societária não comunicada", descontoPct: 2.0, vigenciaFim: "Ago 2026" },
-        { motivo: "Comunicação visual desatualizada", descontoPct: 1.0, vigenciaFim: "Ago 2026" },
+        { id: "PEN-L004-01", motivo: "Mudança societária não comunicada", descontoPct: 2.0, vigenciaFim: "Ago 2026" },
+        { id: "PEN-L004-02", motivo: "Comunicação visual desatualizada", descontoPct: 1.0, vigenciaFim: "Ago 2026" },
       ],
     },
     avaliacao360: {
@@ -639,7 +661,7 @@ export const unidadesDetalhe: Record<string, UnidadeDetalhe> = {
         { nivel: "Autorizado 2.0", pct: 0.4, qtd: 1 },
       ],
       penalidades: [
-        { motivo: "Prévias com SLA vencido", descontoPct: 1.5, vigenciaFim: "Out 2026" },
+        { id: "PEN-L005-01", motivo: "Prévias com SLA vencido", descontoPct: 1.5, vigenciaFim: "Out 2026" },
       ],
     },
     avaliacao360: {
@@ -786,7 +808,7 @@ export const unidadesDetalhe: Record<string, UnidadeDetalhe> = {
       basePct: 1.0,
       cascata: [{ nivel: "Licenciado 3.5", pct: 1.0, qtd: 1 }],
       penalidades: [
-        { motivo: "Inatividade comercial prolongada", descontoPct: 3.0, vigenciaFim: "Indeterminado" },
+        { id: "PEN-L007-01", motivo: "Inatividade comercial prolongada", descontoPct: 3.0, vigenciaFim: "Indeterminado" },
       ],
     },
     avaliacao360: {

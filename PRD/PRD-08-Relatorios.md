@@ -24,8 +24,8 @@ Um grid de cards (`.card`), onde cada card representa um tipo de relatório disp
    - *Filtros de Geração:* Regional, Unidade, Faixa de Faturamento.
 
 3. **Visão de Grupo Econômico**
-   - *Descrição:* Consolidação de faturamento e estrutura por CPF (Dono).
-   - *Filtros de Geração:* CPF específico ou Top 10 maiores grupos.
+   - *Descrição:* Consolidação de faturamento e estrutura por CPF (Dono) ou CNPJ.
+   - *Filtros de Geração:* CPFs específicos, CNPJs especificos ou Top 10 maiores grupos.
 
 4. **Penalidades Ativas**
    - *Descrição:* Lista de descontos e penalidades vigentes na rede.
@@ -39,6 +39,8 @@ Um grid de cards (`.card`), onde cada card representa um tipo de relatório disp
    - *Descrição:* Cobertura de visitas e relatórios de campo.
    - *Filtros de Geração:* Período, Gestor BU.
    - *Opção Especial:* Checkbox "Incluir anotações privadas" (apenas para perfis autorizados).
+
+Incluir campos de opção de download em excel ou pdf.
 
 ### 3. Interface de Geração de Relatório
 

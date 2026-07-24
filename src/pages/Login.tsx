@@ -18,7 +18,8 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import logoAdemicon from "@/assets/brand/ademicon-logo-horizontal-color.svg";
+import ademiconIcon from "@/assets/brand/ademicon-icone-vermelho.svg";
+import loginBgVideo from "@/assets/login-background-video.webm";
 
 const loginSchema = z.object({
   email: z.string().email("Informe um e-mail válido."),
@@ -49,11 +50,9 @@ const Login = () => {
   });
 
   const entranceRef = usePageEntrance<HTMLDivElement>([
-    { selector: ".login-brand", vars: { y: -16, opacity: 0 } },
     {
       selector: ".login-card",
       vars: { y: 16, opacity: 0, duration: 0.45 },
-      position: "-=0.2",
     },
   ]);
 
@@ -78,28 +77,41 @@ const Login = () => {
   return (
     <div
       ref={entranceRef}
-      className="flex min-h-screen items-center justify-center bg-background bg-mesh p-6"
+      className="relative flex min-h-screen items-center justify-center p-6 overflow-hidden"
     >
-      <div className="w-full max-w-sm space-y-8">
-        <div className="login-brand flex flex-col items-center gap-6">
-          <img
-            src={logoAdemicon}
-            alt="Ademicon"
-            width={166}
-            height={36}
-            className="h-9 w-auto"
-          />
-          <div className="text-center">
-            <h1 className="font-display text-2xl font-bold text-foreground">
-              Acessar o Órbita
-            </h1>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Entre com suas credenciais para continuar.
-            </p>
-          </div>
-        </div>
+      {/* Background Video */}
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="absolute inset-0 h-full w-full object-cover"
+      >
+        <source src={loginBgVideo} type="video/webm" />
+      </video>
 
-        <div className="login-card rounded-card border border-white/50 bg-card p-6 shadow-soft dark:border-white/5">
+      {/* Video Overlay with Blur */}
+      <div className="absolute inset-0 bg-black/20 mix-blend-multiply pointer-events-none" />
+
+      {/* Login Container */}
+      <div className="relative z-10 w-full max-w-sm">
+        <div className="login-card rounded-card border border-white/50 bg-card/90 backdrop-blur-md p-6 shadow-soft dark:border-white/5">
+          {/* Logo e Título Internos */}
+          <div className="flex items-center justify-between gap-3 mb-6 select-none">
+            <div className="flex items-center gap-3">
+              <img
+                src={ademiconIcon}
+                alt="Ademicon"
+                className="h-7 w-auto"
+              />
+              <h1 className="font-display text-2xl font-bold tracking-tight text-foreground">
+                Órbita
+              </h1>
+            </div>
+            <span className="text-xs text-muted-foreground">
+              Acesse com suas credenciais
+            </span>
+          </div>
           {authError && (
             <div
               role="alert"

@@ -91,7 +91,8 @@ const PVsLista = () => {
         subtitle="Gestão das estruturas comerciais subordinadas"
       />
 
-      <Card className="pvs-filtros flex flex-wrap items-center gap-3 p-4">
+      <Card className="pvs-lista-container overflow-hidden p-0">
+      <div className="pvs-filtros flex flex-wrap items-center gap-3 border-b border-border bg-gradient-to-b from-primary/[0.06] via-primary/[0.02] to-transparent p-4">
         <div className="relative min-w-[220px] flex-1">
           <Search
             className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
@@ -141,9 +142,9 @@ const PVsLista = () => {
             <SelectItem value="Suspenso">Suspenso</SelectItem>
           </SelectContent>
         </Select>
-      </Card>
+      </div>
 
-      <Card className="pvs-tabela p-2">
+      <div className="pvs-tabela p-2">
         {filtrados.length === 0 ? (
           <div className="flex flex-col items-center gap-1 py-16 text-center">
             <p className="text-sm font-medium text-foreground">Nenhum PV encontrado</p>
@@ -218,6 +219,7 @@ const PVsLista = () => {
             )}
           </>
         )}
+      </div>
       </Card>
     </div>
   );

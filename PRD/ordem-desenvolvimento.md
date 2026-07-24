@@ -18,7 +18,7 @@ Detalhamento completo de cada página (abas, filtros, overlays, dados, dependên
 | 6 | Consultores (lista + detalhe) | `/consultores`, `/consultores/:id` | PRD-03 | ✅ | Reaproveita abas e timeline; adiciona avatar por nível, visão econômica e vínculos |
 | 7 | Ocorrências | `/ocorrencias` | PRD-06 | ✅ | Logbook central. Cria o bloco de anotação privada e o padrão de modal de detalhe/resolução |
 | 8 | Visitas | `/visitas` | PRD-07 | ✅ | Depende do padrão de ocorrências (visitas alimentam o Logbook) e reutiliza a anotação privada e o formulário condicional |
-| 9 | Prévias | `/previas` | PRD-05 | ⬜ | Kanban é um padrão visual novo e isolado; depende do autocomplete sobre a base de consultores |
+| 9 | Prévias | `/previas` | PRD-05 | ✅ | Implementado como Data Table + Tabs de status (PRD-05 §1-§2 é explícito nisso), não como Kanban de colunas — `sitemap.json`/esta tabela usavam "Kanban" como rótulo antigo, mais raso que o PRD-05 (ver MEMORY.md 2026-07-24). Autocomplete de Indicador/Formador restrito a consultores ativos |
 | 10 | Relatórios | `/relatorios` | PRD-08 | ⬜ | Consome dados já modelados nos módulos anteriores |
 | 11 | Configurações | `/configuracoes` | PRD-09 | ⬜ | Módulo mais simples, majoritariamente informativo |
 | 12 | 404 + polimento | `*` | — | ⬜ | Ajuste final de estilo e revisão de consistência entre telas |

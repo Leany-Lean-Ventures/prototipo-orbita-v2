@@ -36,6 +36,8 @@ const UnidadeDetalhe = () => {
   const unidade = id ? unidadesDetalhe[id] : undefined;
   const [ocorrenciaModalOpen, setOcorrenciaModalOpen] = useState(false);
   const [sociosModalOpen, setSociosModalOpen] = useState(false);
+  const [tab, setTab] = useState("dados-basicos");
+  const [penalidadeParaAbrir, setPenalidadeParaAbrir] = useState<string | null>(null);
 
   const entranceRef = usePageEntrance<HTMLDivElement>([
     { selector: ".unidade-header", vars: { y: -16, opacity: 0, duration: 0.35 } },
@@ -92,7 +94,7 @@ const UnidadeDetalhe = () => {
         }
       />
 
-      <Tabs defaultValue="dados-basicos" className="unidade-tabs">
+      <Tabs value={tab} onValueChange={setTab} className="unidade-tabs">
         <TabsList variant="secondary">
           <TabsTrigger value="dados-basicos">
             <LayoutDashboard className="h-4 w-4" />
@@ -153,7 +155,8 @@ const UnidadeDetalhe = () => {
         <TabsContent value="penalidades">
           <PenalidadesPanel
             penalidades={unidade.comissionamento.penalidades}
-            basePct={unidade.comissionamento.basePct}
+            abrirPenalidadeId={penalidadeParaAbrir}
+            onPenalidadeAberta={() => setPenalidadeParaAbrir(null)}
           />
         </TabsContent>
 
@@ -163,6 +166,10 @@ const UnidadeDetalhe = () => {
               items={unidade.historico}
               title="Histórico"
               subtitle="Linha do tempo de ocorrências e eventos de negócio"
+              onVerPenalidade={(penalidadeId) => {
+                setPenalidadeParaAbrir(penalidadeId);
+                setTab("penalidades");
+              }}
             />
           </Card>
         </TabsContent>

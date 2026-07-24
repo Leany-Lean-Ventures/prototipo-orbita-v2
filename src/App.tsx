@@ -16,6 +16,8 @@ import ConsultoresLista from "@/pages/ConsultoresLista";
 import ConsultorDetalhe from "@/pages/ConsultorDetalhe";
 import OcorrenciasPage from "@/pages/OcorrenciasPage";
 import VisitasPage from "@/pages/VisitasPage";
+import PreviasPage from "@/pages/PreviasPage";
+import PreviaProcessoPage from "@/pages/PreviaProcessoPage";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -42,7 +44,8 @@ const App = () => (
               <Route path="/consultores/:id" element={<ConsultorDetalhe />} />
               <Route path="/pvs" element={<PVsLista />} />
               <Route path="/pvs/:id" element={<PVDetalhe />} />
-              <Route path="/previas" element={<ComingSoon />} />
+              <Route path="/previas" element={<PreviasPage />} />
+              <Route path="/previas/:id" element={<PreviaProcessoPage />} />
               <Route path="/ocorrencias" element={<OcorrenciasPage />} />
               <Route path="/visitas" element={<VisitasPage />} />
               <Route path="/relatorios" element={<ComingSoon />} />

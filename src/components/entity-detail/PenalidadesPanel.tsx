@@ -1,9 +1,10 @@
-import { TriangleAlert, ShieldAlert, CalendarClock, DollarSign, TrendingDown, CheckCircle2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { TriangleAlert, ShieldAlert, CalendarClock, Eye } from "lucide-react";
 
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { SectionHeader } from "@/components/ui/section-header";
-import { StatCard } from "@/components/ui/stat-card";
 import {
   Table,
   TableHeader,
@@ -12,40 +13,35 @@ import {
   TableHead,
   TableCell,
 } from "@/components/ui/table";
+import { PenalidadeDetalheModal } from "@/components/entity-detail/PenalidadeDetalheModal";
 import type { Penalidade } from "@/lib/mock-data/unidades";
 
 interface PenalidadesPanelProps {
   penalidades: Penalidade[];
-  basePct: number;
+  /** Id de uma penalidade a abrir automaticamente (vindo do botão "Ver penalidade" do Histórico). */
+  abrirPenalidadeId?: string | null;
+  /** Chamado depois de consumir `abrirPenalidadeId`, para o pai limpar o estado. */
+  onPenalidadeAberta?: () => void;
 }
 
 function formatPct(value: number) {
   return value.toLocaleString("pt-BR", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 }
 
-/**
- * Tab "Penalidades" — exibe penalidades ativas com resumo de impacto
- * na comissão e tabela detalhada.
- */
-export function PenalidadesPanel({ penalidades, basePct }: PenalidadesPanelProps) {
-  const totalDesconto = penalidades.reduce((acc, p) => acc + p.descontoPct, 0);
-  const comissaoEfetiva = Math.max(0, basePct - totalDesconto);
+/** Tab "Penalidades" — exibe as penalidades ativas em tabela detalhada. */
+export function PenalidadesPanel({ penalidades, abrirPenalidadeId, onPenalidadeAberta }: PenalidadesPanelProps) {
+  const [selecionada, setSelecionada] = useState<Penalidade | null>(null);
+
+  useEffect(() => {
+    if (!abrirPenalidadeId) return;
+    const match = penalidades.find((p) => p.id === abrirPenalidadeId);
+    if (match) setSelecionada(match);
+    onPenalidadeAberta?.();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [abrirPenalidadeId]);
 
   return (
     <div className="space-y-6">
-      {/* Resumo de impacto — stat cards padrão */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <StatCard icon={DollarSign} label="Comissão base" color="#6366f1">
-          {formatPct(basePct)}%
-        </StatCard>
-        <StatCard icon={TrendingDown} label="Total descontos" color="#dc2626">
-          -{formatPct(totalDesconto)}%
-        </StatCard>
-        <StatCard icon={CheckCircle2} label="Comissão efetiva" color="#16a34a">
-          {formatPct(comissaoEfetiva)}%
-        </StatCard>
-      </div>
-
       {/* Tabela de penalidades */}
       <Card className="p-6">
         <SectionHeader
@@ -75,11 +71,12 @@ export function PenalidadesPanel({ penalidades, basePct }: PenalidadesPanelProps
                   </div>
                 </TableHead>
                 <TableHead>Status</TableHead>
+                <TableHead className="text-right">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {penalidades.map((p, idx) => (
-                <TableRow key={`${p.motivo}-${idx}`}>
+              {penalidades.map((p) => (
+                <TableRow key={p.id}>
                   <TableCell>
                     <div className="flex items-center gap-3">
                       <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-destructive/10">
@@ -95,12 +92,27 @@ export function PenalidadesPanel({ penalidades, basePct }: PenalidadesPanelProps
                   <TableCell>
                     <Badge variant="destructive">Ativa</Badge>
                   </TableCell>
+                  <TableCell className="text-right">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      aria-label={`Ver detalhes da penalidade: ${p.motivo}`}
+                      onClick={() => setSelecionada(p)}
+                    >
+                      <Eye className="h-4 w-4" />
+                    </Button>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         )}
       </Card>
+
+      <PenalidadeDetalheModal
+        penalidade={selecionada}
+        onOpenChange={(open) => { if (!open) setSelecionada(null); }}
+      />
     </div>
   );
 }
