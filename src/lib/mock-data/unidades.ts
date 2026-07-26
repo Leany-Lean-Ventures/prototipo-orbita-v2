@@ -187,6 +187,8 @@ export interface UnidadeDetalhe {
   heroImage: string;
   /** Optional avatar image for the gestor. Falls back to initials. */
   gestorAvatar?: string;
+  /** Fotos da fachada e ambientes internos (aba Dados Básicos → Fotos da Unidade). */
+  fotos: string[];
   /** Dados de contato e endereço. */
   dadosContato: DadosContatoInfo;
   organizacional: OrganizacionalNode[];
@@ -229,6 +231,12 @@ export const unidadesDetalhe: Record<string, UnidadeDetalhe> = {
     ratingScore: 94,
     heroImage: "/images/unidades/hero-city.jpg",
     gestorAvatar: "/images/foto-lojas/01.jpg",
+    fotos: [
+      "/images/unidades-fotos/fachada-canoas.jpg",
+      "/images/unidades-fotos/sala-reuniao.png",
+      "/images/unidades-fotos/recepcao-loja.webp",
+      "/images/unidades-fotos/retrato-equipe.webp",
+    ],
     dadosContato: {
       endereco: "Rua Augusta, 1508",
       bairro: "Consolação",
@@ -384,6 +392,11 @@ export const unidadesDetalhe: Record<string, UnidadeDetalhe> = {
     rating: "A",
     ratingScore: 87,
     heroImage: "/images/unidades/unit-saopaulo.png",
+    fotos: [
+      "/images/unidades-fotos/fachada-jaguariaiva.jpg",
+      "/images/unidades-fotos/inauguracao-loja.jpg",
+      "/images/unidades-fotos/escritorio-rioofficemall.png",
+    ],
     dadosContato: {
       endereco: "Rua Barão de Jaguara, 1100",
       bairro: "Centro",
@@ -465,6 +478,11 @@ export const unidadesDetalhe: Record<string, UnidadeDetalhe> = {
     rating: "B",
     ratingScore: 76,
     heroImage: "/images/unidades/unit-curitiba.png",
+    fotos: [
+      "/images/unidades-fotos/fachada-noturna.webp",
+      "/images/unidades-fotos/sala-reuniao.png",
+      "/images/unidades-fotos/fachada-campoverde.jpg",
+    ],
     dadosContato: {
       endereco: "Av. Sete de Setembro, 4700",
       bairro: "Batel",
@@ -546,6 +564,11 @@ export const unidadesDetalhe: Record<string, UnidadeDetalhe> = {
     rating: "B",
     ratingScore: 71,
     heroImage: "/images/unidades/hero-city.jpg",
+    fotos: [
+      "/images/unidades-fotos/recepcao-loja.webp",
+      "/images/unidades-fotos/gestor-retrato.jpg",
+      "/images/unidades-fotos/fachada-canoas.jpg",
+    ],
     dadosContato: {
       endereco: "Av. das Américas, 3500",
       bairro: "Barra da Tijuca",
@@ -628,6 +651,10 @@ export const unidadesDetalhe: Record<string, UnidadeDetalhe> = {
     rating: "C",
     ratingScore: 58,
     heroImage: "/images/unidades/unit-joinville.png",
+    fotos: [
+      "/images/unidades-fotos/fachada-campoverde.jpg",
+      "/images/unidades-fotos/inauguracao-loja.jpg",
+    ],
     dadosContato: {
       endereco: "Rua Pernambuco, 1000",
       bairro: "Savassi",
@@ -703,6 +730,11 @@ export const unidadesDetalhe: Record<string, UnidadeDetalhe> = {
     rating: "A",
     ratingScore: 91,
     heroImage: "/images/unidades/unit-portoalegre.jpg",
+    fotos: [
+      "/images/unidades-fotos/fachada-jaguariaiva.jpg",
+      "/images/unidades-fotos/retrato-equipe.webp",
+      "/images/unidades-fotos/escritorio-rioofficemall.png",
+    ],
     dadosContato: {
       endereco: "Rua Padre Chagas, 500",
       bairro: "Moinhos de Vento",
@@ -781,6 +813,10 @@ export const unidadesDetalhe: Record<string, UnidadeDetalhe> = {
     rating: "C",
     ratingScore: 52,
     heroImage: "/images/unidades/hero-city.jpg",
+    fotos: [
+      "/images/unidades-fotos/fachada-noturna.webp",
+      "/images/unidades-fotos/gestor-retrato.jpg",
+    ],
     dadosContato: {
       endereco: "SCS Quadra 6, Bloco A",
       bairro: "Asa Sul",
@@ -850,6 +886,12 @@ export const unidadesDetalhe: Record<string, UnidadeDetalhe> = {
     rating: "B",
     ratingScore: 79,
     heroImage: "/images/unidades/unit-saopaulo.png",
+    fotos: [
+      "/images/unidades-fotos/sala-reuniao.png",
+      "/images/unidades-fotos/fachada-canoas.jpg",
+      "/images/unidades-fotos/recepcao-loja.webp",
+      "/images/unidades-fotos/inauguracao-loja.jpg",
+    ],
     dadosContato: {
       endereco: "Av. Oceânica, 2400",
       bairro: "Barra",

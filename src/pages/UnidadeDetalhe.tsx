@@ -120,10 +120,10 @@ const UnidadeDetalhe = () => {
           <DadosBasicosPanel
             organizacional={unidade.organizacional}
             consultoresVinculados={unidade.consultoresVinculados}
-            carteiras={unidade.carteiras}
             avaliacao360={unidade.avaliacao360}
             rating={unidade.rating}
             ratingScore={unidade.ratingScore}
+            fotos={unidade.fotos}
           />
         </TabsContent>
 

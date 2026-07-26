@@ -36,7 +36,7 @@ Uma segunda aba na mesma tela, **Mapa de Vínculos**, mostra um grafo interativo
 
 ### Detalhe da Unidade (`/unidades/:id`)
 Página com cabeçalho (nome, cidade, status, rating em gráfico circular) e 5 abas:
-- **Dados Básicos** — contato, tamanho da rede, gráfico de Avaliação 360, ranking de consultores e de carteiras.
+- **Dados Básicos** — contato, tamanho da rede, gráfico de Avaliação 360 e uma galeria de **fotos da unidade**: miniaturas da fachada e dos ambientes internos, com botão para adicionar novas fotos e remover as existentes. Clicar em qualquer miniatura abre as fotos ampliadas em um carrossel (setas para navegar entre elas, fecha com o X ou clicando fora).
 - **Estrutura Organizacional** — hierarquia (árvore com PVs e consultores subordinados), consultores vinculados, estrutura societária e comissionamento.
 - **Carteiras Associadas** — tabela de carteiras ativas/inativas, com filtro para mostrar só as órfãs (sem consultor responsável).
 - **Histórico** — linha do tempo de eventos da unidade (visitas, avaliações, ocorrências).

@@ -1,17 +1,15 @@
-import { useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Users, Store, Trophy, TrendingUp, Briefcase, BriefcaseBusiness, Star, Eye } from "lucide-react";
+import { useMemo } from "react";
+import { Users, Store, Trophy, Star } from "lucide-react";
 import Chart from "react-apexcharts";
 import type { ApexOptions } from "apexcharts";
 
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { SectionHeader } from "@/components/ui/section-header";
+import { FotosUnidadePanel } from "@/components/entity-detail/FotosUnidadePanel";
 import { prefersReducedMotion } from "@/lib/motion";
 import type {
   ConsultorVinculado,
-  Carteira,
   Avaliacao360Info,
   OrganizacionalNode,
   Rating,
@@ -28,23 +26,23 @@ const CRITERIO_COLORS = [
 interface DadosBasicosPanelProps {
   organizacional: OrganizacionalNode[];
   consultoresVinculados: ConsultorVinculado[];
-  carteiras: Carteira[];
   avaliacao360: Avaliacao360Info;
   rating: Rating;
   ratingScore: number;
+  fotos: string[];
 }
 
 /**
  * Bento grid — "Dados Básicos" tab (default) for the Unidade detail page.
- * Layout: 3 stat cards → radar chart (full width with legend) → 2 rankings.
+ * Layout: 3 stat cards → radar chart (full width com legenda) → fotos da unidade.
  */
 export function DadosBasicosPanel({
   organizacional,
   consultoresVinculados,
-  carteiras,
   avaliacao360,
   rating,
   ratingScore,
+  fotos,
 }: DadosBasicosPanelProps) {
   // Count PVs recursively (handles both flat and tree structures)
   const pvCount = useMemo(() => {
@@ -59,37 +57,6 @@ export function DadosBasicosPanel({
     return count;
   }, [organizacional]);
   const consultorCount = consultoresVinculados.length;
-
-  // Ranking consultores por faturamento (desc)
-  const consultoresRanking = useMemo(
-    () =>
-      [...consultoresVinculados]
-        .filter((c) => c.faturamento != null)
-        .sort((a, b) => (b.faturamento ?? 0) - (a.faturamento ?? 0)),
-    [consultoresVinculados]
-  );
-
-  // Carteiras ativas
-  const carteirasAtivas = useMemo(
-    () =>
-      carteiras
-        .filter((c) => c.status === "Ativa")
-        .sort((a, b) => a.cliente.localeCompare(b.cliente)),
-    [carteiras]
-  );
-
-  // Pagination state
-  const [consultorPage, setConsultorPage] = useState(0);
-  const [carteiraPage, setCarteiraPage] = useState(0);
-  const PAGE_SIZE = 5;
-
-  const consultorTotalPages = Math.ceil(consultoresRanking.length / PAGE_SIZE);
-  const consultorPaged = consultoresRanking.slice(consultorPage * PAGE_SIZE, (consultorPage + 1) * PAGE_SIZE);
-
-  const carteiraTotalPages = Math.ceil(carteirasAtivas.length / PAGE_SIZE);
-  const carteiraPaged = carteirasAtivas.slice(carteiraPage * PAGE_SIZE, (carteiraPage + 1) * PAGE_SIZE);
-
-  const navigate = useNavigate();
 
   // Line chart for Avaliação 360 — one line per criterion, X axis = years
   const anos = (avaliacao360.historicoAnual ?? []).map((e) => e.ano);
@@ -237,103 +204,8 @@ export function DadosBasicosPanel({
         )}
       </Card>
 
-      {/* Row 3: Rankings side by side */}
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        {/* Ranking de Consultores */}
-        <Card className="flex flex-col p-6">
-          <SectionHeader
-            icon={TrendingUp}
-            title="Top consultores"
-            subtitle="Ranking por faturamento individual"
-          />
-          {consultoresRanking.length === 0 ? (
-            <p className="py-4 text-center text-sm text-muted-foreground">Nenhum consultor</p>
-          ) : (
-            <>
-              <div className="flex-1 divide-y divide-border">
-                {consultorPaged.map((consultor, index) => (
-                  <div key={consultor.id} className="flex items-center gap-3 py-2.5">
-                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-muted text-[11px] font-bold text-foreground">
-                      {consultorPage * PAGE_SIZE + index + 1}
-                    </div>
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-secondary/20 bg-secondary/10">
-                      <BriefcaseBusiness className="h-4 w-4 text-secondary" aria-hidden="true" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-[13px] font-medium text-foreground">{consultor.razaoSocial}</p>
-                      <p className="text-[11px] text-muted-foreground">{consultor.matricula} • {consultor.carteiraQtd} carteiras</p>
-                    </div>
-                    <span className="text-[12px] font-semibold text-foreground">
-                      {new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 }).format(consultor.faturamento ?? 0)}
-                    </span>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-7 w-7 shrink-0 text-muted-foreground hover:text-foreground"
-                      onClick={() => navigate(`/consultores/${consultor.id}`)}
-                      aria-label={`Ver perfil de ${consultor.razaoSocial}`}
-                    >
-                      <Eye className="h-3.5 w-3.5" />
-                    </Button>
-                  </div>
-                ))}
-              </div>
-              {consultorTotalPages > 1 && (
-                <div className="mt-4 flex items-center justify-between border-t border-border pt-3">
-                  <span className="text-[11px] text-muted-foreground">
-                    {consultorPage + 1}/{consultorTotalPages}
-                  </span>
-                  <div className="flex gap-1">
-                    <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" disabled={consultorPage === 0} onClick={() => setConsultorPage(p => p - 1)}>Ant.</Button>
-                    <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" disabled={consultorPage >= consultorTotalPages - 1} onClick={() => setConsultorPage(p => p + 1)}>Próx.</Button>
-                  </div>
-                </div>
-              )}
-            </>
-          )}
-        </Card>
-
-        {/* Ranking de Carteiras */}
-        <Card className="flex flex-col p-6">
-          <SectionHeader
-            icon={Briefcase}
-            title="Carteiras ativas"
-            subtitle="Carteiras com status ativo vinculadas à unidade"
-          />
-          {carteirasAtivas.length === 0 ? (
-            <p className="py-4 text-center text-sm text-muted-foreground">Nenhuma carteira ativa</p>
-          ) : (
-            <>
-              <div className="flex-1 divide-y divide-border">
-                {carteiraPaged.map((carteira) => (
-                  <div key={carteira.id} className="flex items-center justify-between py-2.5">
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-[13px] font-medium text-foreground">{carteira.cliente}</p>
-                      <p className="text-[11px] text-muted-foreground">{carteira.id}</p>
-                    </div>
-                    {carteira.consultor ? (
-                      <span className="text-[11px] text-muted-foreground">{carteira.consultor}</span>
-                    ) : (
-                      <Badge variant="warning" className="text-[10px]">Órfã</Badge>
-                    )}
-                  </div>
-                ))}
-              </div>
-              {carteiraTotalPages > 1 && (
-                <div className="mt-4 flex items-center justify-between border-t border-border pt-3">
-                  <span className="text-[11px] text-muted-foreground">
-                    {carteiraPage + 1}/{carteiraTotalPages}
-                  </span>
-                  <div className="flex gap-1">
-                    <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" disabled={carteiraPage === 0} onClick={() => setCarteiraPage(p => p - 1)}>Ant.</Button>
-                    <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" disabled={carteiraPage >= carteiraTotalPages - 1} onClick={() => setCarteiraPage(p => p + 1)}>Próx.</Button>
-                  </div>
-                </div>
-              )}
-            </>
-          )}
-        </Card>
-      </div>
+      {/* Row 3: Fotos da unidade */}
+      <FotosUnidadePanel fotos={fotos} />
     </div>
   );
 }
