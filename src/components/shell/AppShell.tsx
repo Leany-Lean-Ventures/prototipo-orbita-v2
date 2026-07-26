@@ -1,8 +1,17 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
+import { useEffect } from "react";
 
 import { AlertsPanelProvider, useAlertsPanel } from "@/lib/alerts-panel-context";
 import { AppSidebar } from "./AppSidebar";
 import { AlertsPanel } from "./AlertsPanel";
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+}
 
 function AppShellLayout() {
   const { isOpen, setOpen } = useAlertsPanel();
@@ -19,6 +28,7 @@ function AppShellLayout() {
       */}
       <AppSidebar />
       <div className="min-w-0 flex-1">
+        <ScrollToTop />
         <main>
           <div className="mx-auto max-w-[1440px] px-6 pb-6 pt-6">
             <Outlet />

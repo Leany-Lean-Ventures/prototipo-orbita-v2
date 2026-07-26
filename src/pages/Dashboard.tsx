@@ -1,118 +1,94 @@
 import { useNavigate } from "react-router-dom";
-import { ChevronRight, BarChart3, CircleCheck, TriangleAlert, ClipboardList } from "lucide-react";
+import Chart from "react-apexcharts";
+import type { ApexOptions } from "apexcharts";
+import {
+  BarChart3, CircleCheck, ChevronRight, TriangleAlert, ShieldAlert,
+  ClipboardList, UserCog, Building2, AlertTriangle,
+} from "lucide-react";
 
 import { usePageEntrance } from "@/hooks/use-page-entrance";
 import { useAlertsPanel } from "@/lib/alerts-panel-context";
 import { EASE_SIGNATURE } from "@/lib/motion";
-import { alerts } from "@/lib/mock-data/alerts";
-import {
-  kpis,
-  ocorrenciasRecentes,
-  resumoExecutivo,
-  type DashboardOcorrencia,
-} from "@/lib/mock-data/dashboard";
+import { prefersReducedMotion } from "@/lib/motion";
+import { kpis } from "@/lib/mock-data/dashboard";
+import { ocorrenciasList } from "@/lib/mock-data/ocorrencias";
+import { registrosAberturaUnidades } from "@/lib/mock-data/esteira-abertura-unidades";
+import { registrosPromocaoConsultores } from "@/lib/mock-data/esteira-promocao-consultores";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { SectionHeader } from "@/components/ui/section-header";
 import { KpiCard } from "@/components/dashboard/KpiCard";
-import { EvolutionChart } from "@/components/dashboard/EvolutionChart";
 
-const OCORRENCIA_COLOR: Record<DashboardOcorrencia["colorTheme"], string> = {
-  red: "bg-destructive/10 text-destructive",
-  green: "bg-success/10 text-success",
-  violet: "bg-violet-100 text-violet-600 dark:bg-violet-900/30 dark:text-violet-400",
-  amber: "bg-warning/10 text-warning",
-  blue: "bg-info/10 text-info",
+function EvolutionMiniChart() {
+  const options: ApexOptions = {
+    chart: { type: "bar", toolbar: { show: false }, animations: { enabled: !prefersReducedMotion() } },
+    plotOptions: { bar: { borderRadius: 4, columnWidth: "55%" } },
+    stroke: { width: 0 },
+    colors: ["#dc2626", "#f59e0b"],
+    xaxis: { categories: ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun"], labels: { style: { fontSize: "11px", colors: "#94a3b8" } }, axisBorder: { show: false }, axisTicks: { show: false } },
+    yaxis: { labels: { style: { fontSize: "11px", colors: "#94a3b8" } } },
+    grid: { borderColor: "#f1f5f9", strokeDashArray: 3 },
+    dataLabels: { enabled: false },
+    legend: { position: "top", horizontalAlign: "right", fontSize: "12px", markers: { size: 6, shape: "circle" as const } },
+  };
+  const series = [
+    { name: "Abertas", data: [8, 12, 6, 10, 9, 14] },
+    { name: "Resolvidas", data: [5, 9, 7, 8, 11, 10] },
+  ];
+  return <Chart options={options} series={series} type="bar" height={220} />;
+}
+
+const resumo = { unidadesAtivas: 8, novasUnidades: 2, alertasCriticos: 4 };
+
+const esteiraAbertura = {
+  ativos: registrosAberturaUnidades.filter((r) => r.status === "ativo").length,
+  emAtraso: registrosAberturaUnidades.filter((r) => r.emAtraso).length,
 };
+const esteiraPromocao = {
+  ativos: registrosPromocaoConsultores.filter((r) => r.status === "ativo").length,
+  emAtraso: registrosPromocaoConsultores.filter((r) => r.emAtraso).length,
+};
+
+const ocorrenciasAbertas = ocorrenciasList.filter((o) => o.status === "Aberto" || o.status === "Em andamento");
+
+const penalidades = [
+  { unidade: "SP-Centro", total: "2,0%", qtd: 2 },
+  { unidade: "RJ-Barra", total: "3,0%", qtd: 2 },
+  { unidade: "BH-Savassi", total: "1,5%", qtd: 1 },
+  { unidade: "Curitiba-Norte", total: "1,0%", qtd: 1 },
+];
+const totalPenalidades = penalidades.reduce((a, p) => a + p.qtd, 0);
+
+const previas = { emAnalise: 5, aprovadasMes: 3, reprovadasMes: 1 };
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { open: openAlertsPanel } = useAlertsPanel();
 
-  // Timeline única, total < 1s (design-system §7.2) — overlaps agressivos
-  // porque a página tem 5 grupos (header, resumo, 5 KPIs, gráfico, 2 listas).
   const entranceRef = usePageEntrance<HTMLDivElement>([
     { selector: ".dashboard-header", vars: { y: -16, opacity: 0, duration: 0.35 } },
-    {
-      selector: ".dashboard-resumo",
-      vars: { y: 16, opacity: 0, duration: 0.3 },
-      position: "-=0.2",
-    },
-    {
-      selector: ".kpi-card",
-      vars: {
-        y: 16,
-        opacity: 0,
-        scale: 0.97,
-        duration: 0.35,
-        stagger: { each: 0.045, from: "start" },
-        ease: EASE_SIGNATURE,
-      },
-      position: "-=0.15",
-    },
-    {
-      selector: ".evolution-chart",
-      vars: { y: 16, opacity: 0, duration: 0.35 },
-      position: "-=0.25",
-    },
-    {
-      selector: ".dashboard-lists",
-      vars: { y: 16, opacity: 0, duration: 0.35, stagger: 0.06 },
-      position: "-=0.25",
-    },
+    { selector: ".dashboard-resumo", vars: { y: 16, opacity: 0, duration: 0.3 }, position: "-=0.2" },
+    { selector: ".kpi-card", vars: { y: 16, opacity: 0, scale: 0.97, duration: 0.35, stagger: { each: 0.045, from: "start" }, ease: EASE_SIGNATURE }, position: "-=0.15" },
+    { selector: ".dashboard-section", vars: { y: 16, opacity: 0, duration: 0.35, stagger: 0.06 }, position: "-=0.2" },
   ]);
 
   const handleKpiClick = (kpi: (typeof kpis)[number]) => {
-    if (kpi.isAlert) {
-      openAlertsPanel();
-      return;
-    }
+    if (kpi.isAlert) { openAlertsPanel(); return; }
     navigate(kpi.route);
   };
 
   return (
-    <div ref={entranceRef} className="space-y-8">
+    <div ref={entranceRef} className="flex flex-col gap-6">
       <div className="dashboard-header flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h1 className="font-display text-2xl font-bold text-foreground">
-            Dashboard
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            Visão geral da rede — KPIs, evolução, alertas e ocorrências.
-          </p>
+          <h1 className="font-display text-2xl font-bold text-foreground">Dashboard</h1>
+          <p className="text-sm text-muted-foreground">Visão geral da rede — processos, ocorrências e indicadores.</p>
         </div>
-        <Badge
-          variant="outline"
-          className="flex items-center gap-1.5 border-success/30 bg-success/10 text-success"
-        >
-          <CircleCheck className="h-3.5 w-3.5" aria-hidden="true" />
+        <Badge variant="outline" className="flex items-center gap-1.5 border-success/30 bg-success/10 text-success">
+          <CircleCheck className="h-3.5 w-3.5" />
           Atualizado há 2h · fonte: Data Lake (Gold)
         </Badge>
-      </div>
-
-      <div className="dashboard-resumo flex items-start gap-4 rounded-card border border-primary/20 bg-gradient-to-r from-primary/5 to-transparent p-6 shadow-soft">
-        <div
-          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary"
-          aria-hidden="true"
-        >
-          <BarChart3 className="h-5 w-5" />
-        </div>
-        <p className="text-sm leading-relaxed text-foreground">
-          A rede conta com{" "}
-          <strong className="font-semibold">
-            {resumoExecutivo.unidadesAtivas} unidades ativas
-          </strong>
-          ;{" "}
-          <span className="font-semibold text-success">
-            {resumoExecutivo.novasUnidades} novas
-          </span>{" "}
-          inauguradas no mês.{" "}
-          <span className="font-semibold text-destructive">
-            {resumoExecutivo.alertasCriticos} alertas críticos
-          </span>{" "}
-          exigem atenção.
-        </p>
       </div>
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -121,100 +97,131 @@ const Dashboard = () => {
         ))}
       </div>
 
-      <EvolutionChart />
-
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <Card className="dashboard-lists p-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_340px]">
+        {/* Gráfico de evolução de vendas da rede */}
+        <Card className="dashboard-section p-6">
           <SectionHeader
-            icon={TriangleAlert}
-            title="Alertas que exigem ação"
-            subtitle="Itens críticos pendentes de resolução"
+            icon={BarChart3}
+            title="Ocorrências"
+            subtitle="Evolução mensal — abertas vs. resolvidas"
           />
-          <div className="divide-y divide-border">
-            {alerts.map((alert) => {
-              const Icon = alert.icon;
-              return (
-                <div key={alert.id} className="flex items-center gap-3 py-3 first:pt-0 last:pb-0">
-                  <span
-                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-muted text-muted-foreground"
-                    aria-hidden="true"
-                  >
-                    <Icon className="h-4 w-4" />
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium text-foreground">
-                      {alert.label}
-                    </p>
-                  </div>
-                  <span className="font-display text-lg font-bold text-foreground">
-                    {alert.count}
-                  </span>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => navigate(alert.actionRoute)}
-                  >
-                    Resolver
-                  </Button>
-                </div>
-              );
-            })}
+          <div className="mt-4">
+            <EvolutionMiniChart />
           </div>
         </Card>
 
-        <Card className="dashboard-lists p-6">
+        {/* 3 cards de esteira/prévias empilhados — stretch to fill height */}
+        <div className="flex flex-col gap-3">
+          <Card interactive onClick={() => navigate("/previas")} className="dashboard-section relative flex flex-1 items-center gap-4 overflow-hidden p-5">
+            <div className="absolute -right-3 -top-3 h-20 w-20 rounded-full" style={{ background: "linear-gradient(135deg, #f59e0b33, #f59e0b0d)" }} />
+            <div className="absolute -right-0.5 -top-0.5 h-14 w-14 rounded-full" style={{ background: "linear-gradient(135deg, #f59e0b1a, transparent)" }} />
+            <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl shadow-sm" style={{ background: "linear-gradient(135deg, #f59e0b, #f59e0bcc)" }}>
+              <ClipboardList className="h-5 w-5 text-white" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-semibold text-foreground">Prévias em análise</p>
+              <p className="text-xs text-muted-foreground">
+                <span className="font-medium text-foreground">{previas.emAnalise}</span> em análise
+                · <span className="font-medium text-success">{previas.aprovadasMes} aprovadas</span>
+              </p>
+            </div>
+            <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+          </Card>
+
+          <Card interactive onClick={() => navigate("/esteira/abertura-unidades")} className="dashboard-section relative flex flex-1 items-center gap-4 overflow-hidden p-5">
+            <div className="absolute -right-3 -top-3 h-20 w-20 rounded-full" style={{ background: "linear-gradient(135deg, #8bc34b33, #8bc34b0d)" }} />
+            <div className="absolute -right-0.5 -top-0.5 h-14 w-14 rounded-full" style={{ background: "linear-gradient(135deg, #8bc34b1a, transparent)" }} />
+            <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl shadow-sm" style={{ background: "linear-gradient(135deg, #8bc34b, #8bc34bcc)" }}>
+              <Building2 className="h-5 w-5 text-white" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-semibold text-foreground">Abertura de Unidades</p>
+              <p className="text-xs text-muted-foreground">
+                <span className="font-medium text-foreground">{esteiraAbertura.ativos}</span> na esteira
+                {esteiraAbertura.emAtraso > 0 && <> · <span className="font-medium text-destructive">{esteiraAbertura.emAtraso} em atraso</span></>}
+              </p>
+            </div>
+            <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+          </Card>
+
+          <Card interactive onClick={() => navigate("/esteira/promocao-consultores")} className="dashboard-section relative flex flex-1 items-center gap-4 overflow-hidden p-5">
+            <div className="absolute -right-3 -top-3 h-20 w-20 rounded-full" style={{ background: "linear-gradient(135deg, #3b82f633, #3b82f60d)" }} />
+            <div className="absolute -right-0.5 -top-0.5 h-14 w-14 rounded-full" style={{ background: "linear-gradient(135deg, #3b82f61a, transparent)" }} />
+            <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl shadow-sm" style={{ background: "linear-gradient(135deg, #3b82f6, #3b82f6cc)" }}>
+              <UserCog className="h-5 w-5 text-white" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-semibold text-foreground">Promoção de Consultores</p>
+              <p className="text-xs text-muted-foreground">
+                <span className="font-medium text-foreground">{esteiraPromocao.ativos}</span> na esteira
+                {esteiraPromocao.emAtraso > 0 && <> · <span className="font-medium text-destructive">{esteiraPromocao.emAtraso} em atraso</span></>}
+              </p>
+            </div>
+            <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+          </Card>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <Card className="dashboard-section p-6">
           <SectionHeader
-            icon={ClipboardList}
-            title="Últimas Ocorrências"
-            subtitle="Feed de eventos recentes da rede"
+            icon={TriangleAlert}
+            title="Ocorrências pendentes"
+            subtitle={`${ocorrenciasAbertas.length} abertas ou em andamento`}
             actions={
-              <Button
-                variant="link"
-                size="sm"
-                className="h-auto p-0 text-xs uppercase"
-                onClick={() => navigate("/ocorrencias")}
-              >
-                Ver todas
-                <ChevronRight className="ml-1 h-3.5 w-3.5" />
+              <Button variant="link" size="sm" className="h-auto p-0 text-xs uppercase" onClick={() => navigate("/ocorrencias")}>
+                Ver todas<ChevronRight className="ml-1 h-3.5 w-3.5" />
               </Button>
             }
           />
           <div className="divide-y divide-border">
-            {ocorrenciasRecentes.map((occ) => {
-              const Icon = occ.icon;
-              return (
-                <div key={occ.id} className="flex items-start gap-3 py-3 first:pt-0 last:pb-0">
-                  <span
-                    className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${OCORRENCIA_COLOR[occ.colorTheme]}`}
-                    aria-hidden="true"
-                  >
-                    <Icon className="h-4 w-4" />
+            {ocorrenciasAbertas.slice(0, 4).map((occ) => (
+              <div key={occ.id} className="flex items-center gap-3 py-3 first:pt-0 last:pb-0">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-destructive/10 text-destructive">
+                  <AlertTriangle className="h-4 w-4" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-medium text-foreground">{occ.titulo}</p>
+                  <p className="truncate text-xs text-muted-foreground">{occ.entidade} · {occ.tempo}</p>
+                </div>
+                <Badge variant={occ.status === "Aberto" ? "destructive" : "warning"} className="text-[10px]">
+                  {occ.status}
+                </Badge>
+              </div>
+            ))}
+          </div>
+        </Card>
+
+        <Card className="dashboard-section p-6">
+          <SectionHeader
+            icon={ShieldAlert}
+            title="Penalidades ativas na rede"
+            subtitle={`${totalPenalidades} penalidades em ${penalidades.length} unidades`}
+            actions={
+              <Button variant="link" size="sm" className="h-auto p-0 text-xs uppercase" onClick={() => navigate("/relatorios")}>
+                Relatório<ChevronRight className="ml-1 h-3.5 w-3.5" />
+              </Button>
+            }
+          />
+          <div className="divide-y divide-border">
+            {penalidades.map((p) => (
+              <div key={p.unidade} className="flex items-center justify-between gap-3 py-3 first:pt-0 last:pb-0">
+                <div className="flex items-center gap-3">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-violet-500/10 text-violet-600">
+                    <ShieldAlert className="h-4 w-4" />
                   </span>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium text-foreground">
-                      {occ.titulo}
-                    </p>
-                    <p className="truncate text-xs text-muted-foreground">
-                      {occ.unidade} · {occ.pessoa}
-                    </p>
-                  </div>
-                  <div className="flex shrink-0 flex-col items-end gap-1">
-                    <Badge
-                      variant={occ.status === "Resolvido" ? "success" : "destructive"}
-                      className="text-[10px]"
-                    >
-                      {occ.status}
-                    </Badge>
-                    <span className="text-[10px] text-muted-foreground">
-                      {occ.tempo}
-                    </span>
+                  <div>
+                    <p className="text-sm font-medium text-foreground">{p.unidade}</p>
+                    <p className="text-xs text-muted-foreground">{p.qtd} penalidade{p.qtd > 1 ? "s" : ""}</p>
                   </div>
                 </div>
-              );
-            })}
+                <span className="font-display text-sm font-bold text-destructive">-{p.total}</span>
+              </div>
+            ))}
           </div>
         </Card>
       </div>
+
     </div>
   );
 };

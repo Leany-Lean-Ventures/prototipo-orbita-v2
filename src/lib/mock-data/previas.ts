@@ -169,11 +169,10 @@ export function getPrevia(id: string): PreviaItem | undefined {
 export interface DocumentoAnalise {
   nome: string;
   status: "conforme" | "nao-conforme" | "analisando";
-  analiseIA: string;
-  confianca: number | null;
+  observacao: string;
 }
 
-export interface ConsultaAutomatica {
+export interface ConsultaExterna {
   plataforma: string;
   status: "ok" | "alerta";
 }
@@ -216,7 +215,7 @@ export interface ProcessoDetalhe {
     situacaoNewcon: "Sem Cadastro" | "Cadastrado";
   };
   documentos: DocumentoAnalise[];
-  consultas: ConsultaAutomatica[];
+  consultas: ConsultaExterna[];
   historico: EventoHistoricoProcesso[];
 }
 
@@ -268,37 +267,37 @@ export function getDataAbertura(p: PreviaItem): string {
 function docsPorStatus(status: PreviaStatus): DocumentoAnalise[] {
   if (status === "Aprovada") {
     return [
-      { nome: "RG/CNH", status: "conforme", analiseIA: "Dados legíveis e compatíveis com o cadastro.", confianca: 99 },
-      { nome: "CPF", status: "conforme", analiseIA: "CPF válido e conferido na Receita.", confianca: 100 },
-      { nome: "Comprovante de Endereço", status: "conforme", analiseIA: "Endereço confere com o cadastro.", confianca: 97 },
-      { nome: "Documentos Complementares", status: "conforme", analiseIA: "Documentação completa e válida.", confianca: 95 },
+      { nome: "RG/CNH", status: "conforme", observacao: "Dados legíveis e compatíveis com o cadastro." },
+      { nome: "CPF", status: "conforme", observacao: "CPF válido e conferido na Receita." },
+      { nome: "Comprovante de Endereço", status: "conforme", observacao: "Endereço confere com o cadastro." },
+      { nome: "Documentos Complementares", status: "conforme", observacao: "Documentação completa e válida." },
     ];
   }
   if (status === "Retificação" || status === "Reprovada") {
     return [
-      { nome: "RG/CNH", status: "conforme", analiseIA: "Dados legíveis e compatíveis.", confianca: 98 },
-      { nome: "CPF", status: "conforme", analiseIA: "CPF válido e conferido.", confianca: 100 },
-      { nome: "Comprovante de Endereço", status: "nao-conforme", analiseIA: "Comprovante fora do padrão aceito (água, luz, gás, telefone/internet em nome do candidato ou parente de 1º grau).", confianca: 88 },
-      { nome: "Documentos Complementares", status: "nao-conforme", analiseIA: "Documento ilegível ou com dados divergentes do cadastro — reenvio solicitado.", confianca: 82 },
+      { nome: "RG/CNH", status: "conforme", observacao: "Dados legíveis e compatíveis." },
+      { nome: "CPF", status: "conforme", observacao: "CPF válido e conferido." },
+      { nome: "Comprovante de Endereço", status: "nao-conforme", observacao: "Comprovante fora do padrão aceito (água, luz, gás, telefone/internet em nome do candidato ou parente de 1º grau)." },
+      { nome: "Documentos Complementares", status: "nao-conforme", observacao: "Documento ilegível ou com dados divergentes do cadastro — reenvio solicitado." },
     ];
   }
   if (status === "Jurídico") {
     return [
-      { nome: "RG/CNH", status: "conforme", analiseIA: "Aprovado pela IA.", confianca: 99 },
-      { nome: "CPF", status: "conforme", analiseIA: "Aprovado pela IA.", confianca: 100 },
-      { nome: "Comprovante de Endereço", status: "conforme", analiseIA: "Aprovado pela IA.", confianca: 96 },
-      { nome: "Documentos Complementares", status: "analisando", analiseIA: "IA processando o documento…", confianca: null },
+      { nome: "RG/CNH", status: "conforme", observacao: "Verificado pelo analista." },
+      { nome: "CPF", status: "conforme", observacao: "Verificado pelo analista." },
+      { nome: "Comprovante de Endereço", status: "conforme", observacao: "Verificado pelo analista." },
+      { nome: "Documentos Complementares", status: "analisando", observacao: "Aguardando validação do analista." },
     ];
   }
   return [
-    { nome: "RG/CNH", status: "analisando", analiseIA: "IA analisando o documento…", confianca: null },
-    { nome: "CPF", status: "analisando", analiseIA: "IA analisando o documento…", confianca: null },
-    { nome: "Comprovante de Endereço", status: "analisando", analiseIA: "Aguardando envio para análise.", confianca: null },
-    { nome: "Documentos Complementares", status: "analisando", analiseIA: "Aguardando envio para análise.", confianca: null },
+    { nome: "RG/CNH", status: "analisando", observacao: "Aguardando análise." },
+    { nome: "CPF", status: "analisando", observacao: "Aguardando análise." },
+    { nome: "Comprovante de Endereço", status: "analisando", observacao: "Aguardando envio." },
+    { nome: "Documentos Complementares", status: "analisando", observacao: "Aguardando envio." },
   ];
 }
 
-function consultasPorStatus(status: PreviaStatus): ConsultaAutomatica[] {
+function consultasPorStatus(status: PreviaStatus): ConsultaExterna[] {
   return [
     { plataforma: "CNJ", status: "ok" },
     { plataforma: "CNDT", status: "ok" },

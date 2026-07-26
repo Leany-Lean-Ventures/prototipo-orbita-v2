@@ -68,10 +68,6 @@ const PVDetalhe = () => {
             <Network className="h-4 w-4" />
             Estrutura Organizacional
           </TabsTrigger>
-          <TabsTrigger value="consultores">
-            <Users className="h-4 w-4" />
-            Consultores
-          </TabsTrigger>
           <TabsTrigger value="carteiras">
             <Briefcase className="h-4 w-4" />
             Carteiras
@@ -84,10 +80,6 @@ const PVDetalhe = () => {
 
         <TabsContent value="estrutura">
           <EstruturaConsolidadaPanel organizacional={pv.organizacional} />
-        </TabsContent>
-
-        <TabsContent value="consultores">
-          <PVConsultoresPanel consultores={pv.consultoresVinculados} />
         </TabsContent>
 
         <TabsContent value="carteiras">

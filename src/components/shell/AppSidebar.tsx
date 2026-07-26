@@ -1,5 +1,5 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import { Bell, User, LogOut } from "lucide-react";
+import { Bell, User, LogOut, MoreVertical } from "lucide-react";
 
 import { useAuth } from "@/lib/auth-context";
 import { useAlertsPanel } from "@/lib/alerts-panel-context";
@@ -93,6 +93,7 @@ export function AppSidebar() {
                   {user.role}
                 </p>
               </div>
+              <MoreVertical className="h-4 w-4 shrink-0 text-sidebar-foreground/50" />
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" side="top" className="w-56">

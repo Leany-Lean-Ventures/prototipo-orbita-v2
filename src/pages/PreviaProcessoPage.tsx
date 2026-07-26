@@ -16,8 +16,8 @@ import {
   CheckCircle2,
   XCircle,
   Ban,
-  Bot,
   ShieldAlert,
+  AlertTriangle,
   Copy,
   FileSignature,
   FileStack,
@@ -210,9 +210,9 @@ const PreviaProcessoPage = () => {
         </Card>
       )}
 
-      <div className="proc-grid grid grid-cols-1 gap-6 lg:grid-cols-[1fr_320px]">
-        {/* Coluna principal */}
-        <div className="min-w-0 space-y-4">
+      <div className="proc-grid grid grid-cols-1 gap-6 lg:grid-cols-[320px_1fr]">
+        {/* Coluna principal — abas (direita em desktop) */}
+        <div className="min-w-0 space-y-4 lg:order-2">
           <Tabs defaultValue="dados">
             <TabsList variant="secondary">
               <TabsTrigger value="dados">
@@ -269,20 +269,6 @@ const PreviaProcessoPage = () => {
             </TabsContent>
 
             <TabsContent value="docs" className="space-y-4">
-              <Card className="flex items-start gap-3 border-blue-500/20 bg-blue-500/5 p-4">
-                <Bot className="mt-0.5 h-5 w-5 shrink-0 text-blue-600" aria-hidden="true" />
-                <div>
-                  <p className="text-sm font-semibold text-foreground">Validação automática por IA</p>
-                  <p className="mt-0.5 text-xs text-muted-foreground">
-                    Cada documento é analisado e validado quanto à conformidade (legibilidade, dados e padrão) — sem etapa manual.{" "}
-                    <span className="font-semibold text-success">
-                      {detalhe.documentos.filter((d) => d.status === "conforme").length}/{detalhe.documentos.length}
-                    </span>{" "}
-                    conformes.
-                  </p>
-                </div>
-              </Card>
-
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
                 <span
                   className={`h-2 w-2 rounded-full ${detalhe.atuacao.situacaoNewcon === "Cadastrado" ? "bg-success" : "bg-destructive"}`}
@@ -292,58 +278,61 @@ const PreviaProcessoPage = () => {
               </div>
 
               <Card className="p-6">
-                <SectionHeader icon={FileCheck} title="Documentos" subtitle="Conformidade avaliada automaticamente pela IA" />
+                <SectionHeader icon={FileCheck} title="Documentos" subtitle="Valide cada documento enviado pelo candidato" />
                 <Table>
                   <TableHeader>
                     <TableRow>
                       <TableHead>Documento</TableHead>
-                      <TableHead>Validação IA</TableHead>
-                      <TableHead>Análise da IA</TableHead>
-                      <TableHead className="text-center">Confiança</TableHead>
+                      <TableHead className="text-center">Visualizar</TableHead>
+                      <TableHead className="text-center">Ação</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {detalhe.documentos.map((doc) => {
-                      const cfg = DOC_STATUS_LABEL[doc.status];
-                      const StatusIcon = cfg.icon;
-                      return (
-                        <TableRow key={doc.nome}>
-                          <TableCell className="font-medium text-foreground">{doc.nome}</TableCell>
-                          <TableCell>
-                            <span className={`inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-xs font-semibold ${cfg.className}`}>
-                              <StatusIcon className={`h-3 w-3 ${doc.status === "analisando" ? "animate-spin" : ""}`} aria-hidden="true" />
-                              {cfg.label}
-                            </span>
-                          </TableCell>
-                          <TableCell className="max-w-xs text-xs text-muted-foreground">{doc.analiseIA}</TableCell>
-                          <TableCell className="text-center text-sm font-semibold text-foreground">
-                            {doc.confianca !== null ? `${doc.confianca}%` : "—"}
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
+                    {detalhe.documentos.map((doc) => (
+                      <TableRow key={doc.nome}>
+                        <TableCell className="font-medium text-foreground">{doc.nome}</TableCell>
+                        <TableCell className="text-center">
+                          <Button variant="ghost" size="sm" className="gap-1.5 text-xs" onClick={() => handleDocumentoMock(doc.nome)}>
+                            <FileStack className="h-3.5 w-3.5" />
+                            Ver documento
+                          </Button>
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <div className="flex items-center justify-center gap-1.5">
+                            <Button variant="outline" size="sm" className="h-7 gap-1 border-success/30 text-xs text-success hover:bg-success/10">
+                              <CheckCircle2 className="h-3.5 w-3.5" />
+                              Aprovar
+                            </Button>
+                            <Button variant="outline" size="sm" className="h-7 gap-1 border-destructive/30 text-xs text-destructive hover:bg-destructive/10">
+                              <XCircle className="h-3.5 w-3.5" />
+                              Reprovar
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
                   </TableBody>
                 </Table>
               </Card>
 
               <Card className="p-6">
-                <SectionHeader icon={Cloud} title="Consultas automáticas" subtitle="Verificações externas realizadas pelo sistema" />
+                <SectionHeader icon={Cloud} title="Consultas realizadas" subtitle="Verificações externas sobre a prévia" />
                 <Table>
                   <TableHeader>
                     <TableRow>
                       <TableHead>Plataforma</TableHead>
-                      <TableHead className="text-center">Situação</TableHead>
+                      <TableHead>Situação</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {detalhe.consultas.map((c) => (
                       <TableRow key={c.plataforma}>
                         <TableCell className="font-medium text-foreground">{c.plataforma}</TableCell>
-                        <TableCell className="text-center">
-                          <span
-                            className={`inline-block h-2.5 w-2.5 rounded-full ${c.status === "ok" ? "bg-success" : "bg-warning"}`}
-                            aria-label={c.status === "ok" ? "Regular" : "Alerta"}
-                          />
+                        <TableCell>
+                          <span className={`inline-flex items-center gap-1.5 rounded-md border px-2 py-0.5 text-xs font-semibold ${c.status === "ok" ? "border-success/20 bg-success/10 text-success" : "border-warning/20 bg-warning/10 text-warning"}`}>
+                            {c.status === "ok" ? <CheckCircle2 className="h-3 w-3" /> : <AlertTriangle className="h-3 w-3" />}
+                            {c.status === "ok" ? "Regular" : "Pendência identificada"}
+                          </span>
                         </TableCell>
                       </TableRow>
                     ))}
@@ -384,10 +373,20 @@ const PreviaProcessoPage = () => {
           </Tabs>
         </div>
 
-        {/* Sidebar do candidato */}
-        <aside className="space-y-4 lg:sticky lg:top-4 lg:self-start">
-          <Card className="p-6">
-            <SectionHeader icon={User} title="Candidato" subtitle="Identificação e situação no AVA" />
+        {/* Sidebar do candidato — esquerda em desktop */}
+        <aside className="space-y-4 lg:order-1 lg:sticky lg:top-4 lg:self-start">
+          <Card className="relative overflow-hidden p-6">
+            <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full" style={{ background: "linear-gradient(135deg, #3b82f633, #3b82f60d)" }} />
+            <div className="absolute -right-1 -top-1 h-16 w-16 rounded-full" style={{ background: "linear-gradient(135deg, #3b82f61a, transparent)" }} />
+            <div className="relative mb-4 flex items-start justify-between">
+              <div>
+                <p className="text-sm font-semibold text-foreground">Candidato</p>
+                <p className="text-xs text-muted-foreground">Identificação e situação no AVA</p>
+              </div>
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl shadow-sm" style={{ background: "linear-gradient(135deg, #3b82f6, #3b82f6cc)" }}>
+                <User className="h-6 w-6 text-white" />
+              </div>
+            </div>
             <div className="space-y-4">
               <Fact icon={CalendarDays} label="Data do registro" value={getDataAbertura(previa).split("-").reverse().join("/")} />
               <div className="flex items-start gap-3">
@@ -403,8 +402,18 @@ const PreviaProcessoPage = () => {
             </div>
           </Card>
 
-          <Card className="p-6">
-            <SectionHeader icon={Store} title="Atuação" subtitle="Vínculo operacional na rede" />
+          <Card className="relative overflow-hidden p-6">
+            <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full" style={{ background: "linear-gradient(135deg, #8bc34b33, #8bc34b0d)" }} />
+            <div className="absolute -right-1 -top-1 h-16 w-16 rounded-full" style={{ background: "linear-gradient(135deg, #8bc34b1a, transparent)" }} />
+            <div className="relative mb-4 flex items-start justify-between">
+              <div>
+                <p className="text-sm font-semibold text-foreground">Atuação</p>
+                <p className="text-xs text-muted-foreground">Vínculo operacional na rede</p>
+              </div>
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl shadow-sm" style={{ background: "linear-gradient(135deg, #8bc34b, #8bc34bcc)" }}>
+                <Store className="h-6 w-6 text-white" />
+              </div>
+            </div>
             <div className="space-y-4">
               <Fact icon={Store} label="BU" value={detalhe.atuacao.bu} />
               <Fact icon={Store} label="Área de atuação" value={`${previa.unidadeNome} • ${previa.regional}`} />
@@ -435,8 +444,18 @@ const PreviaProcessoPage = () => {
             </div>
           </Card>
 
-          <Card className="space-y-2 p-6">
-            <SectionHeader icon={FileSignature} title="Documentos do processo" subtitle="Termo e contrato gerados" />
+          <Card className="relative overflow-hidden space-y-2 p-6">
+            <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full" style={{ background: "linear-gradient(135deg, #f59e0b33, #f59e0b0d)" }} />
+            <div className="absolute -right-1 -top-1 h-16 w-16 rounded-full" style={{ background: "linear-gradient(135deg, #f59e0b1a, transparent)" }} />
+            <div className="relative mb-4 flex items-start justify-between">
+              <div>
+                <p className="text-sm font-semibold text-foreground">Documentos do processo</p>
+                <p className="text-xs text-muted-foreground">Termo e contrato gerados</p>
+              </div>
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl shadow-sm" style={{ background: "linear-gradient(135deg, #f59e0b, #f59e0bcc)" }}>
+                <FileSignature className="h-6 w-6 text-white" />
+              </div>
+            </div>
             <Button
               variant="outline"
               className="w-full justify-center"
