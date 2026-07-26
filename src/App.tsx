@@ -20,9 +20,14 @@ import RegistrarVisitaPage from "@/pages/RegistrarVisitaPage";
 import VisitaRespostaPage from "@/pages/VisitaRespostaPage";
 import PreviasPage from "@/pages/PreviasPage";
 import PreviaProcessoPage from "@/pages/PreviaProcessoPage";
+import EsteiraHubPage from "@/pages/EsteiraHubPage";
+import AberturaUnidadesKanbanPage from "@/pages/AberturaUnidadesKanbanPage";
+import AberturaUnidadeDetalhePage from "@/pages/AberturaUnidadeDetalhePage";
+import NovoRegistroAberturaPage from "@/pages/NovoRegistroAberturaPage";
 import ConfiguracoesHubPage from "@/pages/ConfiguracoesHubPage";
 import FormTemplatesListPage from "@/pages/FormTemplatesListPage";
 import FormTemplateBuilderPage from "@/pages/FormTemplateBuilderPage";
+import EtapasAberturaConfigPage from "@/pages/EtapasAberturaConfigPage";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -51,6 +56,11 @@ const App = () => (
               <Route path="/pvs/:id" element={<PVDetalhe />} />
               <Route path="/previas" element={<PreviasPage />} />
               <Route path="/previas/:id" element={<PreviaProcessoPage />} />
+              <Route path="/esteira" element={<EsteiraHubPage />} />
+              <Route path="/esteira/abertura-unidades" element={<AberturaUnidadesKanbanPage />} />
+              <Route path="/esteira/abertura-unidades/novo" element={<NovoRegistroAberturaPage />} />
+              <Route path="/esteira/abertura-unidades/:id" element={<AberturaUnidadeDetalhePage />} />
+              <Route path="/esteira/promocao-consultores" element={<ComingSoon />} />
               <Route path="/ocorrencias" element={<OcorrenciasPage />} />
               <Route path="/visitas" element={<VisitasPage />} />
               <Route path="/visitas/novo" element={<RegistrarVisitaPage />} />
@@ -62,6 +72,7 @@ const App = () => (
               <Route path="/configuracoes/modelos-formularios" element={<FormTemplatesListPage />} />
               <Route path="/configuracoes/modelos-formularios/novo" element={<FormTemplateBuilderPage />} />
               <Route path="/configuracoes/modelos-formularios/:id" element={<FormTemplateBuilderPage />} />
+              <Route path="/configuracoes/etapas-abertura-unidades" element={<EtapasAberturaConfigPage />} />
             </Route>
             {/* ADICIONE TODAS AS ROTAS PERSONALIZADAS ACIMA DA ROTA CATCH-ALL "*" */}
             <Route path="*" element={<NotFound />} />

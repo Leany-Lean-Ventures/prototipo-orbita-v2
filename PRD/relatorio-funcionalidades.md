@@ -90,12 +90,30 @@ Página somente leitura com todas as respostas dadas naquele registro, seção p
 
 ---
 
+## Esteira
+
+Novo módulo de menu (ícone de fluxo, logo abaixo de Prévias) reservado para **processos operacionais da rede acompanhados etapa por etapa**. A tela inicial (`/esteira`) mostra dois cards grandes: **Abertura de Unidades** (implementado) e **Promoção de Consultores** (ainda não implementado).
+
+### Abertura de Unidades
+Acompanhamento de cada solicitação de abertura de nova unidade, da solicitação inicial até a ativação, baseado no processo oficial de expansão da rede (8 etapas: Solicitação, Elegibilidade, Plano de negócio, Comitê de expansão, Documentação, Contrato, Obra e Abertura).
+
+- **Indicadores no topo:** quantidade de registros na esteira, tempo médio de processo (em dias) e quantidade de registros já finalizados.
+- **Busca e filtro:** por licenciado/cidade/loja de origem, por status do registro e por situação de prazo (no prazo/em atraso).
+- **Quadro Kanban:** uma coluna por etapa, cada card resumindo o licenciado, cidade-alvo, loja de origem, canal de origem, status e prazo da etapa. **Os cards podem ser arrastados entre colunas** (drag-and-drop) para avançar o processo manualmente.
+- **Detalhe do registro:** clicar em um card abre uma página completa com todos os dados preenchidos em cada uma das 8 etapas do processo (os blocos de etapas futuras aparecem como "ainda não preenchido"), mais um resumo lateral com responsável atual, prazo da etapa e o histórico de todas as transições do registro pelas etapas.
+- **Adicionar registro:** botão que abre um formulário com os dados iniciais da solicitação (licenciado, loja de origem, cidade-alvo/UF, canal de origem, observações) — ao salvar, o registro entra na esteira já na primeira etapa.
+
+*Observação de escopo do protótipo:* a tela de configuração das etapas (ver Configurações abaixo) ainda não está conectada de fato às colunas deste Kanban — o Kanban sempre usa as 8 etapas padrão do processo.
+
+---
+
 ## Configurações
 
 Nova tela central (`/configuracoes`) com um painel de cards grandes apontando para as sub-áreas de configuração do sistema:
 - **Gestão de Alertas** — ainda não implementado (placeholder).
 - **Perfis de Acesso (RBAC)** — ainda não implementado (placeholder).
 - **Modelos de Formulário** — implementado.
+- **Etapas de Abertura de Unidades** — implementado.
 
 ### Modelos de Formulário
 Permite ao operador **criar checklists reutilizáveis** para o registro de visitas, sem precisar de desenvolvimento.
@@ -103,9 +121,13 @@ Permite ao operador **criar checklists reutilizáveis** para o registro de visit
 - Ao criar um modelo novo (ou editar um existente), o usuário dá um nome ao modelo e vai empilhando campos: cada campo tem um rótulo, um tipo (texto curto, texto longo, número, data, Sim/Não, lista de opções ou upload de foto/arquivo) e a opção de marcar como obrigatório. É possível reordenar ou remover campos.
 - Três campos — **Loja**, **Licenciado ou gestor** e **Data da aplicação do checklist** — vêm sempre fixos e obrigatórios em todo modelo, já que são a identificação mínima de qualquer visita.
 
+### Etapas de Abertura de Unidades
+Permite ao operador **gerenciar as etapas do Kanban da esteira de Abertura de Unidades** — adicionar, editar (nome, responsável e SLA em dias) ou reordenar etapas, no mesmo padrão de "empilhar itens" usado nos Modelos de Formulário. *Observação de escopo do protótipo:* as alterações feitas aqui ainda não refletem de fato nas colunas do Kanban executivo, que continua usando as 8 etapas padrão do processo.
+
 ---
 
 ## Ainda não implementado
 
 - **Relatórios** (`/relatorios`) — módulo de relatórios consolidados por tema (consultores inativos, prévias vencidas, cobertura de visitas etc.); hoje é uma tela "em construção".
 - **Configurações → Gestão de Alertas** e **Perfis de Acesso (RBAC)** — telas "em construção".
+- **Esteira → Promoção de Consultores** — tela "em construção".

@@ -1,11 +1,11 @@
 import { useNavigate } from "react-router-dom";
-import { AlertTriangle, ShieldCheck, FileStack, Workflow, ArrowRight, type LucideIcon } from "lucide-react";
+import { Building2, UserCog, ArrowRight, type LucideIcon } from "lucide-react";
 
 import { usePageEntrance } from "@/hooks/use-page-entrance";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Card } from "@/components/ui/card";
 
-interface ConfigSection {
+interface EsteiraSection {
   path: string;
   icon: LucideIcon;
   color: string;
@@ -13,62 +13,47 @@ interface ConfigSection {
   descricao: string;
 }
 
-const SECOES: ConfigSection[] = [
+const SECOES: EsteiraSection[] = [
   {
-    path: "/configuracoes/alertas",
-    icon: AlertTriangle,
-    color: "#dc2626",
-    titulo: "Gestão de Alertas",
-    descricao: "Parametrize os gatilhos e severidades que disparam notificações no Dashboard.",
-  },
-  {
-    path: "/configuracoes/perfis-acesso",
-    icon: ShieldCheck,
-    color: "#3b82f6",
-    titulo: "Perfis de Acesso (RBAC)",
-    descricao: "Visão estrutural de quem pode fazer o quê — Diretoria, Gerente BU, Backoffice e Lojista.",
-  },
-  {
-    path: "/configuracoes/modelos-formularios",
-    icon: FileStack,
+    path: "/esteira/abertura-unidades",
+    icon: Building2,
     color: "#8bc34b",
-    titulo: "Modelos de Formulário",
-    descricao: "Crie e gerencie os modelos de checklist usados no registro de visitas às lojas.",
+    titulo: "Abertura de Unidades",
+    descricao: "Acompanhe cada solicitação de abertura de unidade, da solicitação inicial até a ativação, em um Kanban por etapas.",
   },
   {
-    path: "/configuracoes/etapas-abertura-unidades",
-    icon: Workflow,
-    color: "#f59e0b",
-    titulo: "Etapas de Abertura de Unidades",
-    descricao: "Gerencie as etapas do Kanban da esteira de Abertura de Unidades — adicione, edite ou reordene.",
+    path: "/esteira/promocao-consultores",
+    icon: UserCog,
+    color: "#3b82f6",
+    titulo: "Promoção de Consultores",
+    descricao: "Esteira de promoção de consultores por nível de carreira — em construção.",
   },
 ];
 
-const ConfiguracoesHubPage = () => {
+const EsteiraHubPage = () => {
   const navigate = useNavigate();
 
   const entranceRef = usePageEntrance<HTMLDivElement>([
-    { selector: ".cfg-header", vars: { y: -16, opacity: 0, duration: 0.35 } },
-    { selector: ".cfg-card", vars: { y: 16, opacity: 0, duration: 0.3, stagger: 0.08 }, position: "-=0.2" },
+    { selector: ".est-header", vars: { y: -16, opacity: 0, duration: 0.35 } },
+    { selector: ".est-card", vars: { y: 16, opacity: 0, duration: 0.3, stagger: 0.08 }, position: "-=0.2" },
   ]);
 
   return (
     <div ref={entranceRef} className="space-y-6">
       <PageHeader
-        className="cfg-header"
-        title="Configurações do Sistema"
-        subtitle="Gestão de alertas, parâmetros e modelos do sistema"
+        className="est-header"
+        title="Esteira"
+        subtitle="Processos operacionais da rede acompanhados etapa por etapa."
       />
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         {SECOES.map((secao) => (
           <Card
             key={secao.path}
             interactive
             onClick={() => navigate(secao.path)}
-            className="cfg-card relative flex flex-col gap-4 overflow-hidden p-6"
+            className="est-card relative flex flex-col gap-4 overflow-hidden p-6"
           >
-            {/* Círculos decorativos gradiente — mesmo padrão do StatCard */}
             <div
               className="absolute -right-4 -top-4 h-24 w-24 rounded-full"
               style={{ background: `linear-gradient(135deg, ${secao.color}33, ${secao.color}0d)` }}
@@ -102,4 +87,4 @@ const ConfiguracoesHubPage = () => {
   );
 };
 
-export default ConfiguracoesHubPage;
+export default EsteiraHubPage;
