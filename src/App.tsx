@@ -22,6 +22,8 @@ import PreviasPage from "@/pages/PreviasPage";
 import PreviaProcessoPage from "@/pages/PreviaProcessoPage";
 import EsteiraHubPage from "@/pages/EsteiraHubPage";
 import AberturaUnidadesKanbanPage from "@/pages/AberturaUnidadesKanbanPage";
+import PromocaoConsultoresKanbanPage from "@/pages/PromocaoConsultoresKanbanPage";
+import NovoRegistroPromocaoPage from "@/pages/NovoRegistroPromocaoPage";
 import AberturaUnidadeDetalhePage from "@/pages/AberturaUnidadeDetalhePage";
 import NovoRegistroAberturaPage from "@/pages/NovoRegistroAberturaPage";
 import ConfiguracoesHubPage from "@/pages/ConfiguracoesHubPage";
@@ -60,7 +62,8 @@ const App = () => (
               <Route path="/esteira/abertura-unidades" element={<AberturaUnidadesKanbanPage />} />
               <Route path="/esteira/abertura-unidades/novo" element={<NovoRegistroAberturaPage />} />
               <Route path="/esteira/abertura-unidades/:id" element={<AberturaUnidadeDetalhePage />} />
-              <Route path="/esteira/promocao-consultores" element={<ComingSoon />} />
+              <Route path="/esteira/promocao-consultores" element={<PromocaoConsultoresKanbanPage />} />
+              <Route path="/esteira/promocao-consultores/novo" element={<NovoRegistroPromocaoPage />} />
               <Route path="/ocorrencias" element={<OcorrenciasPage />} />
               <Route path="/visitas" element={<VisitasPage />} />
               <Route path="/visitas/novo" element={<RegistrarVisitaPage />} />

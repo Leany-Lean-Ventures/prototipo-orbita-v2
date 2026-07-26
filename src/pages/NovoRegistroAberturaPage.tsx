@@ -70,17 +70,13 @@ const NovoRegistroAberturaPage = () => {
         Voltar para o Kanban
       </Button>
 
-      <div className="nra-header flex flex-wrap items-start justify-between gap-4">
+      <div className="nra-header">
         <div>
           <h1 className="font-display text-2xl font-bold tracking-tight text-foreground">Nova Solicitação de Abertura</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             Registre os dados iniciais — o card entra na esteira já na etapa "Solicitação de abertura".
           </p>
         </div>
-        <Button onClick={handleSalvar} className="gap-1.5">
-          <Save className="h-4 w-4" />
-          Registrar solicitação
-        </Button>
       </div>
 
       <Card className="nra-card mx-auto max-w-2xl space-y-5 p-6">

@@ -26,7 +26,7 @@ const SECOES: EsteiraSection[] = [
     icon: UserCog,
     color: "#3b82f6",
     titulo: "Promoção de Consultores",
-    descricao: "Esteira de promoção de consultores por nível de carreira — em construção.",
+    descricao: "Esteira de promoção de consultores por nível de carreira — solicitação, validação, deliberação e efetivação.",
   },
 ];
 
