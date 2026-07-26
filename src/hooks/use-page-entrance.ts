@@ -29,26 +29,50 @@ export function usePageEntrance<T extends HTMLElement>(
     () => {
       if (!steps.length) return;
 
+      // Resolve os elementos uma vez, já escopados — evita depender do
+      // escopo de seletor do gsap.context dentro de callbacks assíncronos
+      // (onComplete/setTimeout rodam fora da função do contexto).
+      const groups = steps
+        .map((step) => ({
+          step,
+          els: gsap.utils.toArray<HTMLElement>(step.selector, scope.current),
+        }))
+        .filter((g) => g.els.length > 0);
+
+      if (!groups.length) return;
+
+      const allEls = groups.flatMap((g) => g.els);
+
+      /** Estado final = sem estilo inline; o repouso é 100% do CSS. */
+      const aplicarEstadoFinal = () => gsap.set(allEls, { clearProps: "all" });
+
       if (prefersReducedMotion()) {
-        steps.forEach((step) => gsap.set(step.selector, { clearProps: "all" }));
+        aplicarEstadoFinal();
         return;
       }
 
+      // ⚠️ Card `interactive` traz `transition-[transform,box-shadow]` para o
+      // hover lift. Se o GSAP animar `transform` enquanto essa transition
+      // está ativa, as duas engines disputam a mesma propriedade e o tween
+      // congela perto do valor inicial — os containers ficam deslocados para
+      // sempre (ver MEMORY.md). Regra do design-system: CSS cuida de
+      // hover/foco/press, GSAP cuida de orquestração — nunca os dois na mesma
+      // propriedade ao mesmo tempo. Desligamos a transition durante a entrada
+      // e devolvemos o controle ao CSS no estado final.
+      gsap.set(allEls, { transition: "none" });
+
       const tl = gsap.timeline({
         defaults: { ease: EASE_ENTER, duration: DUR_ENTER },
+        onComplete: aplicarEstadoFinal,
       });
 
-      steps.forEach((step) => {
-        tl.from(step.selector, step.vars, step.position);
+      groups.forEach(({ step, els }) => {
+        tl.from(els, step.vars, step.position);
       });
 
       const watchdog = window.setTimeout(() => {
-        if (tl.progress() < 1) {
-          tl.progress(1);
-          steps.forEach((step) =>
-            gsap.set(step.selector, { clearProps: "all" })
-          );
-        }
+        if (tl.progress() < 1) tl.progress(1);
+        aplicarEstadoFinal();
       }, 2500);
 
       return () => window.clearTimeout(watchdog);

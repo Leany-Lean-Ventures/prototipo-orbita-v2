@@ -110,8 +110,10 @@ const Dashboard = () => {
           </div>
         </Card>
 
-        {/* 3 cards de esteira/prévias empilhados — stretch to fill height */}
-        <div className="flex flex-col gap-3">
+        {/* 3 cards de esteira/prévias empilhados — stretch to fill height.
+            gap-6 (24px) igual ao gap do grid, para o espaçamento ser uniforme
+            entre linhas e colunas em toda a página. */}
+        <div className="flex flex-col gap-6">
           <Card interactive onClick={() => navigate("/previas")} className="dashboard-section relative flex flex-1 items-center gap-4 overflow-hidden p-5">
             <div className="absolute -right-3 -top-3 h-20 w-20 rounded-full" style={{ background: "linear-gradient(135deg, #f59e0b33, #f59e0b0d)" }} />
             <div className="absolute -right-0.5 -top-0.5 h-14 w-14 rounded-full" style={{ background: "linear-gradient(135deg, #f59e0b1a, transparent)" }} />
