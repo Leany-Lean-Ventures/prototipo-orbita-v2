@@ -16,6 +16,7 @@ import ConsultoresLista from "@/pages/ConsultoresLista";
 import ConsultorDetalhe from "@/pages/ConsultorDetalhe";
 import OcorrenciasPage from "@/pages/OcorrenciasPage";
 import VisitasPage from "@/pages/VisitasPage";
+import RelatoriosPage from "@/pages/RelatoriosPage";
 import RegistrarVisitaPage from "@/pages/RegistrarVisitaPage";
 import VisitaRespostaPage from "@/pages/VisitaRespostaPage";
 import PreviasPage from "@/pages/PreviasPage";
@@ -68,7 +69,7 @@ const App = () => (
               <Route path="/visitas" element={<VisitasPage />} />
               <Route path="/visitas/novo" element={<RegistrarVisitaPage />} />
               <Route path="/visitas/:id" element={<VisitaRespostaPage />} />
-              <Route path="/relatorios" element={<ComingSoon />} />
+              <Route path="/relatorios" element={<RelatoriosPage />} />
               <Route path="/configuracoes" element={<ConfiguracoesHubPage />} />
               <Route path="/configuracoes/alertas" element={<ComingSoon />} />
               <Route path="/configuracoes/perfis-acesso" element={<ComingSoon />} />

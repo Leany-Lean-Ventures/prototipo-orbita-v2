@@ -35,13 +35,6 @@ const SECOES: ConfigSection[] = [
     titulo: "Modelos de Formulário",
     descricao: "Crie e gerencie os modelos de checklist usados no registro de visitas às lojas.",
   },
-  {
-    path: "/configuracoes/etapas-abertura-unidades",
-    icon: Workflow,
-    color: "#f59e0b",
-    titulo: "Etapas de Abertura de Unidades",
-    descricao: "Gerencie as etapas do Kanban da esteira de Abertura de Unidades — adicione, edite ou reordene.",
-  },
 ];
 
 const ConfiguracoesHubPage = () => {
