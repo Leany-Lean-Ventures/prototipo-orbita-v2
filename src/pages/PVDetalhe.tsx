@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useParams, Navigate } from "react-router-dom";
 import {
   Network,
-  DollarSign,
   Users,
   Briefcase,
   Clock,
@@ -16,7 +15,6 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { EntityHeroHeader } from "@/components/entity-detail/EntityHeroHeader";
 import { EstruturaConsolidadaPanel } from "@/components/entity-detail/EstruturaConsolidadaPanel";
-import { FinanceiroPanel } from "@/components/entity-detail/FinanceiroPanel";
 import { CarteirasTable } from "@/components/entity-detail/CarteirasTable";
 import { Timeline } from "@/components/entity-detail/Timeline";
 import { PVConsultoresPanel } from "@/components/entity-detail/PVConsultoresPanel";
@@ -70,10 +68,6 @@ const PVDetalhe = () => {
             <Network className="h-4 w-4" />
             Estrutura Organizacional
           </TabsTrigger>
-          <TabsTrigger value="financeiro">
-            <DollarSign className="h-4 w-4" />
-            Dados Financeiros
-          </TabsTrigger>
           <TabsTrigger value="consultores">
             <Users className="h-4 w-4" />
             Consultores
@@ -90,10 +84,6 @@ const PVDetalhe = () => {
 
         <TabsContent value="estrutura">
           <EstruturaConsolidadaPanel organizacional={pv.organizacional} />
-        </TabsContent>
-
-        <TabsContent value="financeiro">
-          <FinanceiroPanel info={pv.financeiro} />
         </TabsContent>
 
         <TabsContent value="consultores">

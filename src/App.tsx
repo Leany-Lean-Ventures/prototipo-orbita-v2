@@ -16,8 +16,13 @@ import ConsultoresLista from "@/pages/ConsultoresLista";
 import ConsultorDetalhe from "@/pages/ConsultorDetalhe";
 import OcorrenciasPage from "@/pages/OcorrenciasPage";
 import VisitasPage from "@/pages/VisitasPage";
+import RegistrarVisitaPage from "@/pages/RegistrarVisitaPage";
+import VisitaRespostaPage from "@/pages/VisitaRespostaPage";
 import PreviasPage from "@/pages/PreviasPage";
 import PreviaProcessoPage from "@/pages/PreviaProcessoPage";
+import ConfiguracoesHubPage from "@/pages/ConfiguracoesHubPage";
+import FormTemplatesListPage from "@/pages/FormTemplatesListPage";
+import FormTemplateBuilderPage from "@/pages/FormTemplateBuilderPage";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -48,8 +53,15 @@ const App = () => (
               <Route path="/previas/:id" element={<PreviaProcessoPage />} />
               <Route path="/ocorrencias" element={<OcorrenciasPage />} />
               <Route path="/visitas" element={<VisitasPage />} />
+              <Route path="/visitas/novo" element={<RegistrarVisitaPage />} />
+              <Route path="/visitas/:id" element={<VisitaRespostaPage />} />
               <Route path="/relatorios" element={<ComingSoon />} />
-              <Route path="/configuracoes" element={<ComingSoon />} />
+              <Route path="/configuracoes" element={<ConfiguracoesHubPage />} />
+              <Route path="/configuracoes/alertas" element={<ComingSoon />} />
+              <Route path="/configuracoes/perfis-acesso" element={<ComingSoon />} />
+              <Route path="/configuracoes/modelos-formularios" element={<FormTemplatesListPage />} />
+              <Route path="/configuracoes/modelos-formularios/novo" element={<FormTemplateBuilderPage />} />
+              <Route path="/configuracoes/modelos-formularios/:id" element={<FormTemplateBuilderPage />} />
             </Route>
             {/* ADICIONE TODAS AS ROTAS PERSONALIZADAS ACIMA DA ROTA CATCH-ALL "*" */}
             <Route path="*" element={<NotFound />} />

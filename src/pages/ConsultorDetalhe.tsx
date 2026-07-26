@@ -3,7 +3,6 @@ import { useParams, Navigate } from "react-router-dom";
 import {
   User,
   Link2,
-  TrendingUp,
   Briefcase,
   BriefcaseBusiness,
   Clock,
@@ -18,7 +17,6 @@ import { EntityHeroHeader } from "@/components/entity-detail/EntityHeroHeader";
 import { Button } from "@/components/ui/button";
 import { DadosBasicosConsultorPanel } from "@/components/entity-detail/DadosBasicosConsultorPanel";
 import { VinculosPanel } from "@/components/entity-detail/VinculosPanel";
-import { VisaoEconomicaPanel } from "@/components/entity-detail/VisaoEconomicaPanel";
 import { CarteirasTable } from "@/components/entity-detail/CarteirasTable";
 import { Timeline } from "@/components/entity-detail/Timeline";
 import { NovaOcorrenciaModal } from "@/components/ocorrencias/NovaOcorrenciaModal";
@@ -72,10 +70,6 @@ const ConsultorDetalhe = () => {
             <Link2 className="h-4 w-4" />
             Vínculos
           </TabsTrigger>
-          <TabsTrigger value="visao-economica">
-            <TrendingUp className="h-4 w-4" />
-            Visão Econômica
-          </TabsTrigger>
           <TabsTrigger value="carteiras">
             <Briefcase className="h-4 w-4" />
             Carteiras
@@ -101,10 +95,6 @@ const ConsultorDetalhe = () => {
 
         <TabsContent value="vinculos">
           <VinculosPanel vinculos={consultor.vinculos} />
-        </TabsContent>
-
-        <TabsContent value="visao-economica">
-          <VisaoEconomicaPanel info={consultor.visaoEconomica} />
         </TabsContent>
 
         <TabsContent value="carteiras">

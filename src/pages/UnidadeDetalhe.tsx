@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useParams, Navigate } from "react-router-dom";
 import {
   LayoutDashboard,
-  DollarSign,
   Network,
   UsersRound,
   Briefcase,
@@ -18,7 +17,6 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { EntityHeroHeader } from "@/components/entity-detail/EntityHeroHeader";
 import { DadosBasicosPanel } from "@/components/entity-detail/DadosBasicosPanel";
-import { FinanceiroPanel } from "@/components/entity-detail/FinanceiroPanel";
 import { EstruturaConsolidadaPanel } from "@/components/entity-detail/EstruturaConsolidadaPanel";
 import { CarteirasTable } from "@/components/entity-detail/CarteirasTable";
 import { PenalidadesPanel } from "@/components/entity-detail/PenalidadesPanel";
@@ -100,10 +98,6 @@ const UnidadeDetalhe = () => {
             <LayoutDashboard className="h-4 w-4" />
             Dados Básicos
           </TabsTrigger>
-          <TabsTrigger value="financeiro">
-            <DollarSign className="h-4 w-4" />
-            Dados Financeiros
-          </TabsTrigger>
           <TabsTrigger value="estrutura">
             <Network className="h-4 w-4" />
             Estrutura Organizacional
@@ -131,10 +125,6 @@ const UnidadeDetalhe = () => {
             rating={unidade.rating}
             ratingScore={unidade.ratingScore}
           />
-        </TabsContent>
-
-        <TabsContent value="financeiro">
-          <FinanceiroPanel info={unidade.financeiro} />
         </TabsContent>
 
         <TabsContent value="estrutura">

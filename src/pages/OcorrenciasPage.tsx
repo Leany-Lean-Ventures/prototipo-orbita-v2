@@ -89,7 +89,8 @@ const OcorrenciasPage = () => {
         }
       />
 
-      <Card className="occ-filtros flex flex-wrap items-center gap-3 p-4">
+      <Card className="occ-container overflow-hidden p-0 shadow-md">
+      <div className="occ-filtros flex flex-wrap items-center gap-3 border-b border-border bg-gradient-to-b from-primary/[0.06] via-primary/[0.02] to-transparent p-4">
         <div className="relative min-w-[220px] flex-1">
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
           <Input
@@ -127,9 +128,9 @@ const OcorrenciasPage = () => {
             <SelectItem value="Resolvido">Resolvido</SelectItem>
           </SelectContent>
         </Select>
-      </Card>
+      </div>
 
-      <Card className="occ-tabela p-2">
+      <div className="occ-tabela p-2">
         {filtrados.length === 0 ? (
           <div className="flex flex-col items-center gap-1 py-16 text-center">
             <p className="text-sm font-medium text-foreground">Nenhuma ocorrência encontrada</p>
@@ -207,6 +208,7 @@ const OcorrenciasPage = () => {
             )}
           </>
         )}
+      </div>
       </Card>
 
       {/* Modals */}

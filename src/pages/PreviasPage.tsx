@@ -10,7 +10,7 @@ import {
   AlertTriangle,
   CheckCircle2,
   XCircle,
-  FolderOpen,
+  Eye,
   Download,
   UserCog,
   FileText,
@@ -434,7 +434,7 @@ const PreviasPage = () => {
                   <TableHead>Analista</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>SLA</TableHead>
-                  <TableHead className="text-right">Ações</TableHead>
+                  <TableHead className="text-right" />
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -475,7 +475,7 @@ const PreviasPage = () => {
                         aria-label={`Abrir processo de ${p.nome}`}
                         onClick={() => abrirProcesso(p.id)}
                       >
-                        <FolderOpen className="h-4 w-4" />
+                        <Eye className="h-4 w-4" />
                       </Button>
                     </TableCell>
                   </TableRow>

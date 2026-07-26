@@ -1,12 +1,12 @@
 import { useState, useMemo } from "react";
-import { Search, Plus, AlertTriangle, Calendar, CheckCircle2, Clock, XCircle } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Search, Plus, AlertTriangle, Calendar, Eye } from "lucide-react";
 
 import { usePageEntrance } from "@/hooks/use-page-entrance";
 import {
   visitasList,
-  visitasDetalhe,
   alertaCobertura,
-  type VisitaStatus,
+  RESPONSAVEIS_VISITA,
 } from "@/lib/mock-data/visitas";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -28,63 +28,47 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { PageHeader } from "@/components/layout/PageHeader";
-import { NovaVisitaModal } from "@/components/visitas/NovaVisitaModal";
-import { VisitaDetalheModal } from "@/components/visitas/VisitaDetalheModal";
-
-const STATUS_VARIANT: Record<VisitaStatus, "success" | "warning" | "outline"> = {
-  Agendada: "warning",
-  Realizada: "success",
-  Cancelada: "outline",
-};
-
-const STATUS_ICON: Record<VisitaStatus, typeof CheckCircle2> = {
-  Agendada: Clock,
-  Realizada: CheckCircle2,
-  Cancelada: XCircle,
-};
+import { SelecionarModeloVisitaModal } from "@/components/visitas/SelecionarModeloVisitaModal";
 
 const PAGE_SIZE = 10;
 
 const VisitasPage = () => {
+  const navigate = useNavigate();
   const [busca, setBusca] = useState("");
-  const [statusFiltro, setStatusFiltro] = useState("todos");
   const [tipoFiltro, setTipoFiltro] = useState("todos");
+  const [responsavelFiltro, setResponsavelFiltro] = useState("todos");
   const [page, setPage] = useState(0);
-  const [novaModalOpen, setNovaModalOpen] = useState(false);
-  const [detalheId, setDetalheId] = useState<string | null>(null);
+  const [modeloModalOpen, setModeloModalOpen] = useState(false);
 
   const entranceRef = usePageEntrance<HTMLDivElement>([
     { selector: ".vis-header", vars: { y: -16, opacity: 0, duration: 0.35 } },
     { selector: ".vis-alerta", vars: { y: 16, opacity: 0, duration: 0.3 }, position: "-=0.2" },
-    { selector: ".vis-filtros", vars: { y: 16, opacity: 0, duration: 0.3 }, position: "-=0.15" },
-    { selector: ".vis-tabela", vars: { y: 16, opacity: 0, duration: 0.35 }, position: "-=0.15" },
+    { selector: ".vis-container", vars: { y: 16, opacity: 0, duration: 0.35 }, position: "-=0.15" },
   ]);
 
   const filtrados = useMemo(() => {
     const termo = busca.trim().toLowerCase();
     return visitasList.filter((v) => {
-      if (termo && !v.unidade.toLowerCase().includes(termo)) return false;
-      if (statusFiltro !== "todos" && v.status !== statusFiltro) return false;
+      if (termo && !v.unidadeNome.toLowerCase().includes(termo) && !v.licenciadoGestor.toLowerCase().includes(termo)) return false;
       if (tipoFiltro !== "todos" && v.tipo !== tipoFiltro) return false;
+      if (responsavelFiltro !== "todos" && v.responsavelVisita !== responsavelFiltro) return false;
       return true;
     });
-  }, [busca, statusFiltro, tipoFiltro]);
+  }, [busca, tipoFiltro, responsavelFiltro]);
 
   const totalPages = Math.ceil(filtrados.length / PAGE_SIZE);
   const paged = filtrados.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
-
-  const detalhe = detalheId ? visitasDetalhe[detalheId] : null;
 
   return (
     <div ref={entranceRef} className="space-y-6">
       <PageHeader
         className="vis-header"
-        title="Visitas & Alcance de Campo"
-        subtitle="Planejamento e registro de visitas às unidades"
+        title="Visitas"
+        subtitle="Registro de visitas realizadas às unidades e PVs da rede"
         actions={
-          <Button onClick={() => setNovaModalOpen(true)}>
+          <Button onClick={() => setModeloModalOpen(true)}>
             <Plus className="mr-1.5 h-4 w-4" />
-            Agendar Visita
+            Registrar visita
           </Button>
         }
       />
@@ -106,12 +90,13 @@ const VisitasPage = () => {
         </Card>
       )}
 
-      {/* Filtros */}
-      <Card className="vis-filtros flex flex-wrap items-center gap-3 p-4">
+      {/* Busca/filtros + tabela — um único container */}
+      <Card className="vis-container overflow-hidden p-0 shadow-md">
+      <div className="vis-filtros flex flex-wrap items-center gap-3 border-b border-border bg-gradient-to-b from-primary/[0.06] via-primary/[0.02] to-transparent p-4">
         <div className="relative min-w-[220px] flex-1">
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
           <Input
-            placeholder="Buscar por unidade…"
+            placeholder="Buscar por unidade ou licenciado…"
             className="pl-9"
             value={busca}
             onChange={(e) => { setBusca(e.target.value); setPage(0); }}
@@ -132,21 +117,20 @@ const VisitasPage = () => {
           </SelectContent>
         </Select>
 
-        <Select value={statusFiltro} onValueChange={(v) => { setStatusFiltro(v); setPage(0); }}>
-          <SelectTrigger className="w-[160px]" aria-label="Filtrar por status">
-            <SelectValue placeholder="Status" />
+        <Select value={responsavelFiltro} onValueChange={(v) => { setResponsavelFiltro(v); setPage(0); }}>
+          <SelectTrigger className="w-[190px]" aria-label="Filtrar por responsável">
+            <SelectValue placeholder="Responsável" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="todos">Todos os status</SelectItem>
-            <SelectItem value="Agendada">Agendada</SelectItem>
-            <SelectItem value="Realizada">Realizada</SelectItem>
-            <SelectItem value="Cancelada">Cancelada</SelectItem>
+            <SelectItem value="todos">Todos os responsáveis</SelectItem>
+            {RESPONSAVEIS_VISITA.map((r) => (
+              <SelectItem key={r} value={r}>{r}</SelectItem>
+            ))}
           </SelectContent>
         </Select>
-      </Card>
+      </div>
 
-      {/* Tabela */}
-      <Card className="vis-tabela p-2">
+      <div className="vis-tabela p-2">
         {filtrados.length === 0 ? (
           <div className="flex flex-col items-center gap-1 py-16 text-center">
             <p className="text-sm font-medium text-foreground">Nenhuma visita encontrada</p>
@@ -157,44 +141,42 @@ const VisitasPage = () => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Data</TableHead>
+                  <TableHead>Visita realizada em</TableHead>
                   <TableHead>Unidade / PV</TableHead>
                   <TableHead>Tipo</TableHead>
                   <TableHead>Responsável</TableHead>
-                  <TableHead>Status</TableHead>
+                  <TableHead />
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {paged.map((v) => {
-                  const StatusIcon = STATUS_ICON[v.status];
-                  return (
-                    <TableRow
-                      key={v.id}
-                      className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
-                      tabIndex={0}
-                      onClick={() => setDetalheId(v.id)}
-                      onKeyDown={(e) => { if (e.key === "Enter") setDetalheId(v.id); }}
-                    >
-                      <TableCell className="whitespace-nowrap">
-                        <div className="flex items-center gap-2">
-                          <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
-                          <span className="text-sm text-foreground">{v.dataFormatada}</span>
-                        </div>
-                      </TableCell>
-                      <TableCell className="font-medium text-foreground">{v.unidade}</TableCell>
-                      <TableCell>
-                        <Badge variant="outline">{v.tipo}</Badge>
-                      </TableCell>
-                      <TableCell className="text-muted-foreground">{v.responsavel}</TableCell>
-                      <TableCell>
-                        <Badge variant={STATUS_VARIANT[v.status]} className="gap-1">
-                          <StatusIcon className="h-3 w-3" />
-                          {v.status}
-                        </Badge>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
+                {paged.map((v) => (
+                  <TableRow key={v.id}>
+                    <TableCell className="whitespace-nowrap">
+                      <div className="flex items-center gap-2">
+                        <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
+                        <span className="text-sm text-foreground">{v.dataVisitaFormatada}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <p className="font-medium text-foreground">{v.unidadeNome}</p>
+                      <p className="text-xs text-muted-foreground">{v.licenciadoGestor}</p>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="outline">{v.tipo}</Badge>
+                    </TableCell>
+                    <TableCell className="text-muted-foreground">{v.responsavelVisita}</TableCell>
+                    <TableCell className="text-right">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        aria-label={`Ver respostas da visita a ${v.unidadeNome}`}
+                        onClick={() => navigate(`/visitas/${v.id}`)}
+                      >
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
               </TableBody>
             </Table>
 
@@ -216,17 +198,18 @@ const VisitasPage = () => {
             )}
           </>
         )}
+      </div>
       </Card>
 
-      {/* Modals */}
-      <NovaVisitaModal open={novaModalOpen} onOpenChange={setNovaModalOpen} />
-      {detalhe && (
-        <VisitaDetalheModal
-          visita={detalhe}
-          open={!!detalheId}
-          onOpenChange={(open) => { if (!open) setDetalheId(null); }}
-        />
-      )}
+      {/* Modal de seleção de modelo — abre a página de registro com o modelo escolhido */}
+      <SelecionarModeloVisitaModal
+        open={modeloModalOpen}
+        onOpenChange={setModeloModalOpen}
+        onConfirmar={(modeloId) => {
+          setModeloModalOpen(false);
+          navigate(`/visitas/novo?modelo=${modeloId}`);
+        }}
+      />
     </div>
   );
 };
