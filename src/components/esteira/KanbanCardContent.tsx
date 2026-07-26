@@ -26,7 +26,10 @@ export function KanbanCardContent({
   return (
     <div
       className={cn(
-        "soft-card group relative space-y-3 rounded-2xl border border-white/50 bg-card p-4 shadow-soft transition-[transform,box-shadow] duration-base ease-micro dark:border-white/5",
+        "soft-card group relative space-y-3 rounded-2xl border border-white/50 p-4 shadow-soft transition-[transform,box-shadow] duration-base ease-micro dark:border-white/5",
+        registro.emAtraso
+          ? "bg-gradient-to-b from-card via-destructive/[0.05] to-destructive/[0.12]"
+          : "bg-card",
         !dragging && "hover:-translate-y-0.5 hover:shadow-elevated",
         dragging && "shadow-overlay"
       )}
