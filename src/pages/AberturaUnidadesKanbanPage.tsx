@@ -34,6 +34,7 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { KanbanBoard } from "@/components/esteira/KanbanBoard";
+import { EtapaTransicaoModal, type TransicaoFormData } from "@/components/esteira/EtapaTransicaoModal";
 
 function StatCardValue({ value, suffix }: { value: number; suffix?: string }) {
   const ref = useCountUp(value);
@@ -56,6 +57,7 @@ const AberturaUnidadesKanbanPage = () => {
   const [busca, setBusca] = useState("");
   const [statusFiltro, setStatusFiltro] = useState<"todos" | StatusRegistro>("todos");
   const [atrasoFiltro, setAtrasoFiltro] = useState<"todos" | "sim" | "nao">("todos");
+  const [transicaoModal, setTransicaoModal] = useState<{ registroId: string; etapaDestino: EtapaId } | null>(null);
 
   const entranceRef = usePageEntrance<HTMLDivElement>([
     { selector: ".au-voltar", vars: { y: -12, opacity: 0, duration: 0.3 } },
@@ -88,12 +90,43 @@ const AberturaUnidadesKanbanPage = () => {
     setAtrasoFiltro("todos");
   };
 
-  const handleMoverRegistro = (id: string, novaEtapa: EtapaId) => {
+  const handleRequestTransicao = (id: string, etapaDestino: EtapaId) => {
+    setTransicaoModal({ registroId: id, etapaDestino });
+  };
+
+  const handleTransicaoSalvar = (data: TransicaoFormData) => {
+    if (!transicaoModal) return;
+    const { registroId, etapaDestino } = transicaoModal;
+
+    // COMITE special cases
+    if (etapaDestino === "COMITE" && data.decisaoComite === "reprovado") {
+      setRegistros((prev) =>
+        prev.map((r) => (r.id === registroId ? { ...r, etapaAtual: "COMITE" as EtapaId, status: "reprovado" as StatusRegistro, updatedAt: "2026-07-26" } : r))
+      );
+      toast.success("Solicitação reprovada pelo comitê.");
+      setTransicaoModal(null);
+      return;
+    }
+    if (etapaDestino === "COMITE" && data.decisaoComite === "ajuste") {
+      setRegistros((prev) =>
+        prev.map((r) => (r.id === registroId ? { ...r, etapaAtual: "PLANO_NEGOCIO" as EtapaId, updatedAt: "2026-07-26" } : r))
+      );
+      toast.success("Card retornou para Plano de negócio para ajustes.");
+      setTransicaoModal(null);
+      return;
+    }
+
+    // Normal advance
     setRegistros((prev) =>
-      prev.map((r) => (r.id === id ? { ...r, etapaAtual: novaEtapa, updatedAt: "2026-07-26" } : r))
+      prev.map((r) => (r.id === registroId ? { ...r, etapaAtual: etapaDestino, updatedAt: "2026-07-26" } : r))
     );
-    const registro = registros.find((r) => r.id === id);
-    toast.success(`${registro?.licenciadoNome ?? "Registro"} movido para "${getEtapaConfig(novaEtapa).nome}".`);
+    const registro = registros.find((r) => r.id === registroId);
+    toast.success(`${registro?.licenciadoNome ?? "Registro"} avançou para "${getEtapaConfig(etapaDestino).nome}".`);
+    setTransicaoModal(null);
+  };
+
+  const handleTransicaoCancelar = () => {
+    setTransicaoModal(null);
   };
 
   return (
@@ -177,11 +210,22 @@ const AberturaUnidadesKanbanPage = () => {
         <div className="p-4">
           <KanbanBoard
             registros={filtrados}
-            onMoverRegistro={handleMoverRegistro}
+            onRequestTransicao={handleRequestTransicao}
             onCardClick={(id) => navigate(`/esteira/abertura-unidades/${id}`)}
           />
         </div>
       </Card>
+
+      {/* Modal de transição de etapa */}
+      {transicaoModal && (
+        <EtapaTransicaoModal
+          open={!!transicaoModal}
+          onOpenChange={(open) => { if (!open) handleTransicaoCancelar(); }}
+          etapaDestino={transicaoModal.etapaDestino}
+          registroNome={registros.find((r) => r.id === transicaoModal.registroId)?.licenciadoNome ?? ""}
+          onSalvar={handleTransicaoSalvar}
+        />
+      )}
     </div>
   );
 };

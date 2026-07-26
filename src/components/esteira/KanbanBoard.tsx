@@ -6,10 +6,14 @@ import {
   useSensors,
   useDraggable,
   useDroppable,
+  pointerWithin,
   type DragEndEvent,
   type DragStartEvent,
+  MeasuringStrategy,
 } from "@dnd-kit/core";
-import { useState } from "react";
+import { snapCenterToCursor } from "@dnd-kit/modifiers";
+import { toast } from "sonner";
+import { useState, useRef } from "react";
 
 import { cn } from "@/lib/utils";
 import {
@@ -96,16 +100,23 @@ function KanbanColumn({
   );
 }
 
+const measuring = {
+  droppable: {
+    strategy: MeasuringStrategy.Always,
+  },
+};
+
 export function KanbanBoard({
   registros,
-  onMoverRegistro,
+  onRequestTransicao,
   onCardClick,
 }: {
   registros: RegistroAberturaUnidade[];
-  onMoverRegistro: (id: string, novaEtapa: EtapaId) => void;
+  onRequestTransicao: (id: string, etapaDestino: EtapaId) => void;
   onCardClick: (id: string) => void;
 }) {
   const [activeId, setActiveId] = useState<string | null>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }));
 
   const handleDragStart = (event: DragStartEvent) => {
@@ -118,16 +129,30 @@ export function KanbanBoard({
     if (!over) return;
     const novaEtapa = over.id as EtapaId;
     const registro = registros.find((r) => r.id === active.id);
-    if (registro && registro.etapaAtual !== novaEtapa) {
-      onMoverRegistro(String(active.id), novaEtapa);
+    if (!registro || registro.etapaAtual === novaEtapa) return;
+
+    // Validate: only allow moving to the next column
+    const currentIdx = ETAPAS_ABERTURA.findIndex((e) => e.id === registro.etapaAtual);
+    const targetIdx = ETAPAS_ABERTURA.findIndex((e) => e.id === novaEtapa);
+    if (targetIdx !== currentIdx + 1) {
+      toast.error("Só é possível avançar para a próxima etapa.");
+      return;
     }
+
+    onRequestTransicao(String(active.id), novaEtapa);
   };
 
   const registroAtivo = activeId ? registros.find((r) => r.id === activeId) : null;
 
   return (
-    <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-      <div className="flex gap-4 overflow-x-auto pb-2">
+    <DndContext
+      sensors={sensors}
+      collisionDetection={pointerWithin}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+      measuring={measuring}
+    >
+      <div ref={scrollContainerRef} className="flex gap-4 overflow-x-auto pb-2">
         {ETAPAS_ABERTURA.map((etapa) => (
           <KanbanColumn
             key={etapa.id}
@@ -138,9 +163,9 @@ export function KanbanBoard({
         ))}
       </div>
 
-      <DragOverlay>
+      <DragOverlay dropAnimation={null} modifiers={[snapCenterToCursor]}>
         {registroAtivo && (
-          <div className="w-[276px] rotate-2">
+          <div className="w-[274px] rotate-1 cursor-grabbing rounded-2xl shadow-xl ring-2 ring-primary/20">
             <KanbanCardContent registro={registroAtivo} dragging />
           </div>
         )}

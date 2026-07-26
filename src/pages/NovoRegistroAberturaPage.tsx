@@ -1,16 +1,17 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { ArrowLeft, Save, FileText, User, Store, MapPin, Phone } from "lucide-react";
+import { ArrowLeft, Save, FileText, User, Store, MapPin, Phone, AlertTriangle } from "lucide-react";
 
 import { usePageEntrance } from "@/hooks/use-page-entrance";
 import { unidadesList } from "@/lib/mock-data/unidades";
-import { CANAL_LABEL, type CanalOrigem } from "@/lib/mock-data/esteira-abertura-unidades";
+import { CANAL_LABEL, type CanalOrigem, type CategoriaLicenciado } from "@/lib/mock-data/esteira-abertura-unidades";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
 import { SectionHeader } from "@/components/ui/section-header";
 import {
   Select,
@@ -29,6 +30,8 @@ const NovoRegistroAberturaPage = () => {
   const navigate = useNavigate();
 
   const [licenciadoNome, setLicenciadoNome] = useState("");
+  const [ehDono, setEhDono] = useState(true);
+  const [categoriaLicenciado, setCategoriaLicenciado] = useState<CategoriaLicenciado | "">("");
   const [lojaOrigemId, setLojaOrigemId] = useState("");
   const [cidadeAlvo, setCidadeAlvo] = useState("");
   const [uf, setUf] = useState("");
@@ -42,8 +45,8 @@ const NovoRegistroAberturaPage = () => {
   ]);
 
   const isValid = useMemo(
-    () => licenciadoNome.trim().length > 0 && lojaOrigemId !== "" && cidadeAlvo.trim().length > 0 && uf !== "" && canalOrigem !== "",
-    [licenciadoNome, lojaOrigemId, cidadeAlvo, uf, canalOrigem]
+    () => licenciadoNome.trim().length > 0 && lojaOrigemId !== "" && cidadeAlvo.trim().length > 0 && uf !== "" && canalOrigem !== "" && categoriaLicenciado !== "",
+    [licenciadoNome, lojaOrigemId, cidadeAlvo, uf, canalOrigem, categoriaLicenciado]
   );
 
   const handleSalvar = () => {
@@ -98,6 +101,37 @@ const NovoRegistroAberturaPage = () => {
             />
           </div>
         </div>
+
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="flex items-center gap-3 rounded-lg border border-border p-3">
+            <Switch id="nra-dono" checked={ehDono} onCheckedChange={setEhDono} />
+            <Label htmlFor="nra-dono" className="cursor-pointer text-sm">É dono da loja de origem</Label>
+          </div>
+
+          <div className="space-y-1.5">
+            <Label htmlFor="nra-categoria">
+              Categoria de comissão <span className="text-destructive">*</span>
+            </Label>
+            <Select value={categoriaLicenciado} onValueChange={(v) => setCategoriaLicenciado(v as CategoriaLicenciado)}>
+              <SelectTrigger id="nra-categoria" aria-label="Categoria">
+                <SelectValue placeholder="Selecione" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="2.5%">2,5%</SelectItem>
+                <SelectItem value="2.7%+">2,7%+</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        {!ehDono && (
+          <div className="flex items-start gap-3 rounded-lg border border-destructive/30 bg-destructive/5 p-3">
+            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
+            <p className="text-sm text-foreground">
+              Apenas o <strong>dono</strong> da loja pode solicitar abertura de uma nova unidade. Solicitações de autorizados não são consideradas.
+            </p>
+          </div>
+        )}
 
         <div className="space-y-1.5">
           <Label htmlFor="nra-loja-origem">

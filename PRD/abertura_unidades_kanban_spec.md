@@ -51,10 +51,10 @@ O processo tem **8 etapas sequenciais**. A ordem é fixa; o avanço de uma para 
 | 4 | `COMITE` | Comitê de expansão | Comitê (gerente + diretor + diretoria master) | 15 dias | Plano submetido | Decisão do comitê registrada (com scoring) |
 | 5 | `DOCUMENTACAO` | Aprovação e coleta de documentos | Gerente regional + back-office | 20 dias | Aprovado em comitê | Checklist documental 100% recebido |
 | 6 | `CONTRATO` | Contrato e dados bancários | Jurídico + licenciado | 20 dias | Documentos completos | Contrato assinado + dados bancários validados |
-| 7 | `OBRA` | Planejamento e execução da obra | Licenciado + equipe de obra | 150–210 dias | Contrato assinado | Obra concluída e vistoriada |
+| 7 | `OBRA` | Planejamento e execução da obra | Licenciado + equipe de obra | 90 dias | Contrato assinado | Obra concluída e vistoriada |
 | 8 | `ABERTURA` | Abertura e funcionamento | Licenciado / back-office | — | Obra concluída | Unidade ativada no sistema |
 
-> **Prazo total de referência:** ≈ 8 meses (solicitação → funcionamento); ≈ 6 meses da aprovação em comitê à abertura física. Os SLAs por etapa acima são sugestões de partida — devem ser confirmados no detalhamento funcional.
+> **Prazo total de referência:** ≈ 8 meses (solicitação → funcionamento); **≈ 90 dias** da aprovação em comitê à abertura do PV (prazo administrativo). Os SLAs por etapa acima são confirmados na implementação.
 
 ### 2.2 Detalhe por etapa
 
@@ -165,7 +165,7 @@ ordem: 7
 responsavel: "Licenciado + equipe de obra"
 gatilho: "Contrato assinado"
 resultado: "Ponto de venda físico pronto"
-sla_dias: 150-210   # 5 a 7 meses
+sla_dias: 90   # ≈ 3 meses — prazo administrativo da aprovação em comitê à abertura do PV
 campos_obrigatorios: [prazo_previsto_obra, data_inicio_obra]
 campos_opcionais: [data_conclusao_obra, extrapolacao_prazo, motivo_extrapolacao]
 acoes: [registrar_inicio, atualizar_andamento, registrar_extrapolacao, concluir_obra]
@@ -207,6 +207,8 @@ Formulário único do card, **organizado por etapa de preenchimento**. Cada camp
 | Label | Chave | Tipo de input | Obrigatório | Validação / Opções |
 |---|---|---|:-:|---|
 | Licenciado solicitante | `licenciado_id` | `ref(Licenciado)` | Sim | Deve ser licenciado ativo |
+| É dono da loja de origem | `eh_dono` | `boolean` (toggle) | Sim | Apenas donos podem solicitar — alertar se `false` |
+| Categoria de comissão | `categoria_licenciado` | `select` | Sim | `2.5%` · `2.7%+` |
 | Loja de origem | `loja_origem` | `select` | Sim | Lista de lojas do licenciado |
 | Cidade-alvo | `cidade_alvo` | `text` | Sim | Máx. 120 caracteres |
 | UF | `uf` | `select` | Sim | 27 UFs |
@@ -250,7 +252,7 @@ Formulário único do card, **organizado por etapa de preenchimento**. Cada camp
 | Anexos dos documentos | `documentos_anexos` | `file[]` (múltiplos) | Sim | PDF/imagem, máx. 20 MB cada |
 | Data de recebimento completo | `data_docs_completos` | `date` | Auto | Preenchida quando checklist = 100% |
 
-> Sugestão de itens do checklist (a confirmar no detalhamento): documento de identidade do responsável, comprovante de endereço, contrato social da PJ, comprovantes de conformidade contratual. **O AS-IS não detalha o checklist completo.**
+> Itens do checklist (confirmados): documento de identidade do responsável, comprovante de endereço, contrato social da PJ, **contrato de locação**, comprovantes de conformidade contratual.
 
 ### 3.6 Bloco F — Contrato e dados bancários (Etapa `CONTRATO`)
 
@@ -258,10 +260,13 @@ Formulário único do card, **organizado por etapa de preenchimento**. Cada camp
 |---|---|---|:-:|---|
 | Contrato assinado | `contrato_assinado` | `file` | Sim | PDF; integração Projuris |
 | Status da assinatura | `status_assinatura` | `select` | Sim | `pendente` · `em_assinatura` · `assinado` |
-| Banco | `banco` | `select` | Sim | Lista de bancos |
-| Agência | `agencia` | `text` | Sim | Numérico |
-| Conta | `conta` | `text` | Sim | Numérico |
+| Banco (Conta PJ) | `banco_pj` | `select` | Sim | Lista de bancos |
+| Agência (Conta PJ) | `agencia_pj` | `text` | Sim | Numérico |
+| Conta PJ | `conta_pj` | `text` | Sim | Numérico |
 | Aceite da cláusula de penalty | `aceite_penalty` | `checkbox` | Sim | Penalty 0,5% à loja de origem por até 24 meses |
+| Cadastrado no Newcon | `cadastrado_newcon` | `boolean` | Sim | Área de Comissões cadastra o PV no Newcon |
+| Tipo PV no Newcon | `tipo_pv_newcon` | `readonly` | Auto | Fixo: "00 — PV de venda" |
+| Data do cadastro no Newcon | `data_cadastro_newcon` | `date` | Condicional | Preenchida quando `cadastrado_newcon = true` |
 
 ### 3.7 Bloco G — Obra (Etapa `OBRA`)
 
@@ -295,7 +300,7 @@ Formulário único do card, **organizado por etapa de preenchimento**. Cada camp
 | RN3 | Cidade de residência do licenciado determina a área de atuação | Etapa `SOLICITACAO`/`ELEGIBILIDADE` |
 | RN4 | Nova loja aberta bloqueia prévias de outras cidades na localidade | Etapa `ABERTURA` (efeito) |
 | RN5 | Novos consultores da nova loja podem pagar penalty de 0,5% à loja de origem por até 24 meses | Etapa `CONTRATO` |
-| RN6 | Prazo total de referência ≈ 8 meses; ≈ 6 meses do comitê à abertura | SLA global |
+| RN6 | Prazo total de referência ≈ 8 meses; ≈ 90 dias do comitê à abertura | SLA global |
 | RN7 | Extrapolação de prazo de obra deveria cancelar o processo (registrar como objeto; hoje há flexibilidade) | Etapa `OBRA` |
 | RN8 | Lojas que atrasam a abertura perdem posição no ranking e campanhas | Etapa `OBRA`/`ABERTURA` |
 | RN9 | Decisão do comitê exige score e justificativa registrados (rastro) | Etapa `COMITE` |

@@ -134,7 +134,15 @@ const AberturaUnidadeDetalhePage = () => {
               <Fact icon={MapPin} label="Cidade-alvo" value={`${registro.cidadeAlvo}/${registro.uf}`} />
               <Fact icon={Phone} label="Canal de origem" value={CANAL_LABEL[registro.canalOrigem]} />
               <Fact icon={Calendar} label="Data da solicitação" value={formatDateBR(registro.dataSolicitacao)} />
+              <Fact icon={User} label="Relação com a loja" value={registro.ehDono ? "Dono" : "Autorizado"} />
+              <Fact icon={ShieldCheck} label="Categoria" value={registro.categoriaLicenciado} />
             </div>
+            {!registro.ehDono && (
+              <div className="mt-4 flex items-start gap-2 rounded-lg border border-destructive/30 bg-destructive/5 p-3">
+                <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
+                <p className="text-sm text-foreground">Solicitante não é o dono da loja — verificar elegibilidade com atenção.</p>
+              </div>
+            )}
             {registro.observacoesIniciais && (
               <p className="mt-4 text-sm leading-relaxed text-foreground">{registro.observacoesIniciais}</p>
             )}
@@ -220,17 +228,25 @@ const AberturaUnidadeDetalhePage = () => {
           </Card>
 
           <Card className="space-y-3 p-6">
-            <SectionHeader icon={FileSignature} title="6. Contrato e dados bancários" subtitle="Assinatura e conta para repasses" />
+            <SectionHeader icon={FileSignature} title="6. Contrato e dados bancários" subtitle="Assinatura, conta PJ e cadastro no Newcon" />
             {!passou("CONTRATO") ? (
               <PendenteHint etapaNome="Contrato e dados bancários" />
             ) : (
               <>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                   <Fact icon={FileSignature} label="Status da assinatura" value={registro.statusAssinatura === "assinado" ? "Assinado" : "Em assinatura"} />
-                  <Fact icon={Briefcase} label="Banco" value={registro.banco ?? "—"} />
-                  <Fact icon={Briefcase} label="Agência / Conta" value={`${registro.agencia ?? "—"} / ${registro.conta ?? "—"}`} />
+                  <Fact icon={Briefcase} label="Banco (Conta PJ)" value={registro.bancoPJ ?? "—"} />
+                  <Fact icon={Briefcase} label="Agência / Conta PJ" value={`${registro.agenciaPJ ?? "—"} / ${registro.contaPJ ?? "—"}`} />
                 </div>
                 <BooleanFact label="Aceite da cláusula de penalty (0,5% por até 24 meses)" value={registro.aceitePenalty} />
+                <div className="mt-3 rounded-lg border border-border p-3">
+                  <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Cadastro no Newcon (Comissões)</p>
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                    <BooleanFact label="Cadastrado no Newcon" value={registro.cadastradoNewcon} />
+                    <Fact icon={Briefcase} label="Tipo PV" value={registro.tipoPVNewcon ?? "—"} />
+                    <Fact icon={Calendar} label="Data do cadastro" value={formatDateBR(registro.dataCadastroNewcon)} />
+                  </div>
+                </div>
               </>
             )}
           </Card>

@@ -26,6 +26,8 @@ export type StatusRegistro = "ativo" | "bloqueado" | "aprovado" | "reprovado" | 
 
 export type CanalOrigem = "email" | "whatsapp" | "telefone" | "visita" | "sistema";
 
+export type CategoriaLicenciado = "2.5%" | "2.7%+";
+
 export interface EtapaConfig {
   id: EtapaId;
   ordem: number;
@@ -41,7 +43,7 @@ export const ETAPAS_ABERTURA: EtapaConfig[] = [
   { id: "COMITE", ordem: 4, nome: "Comitê de expansão", responsavel: "Comitê (gerente + diretor + diretoria master)", slaDias: 15 },
   { id: "DOCUMENTACAO", ordem: 5, nome: "Aprovação e coleta de documentos", responsavel: "Gerente regional + back-office", slaDias: 20 },
   { id: "CONTRATO", ordem: 6, nome: "Contrato e dados bancários", responsavel: "Jurídico + licenciado", slaDias: 20 },
-  { id: "OBRA", ordem: 7, nome: "Planejamento e execução da obra", responsavel: "Licenciado + equipe de obra", slaDias: 180 },
+  { id: "OBRA", ordem: 7, nome: "Planejamento e execução da obra", responsavel: "Licenciado + equipe de obra", slaDias: 90 },
   { id: "ABERTURA", ordem: 8, nome: "Abertura e funcionamento", responsavel: "Licenciado / back-office", slaDias: null },
 ];
 
@@ -155,6 +157,8 @@ export interface RegistroAberturaUnidade {
 
   // Bloco A — Solicitação
   licenciadoNome: string;
+  ehDono: boolean;
+  categoriaLicenciado: CategoriaLicenciado;
   lojaOrigem: string;
   cidadeAlvo: string;
   uf: string;
@@ -187,10 +191,13 @@ export interface RegistroAberturaUnidade {
 
   // Bloco F — Contrato e dados bancários
   statusAssinatura?: "pendente" | "em_assinatura" | "assinado";
-  banco?: string;
-  agencia?: string;
-  conta?: string;
+  bancoPJ?: string;
+  agenciaPJ?: string;
+  contaPJ?: string;
   aceitePenalty?: boolean;
+  cadastradoNewcon?: boolean;
+  tipoPVNewcon?: string;
+  dataCadastroNewcon?: string;
 
   // Bloco G — Obra
   dataInicioObra?: string;
@@ -211,6 +218,8 @@ export interface RegistroAberturaUnidade {
 interface RegistroRaw {
   id: string;
   licenciadoNome: string;
+  ehDono: boolean;
+  categoriaLicenciado: CategoriaLicenciado;
   lojaOrigemId: string;
   cidadeAlvo: string;
   uf: string;
@@ -225,36 +234,37 @@ const CHECKLIST_PADRAO: string[] = [
   "Documento de identidade do responsável",
   "Comprovante de endereço",
   "Contrato social da PJ",
+  "Contrato de locação",
   "Comprovantes de conformidade contratual",
 ];
 
 const BANCOS = ["Banco do Brasil", "Itaú", "Bradesco", "Santander", "Caixa Econômica"];
 
 const REGISTROS_RAW: RegistroRaw[] = [
-  { id: "AU-001", licenciadoNome: "Carlos Mendes", lojaOrigemId: "L001", cidadeAlvo: "Sorocaba", uf: "SP", canalOrigem: "sistema", createdAt: "2026-07-25", etapaAtual: "SOLICITACAO", status: "ativo", observacoesIniciais: "Licenciado já atua na região há 4 anos, quer abrir segunda unidade." },
-  { id: "AU-002", licenciadoNome: "Fernanda Duarte", lojaOrigemId: "L002", cidadeAlvo: "Uberlândia", uf: "MG", canalOrigem: "whatsapp", createdAt: "2026-07-24", etapaAtual: "SOLICITACAO", status: "ativo", observacoesIniciais: "" },
-  { id: "AU-003", licenciadoNome: "Roberto Salles", lojaOrigemId: "L003", cidadeAlvo: "Joinville", uf: "SC", canalOrigem: "email", createdAt: "2026-07-21", etapaAtual: "SOLICITACAO", status: "ativo", observacoesIniciais: "Interesse recorrente — segunda tentativa em 12 meses." },
+  { id: "AU-001", licenciadoNome: "Carlos Mendes", ehDono: true, categoriaLicenciado: "2.7%+", lojaOrigemId: "L001", cidadeAlvo: "Sorocaba", uf: "SP", canalOrigem: "sistema", createdAt: "2026-07-25", etapaAtual: "SOLICITACAO", status: "ativo", observacoesIniciais: "Licenciado já atua na região há 4 anos, quer abrir segunda unidade." },
+  { id: "AU-002", licenciadoNome: "Fernanda Duarte", ehDono: true, categoriaLicenciado: "2.5%", lojaOrigemId: "L002", cidadeAlvo: "Uberlândia", uf: "MG", canalOrigem: "whatsapp", createdAt: "2026-07-24", etapaAtual: "SOLICITACAO", status: "ativo", observacoesIniciais: "" },
+  { id: "AU-003", licenciadoNome: "Roberto Salles", ehDono: false, categoriaLicenciado: "2.5%", lojaOrigemId: "L003", cidadeAlvo: "Joinville", uf: "SC", canalOrigem: "email", createdAt: "2026-07-21", etapaAtual: "SOLICITACAO", status: "ativo", observacoesIniciais: "Interesse recorrente — segunda tentativa em 12 meses." },
 
-  { id: "AU-004", licenciadoNome: "Juliana Prado", lojaOrigemId: "L004", cidadeAlvo: "Londrina", uf: "PR", canalOrigem: "visita", createdAt: "2026-07-21", etapaAtual: "ELEGIBILIDADE", status: "ativo", observacoesIniciais: "Indicada pelo gerente regional durante visita de rotina." },
-  { id: "AU-005", licenciadoNome: "Marcos Vinícius Lima", lojaOrigemId: "L005", cidadeAlvo: "Feira de Santana", uf: "BA", canalOrigem: "telefone", createdAt: "2026-07-16", etapaAtual: "ELEGIBILIDADE", status: "ativo", observacoesIniciais: "" },
+  { id: "AU-004", licenciadoNome: "Juliana Prado", ehDono: true, categoriaLicenciado: "2.7%+", lojaOrigemId: "L004", cidadeAlvo: "Londrina", uf: "PR", canalOrigem: "visita", createdAt: "2026-07-21", etapaAtual: "ELEGIBILIDADE", status: "ativo", observacoesIniciais: "Indicada pelo gerente regional durante visita de rotina." },
+  { id: "AU-005", licenciadoNome: "Marcos Vinícius Lima", ehDono: true, categoriaLicenciado: "2.7%+", lojaOrigemId: "L005", cidadeAlvo: "Feira de Santana", uf: "BA", canalOrigem: "telefone", createdAt: "2026-07-16", etapaAtual: "ELEGIBILIDADE", status: "ativo", observacoesIniciais: "" },
 
-  { id: "AU-006", licenciadoNome: "Patrícia Andrade", lojaOrigemId: "L006", cidadeAlvo: "Caxias do Sul", uf: "RS", canalOrigem: "sistema", createdAt: "2026-07-12", etapaAtual: "PLANO_NEGOCIO", status: "ativo", observacoesIniciais: "" },
-  { id: "AU-007", licenciadoNome: "Eduardo Nogueira", lojaOrigemId: "L007", cidadeAlvo: "Vitória", uf: "ES", canalOrigem: "email", createdAt: "2026-06-30", etapaAtual: "PLANO_NEGOCIO", status: "ativo", observacoesIniciais: "Plano em revisão após feedback do gerente regional." },
+  { id: "AU-006", licenciadoNome: "Patrícia Andrade", ehDono: true, categoriaLicenciado: "2.7%+", lojaOrigemId: "L006", cidadeAlvo: "Caxias do Sul", uf: "RS", canalOrigem: "sistema", createdAt: "2026-07-12", etapaAtual: "PLANO_NEGOCIO", status: "ativo", observacoesIniciais: "" },
+  { id: "AU-007", licenciadoNome: "Eduardo Nogueira", ehDono: true, categoriaLicenciado: "2.5%", lojaOrigemId: "L007", cidadeAlvo: "Vitória", uf: "ES", canalOrigem: "email", createdAt: "2026-06-30", etapaAtual: "PLANO_NEGOCIO", status: "ativo", observacoesIniciais: "Plano em revisão após feedback do gerente regional." },
 
-  { id: "AU-008", licenciadoNome: "Camila Torres", lojaOrigemId: "L008", cidadeAlvo: "Anápolis", uf: "GO", canalOrigem: "sistema", createdAt: "2026-06-28", etapaAtual: "COMITE", status: "ativo", observacoesIniciais: "" },
-  { id: "AU-009", licenciadoNome: "Rafael Bittencourt", lojaOrigemId: "L001", cidadeAlvo: "Petrópolis", uf: "RJ", canalOrigem: "whatsapp", createdAt: "2026-06-18", etapaAtual: "COMITE", status: "reprovado", observacoesIniciais: "Cidade com bloqueio territorial de unidade vizinha." },
+  { id: "AU-008", licenciadoNome: "Camila Torres", ehDono: true, categoriaLicenciado: "2.7%+", lojaOrigemId: "L008", cidadeAlvo: "Anápolis", uf: "GO", canalOrigem: "sistema", createdAt: "2026-06-28", etapaAtual: "COMITE", status: "ativo", observacoesIniciais: "" },
+  { id: "AU-009", licenciadoNome: "Rafael Bittencourt", ehDono: true, categoriaLicenciado: "2.7%+", lojaOrigemId: "L001", cidadeAlvo: "Petrópolis", uf: "RJ", canalOrigem: "whatsapp", createdAt: "2026-06-18", etapaAtual: "COMITE", status: "reprovado", observacoesIniciais: "Cidade com bloqueio territorial de unidade vizinha." },
 
-  { id: "AU-010", licenciadoNome: "Simone Carvalho", lojaOrigemId: "L002", cidadeAlvo: "Maringá", uf: "PR", canalOrigem: "email", createdAt: "2026-06-08", etapaAtual: "DOCUMENTACAO", status: "ativo", observacoesIniciais: "" },
-  { id: "AU-011", licenciadoNome: "André Luiz Ferreira", lojaOrigemId: "L003", cidadeAlvo: "Juiz de Fora", uf: "MG", canalOrigem: "visita", createdAt: "2026-05-24", etapaAtual: "DOCUMENTACAO", status: "ativo", observacoesIniciais: "Documentação fragmentada — cobrado reenvio pelo back-office." },
+  { id: "AU-010", licenciadoNome: "Simone Carvalho", ehDono: true, categoriaLicenciado: "2.7%+", lojaOrigemId: "L002", cidadeAlvo: "Maringá", uf: "PR", canalOrigem: "email", createdAt: "2026-06-08", etapaAtual: "DOCUMENTACAO", status: "ativo", observacoesIniciais: "" },
+  { id: "AU-011", licenciadoNome: "André Luiz Ferreira", ehDono: true, categoriaLicenciado: "2.7%+", lojaOrigemId: "L003", cidadeAlvo: "Juiz de Fora", uf: "MG", canalOrigem: "visita", createdAt: "2026-05-24", etapaAtual: "DOCUMENTACAO", status: "ativo", observacoesIniciais: "Documentação fragmentada — cobrado reenvio pelo back-office." },
 
-  { id: "AU-012", licenciadoNome: "Beatriz Nunes", lojaOrigemId: "L004", cidadeAlvo: "Chapecó", uf: "SC", canalOrigem: "sistema", createdAt: "2026-05-23", etapaAtual: "CONTRATO", status: "ativo", observacoesIniciais: "" },
+  { id: "AU-012", licenciadoNome: "Beatriz Nunes", ehDono: true, categoriaLicenciado: "2.7%+", lojaOrigemId: "L004", cidadeAlvo: "Chapecó", uf: "SC", canalOrigem: "sistema", createdAt: "2026-05-23", etapaAtual: "CONTRATO", status: "ativo", observacoesIniciais: "" },
 
-  { id: "AU-013", licenciadoNome: "Guilherme Assis", lojaOrigemId: "L005", cidadeAlvo: "Piracicaba", uf: "SP", canalOrigem: "telefone", createdAt: "2026-04-23", etapaAtual: "OBRA", status: "ativo", observacoesIniciais: "" },
-  { id: "AU-014", licenciadoNome: "Larissa Monteiro", lojaOrigemId: "L006", cidadeAlvo: "Blumenau", uf: "SC", canalOrigem: "email", createdAt: "2026-01-05", etapaAtual: "OBRA", status: "ativo", observacoesIniciais: "Obra com atraso na entrega de material pelo fornecedor local." },
+  { id: "AU-013", licenciadoNome: "Guilherme Assis", ehDono: true, categoriaLicenciado: "2.7%+", lojaOrigemId: "L005", cidadeAlvo: "Piracicaba", uf: "SP", canalOrigem: "telefone", createdAt: "2026-04-23", etapaAtual: "OBRA", status: "ativo", observacoesIniciais: "" },
+  { id: "AU-014", licenciadoNome: "Larissa Monteiro", ehDono: true, categoriaLicenciado: "2.7%+", lojaOrigemId: "L006", cidadeAlvo: "Blumenau", uf: "SC", canalOrigem: "email", createdAt: "2026-01-05", etapaAtual: "OBRA", status: "ativo", observacoesIniciais: "Obra com atraso na entrega de material pelo fornecedor local." },
 
-  { id: "AU-015", licenciadoNome: "Vinícius Tavares", lojaOrigemId: "L007", cidadeAlvo: "Ribeirão Preto", uf: "SP", canalOrigem: "sistema", createdAt: "2026-03-25", etapaAtual: "ABERTURA", status: "concluido", observacoesIniciais: "" },
+  { id: "AU-015", licenciadoNome: "Vinícius Tavares", ehDono: true, categoriaLicenciado: "2.7%+", lojaOrigemId: "L007", cidadeAlvo: "Ribeirão Preto", uf: "SP", canalOrigem: "sistema", createdAt: "2026-03-25", etapaAtual: "ABERTURA", status: "concluido", observacoesIniciais: "" },
 
-  { id: "AU-016", licenciadoNome: "Tatiane Bezerra", lojaOrigemId: "L008", cidadeAlvo: "Presidente Prudente", uf: "SP", canalOrigem: "whatsapp", createdAt: "2026-06-13", etapaAtual: "ELEGIBILIDADE", status: "cancelado", observacoesIniciais: "Licenciado desistiu por motivos pessoais." },
+  { id: "AU-016", licenciadoNome: "Tatiane Bezerra", ehDono: false, categoriaLicenciado: "2.5%", lojaOrigemId: "L008", cidadeAlvo: "Presidente Prudente", uf: "SP", canalOrigem: "whatsapp", createdAt: "2026-06-13", etapaAtual: "ELEGIBILIDADE", status: "cancelado", observacoesIniciais: "Licenciado desistiu por motivos pessoais." },
 ];
 
 function lojaNome(id: string): string {
@@ -277,6 +287,8 @@ function gerarRegistro(raw: RegistroRaw, seed: number): RegistroAberturaUnidade 
     emAtraso,
     historico,
     licenciadoNome: raw.licenciadoNome,
+    ehDono: raw.ehDono,
+    categoriaLicenciado: raw.categoriaLicenciado,
     lojaOrigem: lojaNome(raw.lojaOrigemId),
     cidadeAlvo: raw.cidadeAlvo,
     uf: raw.uf,
@@ -324,16 +336,21 @@ function gerarRegistro(raw: RegistroRaw, seed: number): RegistroAberturaUnidade 
 
   if (passou("CONTRATO")) {
     registro.statusAssinatura = idx > etapaIndex("CONTRATO") ? "assinado" : "em_assinatura";
-    registro.banco = BANCOS[seed % BANCOS.length];
-    registro.agencia = String(1000 + seed * 7);
-    registro.conta = String(20000 + seed * 31);
+    registro.bancoPJ = BANCOS[seed % BANCOS.length];
+    registro.agenciaPJ = String(1000 + seed * 7);
+    registro.contaPJ = String(20000 + seed * 31);
     registro.aceitePenalty = true;
+    registro.cadastradoNewcon = idx > etapaIndex("CONTRATO");
+    registro.tipoPVNewcon = "00 — PV de venda";
+    if (registro.cadastradoNewcon) {
+      registro.dataCadastroNewcon = historico.find((h) => h.etapa === "CONTRATO")?.saiuEm ?? undefined;
+    }
   }
 
   if (passou("OBRA")) {
     const dataInicio = historico.find((h) => h.etapa === "OBRA")?.entrouEm ?? raw.createdAt;
     registro.dataInicioObra = dataInicio;
-    registro.prazoPrevistoObra = toISO(addDays(new Date(dataInicio), 180));
+    registro.prazoPrevistoObra = toISO(addDays(new Date(dataInicio), 90));
     const concluida = idx > etapaIndex("OBRA");
     registro.andamentoObra = concluida ? 100 : emAtraso ? 55 : 35 + (seed % 40);
     if (concluida) registro.dataConclusaoObra = historico.find((h) => h.etapa === "OBRA")?.saiuEm ?? undefined;

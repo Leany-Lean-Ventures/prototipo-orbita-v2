@@ -387,3 +387,46 @@ Roteamento reestruturado em `src/App.tsx` para uma rota de layout (`<Route eleme
 **Decisão:** a palavra "Logbook" (ou "logbook") **nunca** deve ser usada em qualquer texto renderizado no sistema — labels, subtítulos, descriptions, placeholders, tooltips. Substituir sempre por "Histórico" ou "histórico da unidade/rede" conforme o contexto. O módulo de Ocorrências refere-se ao histórico da rede, não a um "logbook".
 **Motivo:** decisão explícita do usuário — termo técnico que não faz sentido para o público-alvo do sistema.
 **Status:** vigente.
+
+### 2026-07-26 — Kanban drag-and-drop: solução definitiva para offset do DragOverlay com @dnd-kit
+**Decisão:** ao usar `@dnd-kit/core` para um Kanban com colunas em scroll horizontal dentro de um layout com sidebar, o `DragOverlay` fica deslocado da posição do cursor. A solução requer **duas** correções complementares:
+1. **`snapCenterToCursor`** (de `@dnd-kit/modifiers`) no `<DragOverlay modifiers={[snapCenterToCursor]}>` — centraliza o overlay visual no ponteiro, eliminando offset causado por scroll containers e CSS transforms do layout.
+2. **`collisionDetection={pointerWithin}`** (de `@dnd-kit/core`) no `<DndContext>` — faz a detecção de colisão usar a posição do ponteiro (não o rect original do item arrastado) para determinar a coluna de destino. Sem isso, o highlight da coluna fica deslocado à direita.
+
+Ambos são necessários juntos. `MeasuringStrategy.Always` no `measuring.droppable` complementa mantendo as medidas dos droppables atualizadas durante o drag.
+
+Configuração final no componente (`src/components/esteira/KanbanBoard.tsx`):
+```tsx
+import { pointerWithin, MeasuringStrategy } from "@dnd-kit/core";
+import { snapCenterToCursor } from "@dnd-kit/modifiers";
+
+const measuring = { droppable: { strategy: MeasuringStrategy.Always } };
+
+<DndContext sensors={sensors} collisionDetection={pointerWithin} measuring={measuring} ...>
+  ...
+  <DragOverlay dropAnimation={null} modifiers={[snapCenterToCursor]}>
+    {overlay content}
+  </DragOverlay>
+</DndContext>
+```
+**Motivo:** bug de offset persistiu por 3 tentativas (largura fixa, MeasuringStrategy sozinha, dropAnimation null) até a combinação acima resolver definitivamente.
+**Status:** vigente. Reaproveitar na esteira de Promoção de Consultores (`/esteira/promocao-consultores`).
+
+### 2026-07-26 — Kanban com transições gated: modal de preenchimento obrigatório ao avançar etapa
+**Decisão:** o Kanban da Esteira de Abertura de Unidades agora usa **transições gated** — o drag-and-drop não move o card diretamente; ele abre uma modal de preenchimento dos dados da etapa destino. O card só avança se o operador salvar; se cancelar, o card permanece na coluna original.
+
+Padrão implementado (replicar na Esteira de Promoção de Consultores):
+
+1. **Validação de sequência:** `KanbanBoard` compara `currentIdx + 1 === targetIdx`. Se o drop for em qualquer outra coluna, exibe `toast.error("Só é possível avançar para a próxima etapa.")` e o card volta.
+
+2. **Prop `onRequestTransicao` (não `onMoverRegistro`):** o board emite `(registroId, etapaDestino)` em vez de mover diretamente. A página pai (`AberturaUnidadesKanbanPage`) controla o estado `transicaoModal: { registroId, etapaDestino } | null`.
+
+3. **`EtapaTransicaoModal`** (`src/components/esteira/EtapaTransicaoModal.tsx`): componente genérico que renderiza formulário dinâmico por `etapaDestino` via `switch`. Props: `open`, `onOpenChange`, `etapaDestino`, `registroNome`, `onSalvar(data: TransicaoFormData)`. A interface `TransicaoFormData` unifica todos os campos possíveis de todas as etapas (campos opcionais por etapa).
+
+4. **Caso especial COMITÊ (ramificação):** se `decisaoComite === "reprovado"` → card fica no COMITÊ com `status: "reprovado"` (não avança). Se `decisaoComite === "ajuste"` → card volta para `PLANO_NEGOCIO`. Só `"aprovado"` avança para DOCUMENTAÇÃO. Feedback visual na modal: alerta vermelho para reprovação, alerta amber para ajuste.
+
+5. **Fluxo completo:** drag end → valida next-only → emite `onRequestTransicao` → pai abre modal → operador preenche → salva → `setRegistros` atualiza `etapaAtual` → toast de sucesso → modal fecha.
+
+Arquivos envolvidos: `src/components/esteira/KanbanBoard.tsx`, `src/components/esteira/EtapaTransicaoModal.tsx`, `src/pages/AberturaUnidadesKanbanPage.tsx`.
+**Motivo:** pedido do usuário — processo real exige preenchimento de dados a cada avanço de etapa, não movimentação livre.
+**Status:** vigente. Reaproveitar na esteira de Promoção de Consultores.
