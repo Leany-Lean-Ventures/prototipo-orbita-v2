@@ -96,7 +96,13 @@ const ConsultoresLista = () => {
   const totalPages = Math.ceil(filtrados.length / PAGE_SIZE);
   const paged = filtrados.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
 
-  const goToDetalhe = (id: string) => navigate(`/consultores/${id}`);
+  const goToDetalhe = (consultor: { id: string; nivel: string }) => {
+    if (consultor.nivel === "Licenciado 3.5") {
+      navigate(`/socios/${consultor.id}`);
+    } else {
+      navigate(`/consultores/${consultor.id}`);
+    }
+  };
 
   return (
     <div ref={entranceRef} className="space-y-6">
@@ -185,8 +191,8 @@ const ConsultoresLista = () => {
                     key={c.id}
                     className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
                     tabIndex={0}
-                    onClick={() => goToDetalhe(c.id)}
-                    onKeyDown={(e) => { if (e.key === "Enter") goToDetalhe(c.id); }}
+                    onClick={() => goToDetalhe(c)}
+                    onKeyDown={(e) => { if (e.key === "Enter") goToDetalhe(c); }}
                   >
                     <TableCell>
                       <div className="flex items-center gap-3">
