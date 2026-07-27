@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams, Navigate } from "react-router-dom";
+import { useParams, useNavigate, Navigate } from "react-router-dom";
 import {
   LayoutDashboard,
   Network,
@@ -8,12 +8,20 @@ import {
   ShieldAlert,
   Clock,
   AlertTriangle,
+  MapPin,
+  ChevronDown,
 } from "lucide-react";
 
 import { usePageEntrance } from "@/hooks/use-page-entrance";
 import { unidadesDetalhe } from "@/lib/mock-data/unidades";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { EntityHeroHeader } from "@/components/entity-detail/EntityHeroHeader";
 import { DadosBasicosPanel } from "@/components/entity-detail/DadosBasicosPanel";
@@ -31,6 +39,7 @@ import {
 
 const UnidadeDetalhe = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const unidade = id ? unidadesDetalhe[id] : undefined;
   const [ocorrenciaModalOpen, setOcorrenciaModalOpen] = useState(false);
   const [sociosModalOpen, setSociosModalOpen] = useState(false);
@@ -80,15 +89,28 @@ const UnidadeDetalhe = () => {
           endereco: `${unidade.dadosContato.endereco}, ${unidade.dadosContato.bairro} — ${unidade.cidade}/${unidade.estado}`,
         }}
         indicator={
-          <Button
-            variant="outline"
-            size="sm"
-            className="border-white/30 bg-white/10 text-white hover:bg-white/20"
-            onClick={() => setOcorrenciaModalOpen(true)}
-          >
-            <AlertTriangle className="mr-1.5 h-4 w-4" />
-            Registrar Ocorrência
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                className="border-white/30 bg-white/10 text-white hover:bg-white/20"
+              >
+                Realizar registro
+                <ChevronDown className="ml-1.5 h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => setOcorrenciaModalOpen(true)}>
+                <AlertTriangle className="mr-2 h-4 w-4 text-muted-foreground" />
+                Registrar ocorrência
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate("/visitas?registrar=1")}>
+                <MapPin className="mr-2 h-4 w-4 text-muted-foreground" />
+                Registrar visita
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         }
       />
 

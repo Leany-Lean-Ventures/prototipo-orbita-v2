@@ -21,6 +21,8 @@ export interface NavItem {
   label: string;
   path: string;
   icon: LucideIcon;
+  /** Texto curto exibido em um chip ao lado do label (ex.: "Em breve"). */
+  badge?: string;
 }
 
 export const navItems: NavItem[] = [
@@ -28,7 +30,7 @@ export const navItems: NavItem[] = [
   { label: "Unidades", path: "/unidades", icon: Store },
   { label: "PVs", path: "/pvs", icon: Building2 },
   { label: "Consultores", path: "/consultores", icon: Users },
-  { label: "Prévias", path: "/previas", icon: ClipboardList },
+  { label: "Prévias", path: "/previas", icon: ClipboardList, badge: "Em breve" },
   { label: "Esteira", path: "/esteira", icon: Workflow },
   { label: "Ocorrências", path: "/ocorrencias", icon: AlertTriangle },
   { label: "Visitas", path: "/visitas", icon: MapPin },

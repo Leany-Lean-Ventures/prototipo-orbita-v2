@@ -6,6 +6,7 @@ import { useAlertsPanel } from "@/lib/alerts-panel-context";
 import { alerts } from "@/lib/mock-data/alerts";
 import ademIconVermelho from "@/assets/brand/ademicon-icone-vermelho.svg";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -67,8 +68,25 @@ export function AppSidebar() {
                 ].join(" ")
               }
             >
-              <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
-              {item.label}
+              {({ isActive }) => (
+                <>
+                  <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
+                  <span className="flex-1 truncate">{item.label}</span>
+                  {item.badge && (
+                    <Badge
+                      variant="outline"
+                      className={[
+                        "shrink-0 px-1.5 py-0 text-[10px] font-medium leading-4",
+                        isActive
+                          ? "border-sidebar-primary-foreground/40 bg-sidebar-primary-foreground/15 text-sidebar-primary-foreground"
+                          : "border-sidebar-border/60 bg-transparent text-sidebar-foreground/70",
+                      ].join(" ")}
+                    >
+                      {item.badge}
+                    </Badge>
+                  )}
+                </>
+              )}
             </NavLink>
           );
         })}

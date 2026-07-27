@@ -1,5 +1,5 @@
-import { useState, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useMemo, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Search, Plus, AlertTriangle, Calendar, Eye } from "lucide-react";
 
 import { usePageEntrance } from "@/hooks/use-page-entrance";
@@ -34,11 +34,26 @@ const PAGE_SIZE = 10;
 
 const VisitasPage = () => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [busca, setBusca] = useState("");
   const [tipoFiltro, setTipoFiltro] = useState("todos");
   const [responsavelFiltro, setResponsavelFiltro] = useState("todos");
   const [page, setPage] = useState(0);
   const [modeloModalOpen, setModeloModalOpen] = useState(false);
+
+  // Permite abrir a página já com a modal de seleção de formulário aberta
+  // (ex.: vindo do dropdown "Realizar registro" da página da unidade).
+  useEffect(() => {
+    if (searchParams.get("registrar") === "1") {
+      setModeloModalOpen(true);
+      setSearchParams((prev) => {
+        const next = new URLSearchParams(prev);
+        next.delete("registrar");
+        return next;
+      }, { replace: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const entranceRef = usePageEntrance<HTMLDivElement>([
     { selector: ".vis-header", vars: { y: -16, opacity: 0, duration: 0.35 } },
