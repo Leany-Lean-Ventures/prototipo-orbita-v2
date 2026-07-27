@@ -1,4 +1,5 @@
 import { unidadesList, unidadesDetalhe } from "./unidades";
+import { regiaoDaUF, REGIOES, type UF } from "@/lib/geo/estados";
 
 /**
  * Grafo do "Mapa de Vínculos da Rede" (aba de `UnidadesLista.tsx`) — não
@@ -37,18 +38,6 @@ export interface VinculosGraphData {
   edges: VinculoEdge[];
 }
 
-const MACRO_POR_ESTADO: Record<string, string> = {
-  SP: "Sudeste",
-  RJ: "Sudeste",
-  MG: "Sudeste",
-  PR: "Sul",
-  RS: "Sul",
-  DF: "Centro-Oeste",
-  BA: "Nordeste",
-};
-
-const MACRO_ORDER = ["Sudeste", "Sul", "Centro-Oeste", "Nordeste"];
-
 function macroId(nome: string): string {
   return `macro-${nome.toLowerCase().replace(/\s+/g, "-")}`;
 }
@@ -59,13 +48,13 @@ function buildVinculosGraph(): VinculosGraphData {
 
   const unidadesPorMacro = new Map<string, typeof unidadesList>();
   unidadesList.forEach((unidade) => {
-    const macro = MACRO_POR_ESTADO[unidade.estado] ?? "Outras";
+    const macro = regiaoDaUF(unidade.estado as UF);
     const lista = unidadesPorMacro.get(macro) ?? [];
     lista.push(unidade);
     unidadesPorMacro.set(macro, lista);
   });
 
-  MACRO_ORDER.filter((macro) => unidadesPorMacro.has(macro)).forEach((macro) => {
+  REGIOES.filter((macro) => unidadesPorMacro.has(macro)).forEach((macro) => {
     const unidadesDaMacro = unidadesPorMacro.get(macro)!;
     const id = macroId(macro);
     const ratingMedio = Math.round(

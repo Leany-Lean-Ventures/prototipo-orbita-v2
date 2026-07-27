@@ -87,6 +87,8 @@ export interface ConsultorDetalhe {
 // --------------- List data ---------------
 
 export const consultoresList: ConsultorListItem[] = [
+  { id: "C100", nome: "João Silva", razaoSocial: "Alpha Consultoria Ltda", cnpj: "12.345.678/0001-90", matricula: "M-10001", nivel: "Licenciado 3.5", lojaPrincipal: "SP-Centro", lojaPrincipalId: "L001", empresas: 2, status: "Ativo" },
+  { id: "C101", nome: "Marina Reis", razaoSocial: "Reis Participações Ltda", cnpj: "23.456.789/0001-11", matricula: "M-10002", nivel: "Licenciado 3.5", lojaPrincipal: "Campinas", lojaPrincipalId: "L002", empresas: 1, status: "Ativo" },
   { id: "C001", nome: "Maria Santos", razaoSocial: "MS Assessoria Ltda", cnpj: "55.123.456/0001-01", matricula: "M-00101", nivel: "Consultor", lojaPrincipal: "SP-Centro", lojaPrincipalId: "L001", empresas: 1, status: "Ativo" },
   { id: "C002", nome: "Carlos Oliveira", razaoSocial: "Alpha Consórcios LTDA", cnpj: "23.456.789/0001-11", matricula: "M-00102", nivel: "Autorizado 2.5", lojaPrincipal: "SP-Centro", lojaPrincipalId: "L001", empresas: 2, status: "Ativo" },
   { id: "C003", nome: "Beatriz Souza", razaoSocial: "BS Investimentos Ltda", cnpj: "55.345.678/0001-03", matricula: "M-00103", nivel: "Autorizado 2.2", lojaPrincipal: "SP-Centro", lojaPrincipalId: "L001", empresas: 1, status: "Ativo" },

@@ -40,7 +40,8 @@ function avatarColorByNivel(nivel: string): { bg: string; border: string; text: 
 }
 
 const LOJAS = Array.from(new Set(consultoresList.map((c) => c.lojaPrincipal))).sort();
-const NIVEIS = Array.from(new Set(consultoresList.map((c) => c.nivel))).sort();
+const NIVEIS_ORDEM = ["Licenciado 3.5", "Autorizado 2.5", "Autorizado 2.2", "Autorizado 2.0", "Consultor"];
+const NIVEIS = NIVEIS_ORDEM.filter((n) => consultoresList.some((c) => c.nivel === n));
 const PAGE_SIZE = 10;
 
 const ConsultoresLista = () => {

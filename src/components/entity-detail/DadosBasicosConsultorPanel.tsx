@@ -76,9 +76,8 @@ export function DadosBasicosConsultorPanel({
           <User className="h-4 w-4 text-primary" />
           Identificação
         </h3>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <DataField label="CNPJ" value={cnpj} />
-          <DataField label="RG" value={dados.rg} />
           <DataField label="Matrícula" value={matricula} />
           <DataField label="Data de ingresso" value={ingresso} />
           <DataField label="Indicador / Formador" value={indicador ? indicador.razaoSocial : "—"} />
@@ -91,7 +90,7 @@ export function DadosBasicosConsultorPanel({
           <Mail className="h-4 w-4 text-primary" />
           Contato
         </h3>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="grid grid-cols-2 gap-4">
           <DataField label="E-mail" value={dados.email} icon={<Mail className="h-3.5 w-3.5" />} />
           <DataField label="Telefone" value={dados.telefone} icon={<Phone className="h-3.5 w-3.5" />} />
         </div>

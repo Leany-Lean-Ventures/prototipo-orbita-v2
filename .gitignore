@@ -25,3 +25,6 @@ dist-ssr
 # Cache Python (scripts das skills, ex.: ui-ux-pro-max)
 __pycache__
 *.pyc
+
+# Local prototype folder
+prototipo-orbita-v1/
