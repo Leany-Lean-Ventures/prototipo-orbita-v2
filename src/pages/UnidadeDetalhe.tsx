@@ -19,7 +19,7 @@ import { EntityHeroHeader } from "@/components/entity-detail/EntityHeroHeader";
 import { DadosBasicosPanel } from "@/components/entity-detail/DadosBasicosPanel";
 import { EstruturaConsolidadaPanel } from "@/components/entity-detail/EstruturaConsolidadaPanel";
 import { CarteirasTable } from "@/components/entity-detail/CarteirasTable";
-import { PenalidadesPanel } from "@/components/entity-detail/PenalidadesPanel";
+import { PenalidadesPanel, PENALIDADES_MOCK } from "@/components/entity-detail/PenalidadesPanel";
 import { Timeline } from "@/components/entity-detail/Timeline";
 import { NovaOcorrenciaModal } from "@/components/ocorrencias/NovaOcorrenciaModal";
 import {
@@ -141,9 +141,7 @@ const UnidadeDetalhe = () => {
 
         <TabsContent value="penalidades">
           <PenalidadesPanel
-            penalidades={unidade.comissionamento.penalidades}
-            abrirPenalidadeId={penalidadeParaAbrir}
-            onPenalidadeAberta={() => setPenalidadeParaAbrir(null)}
+            penalidades={PENALIDADES_MOCK.filter((p) => p.lojaOrigem.id === unidade.id)}
           />
         </TabsContent>
 
