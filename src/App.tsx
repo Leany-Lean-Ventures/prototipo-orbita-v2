@@ -28,6 +28,7 @@ import PromocaoConsultorDetalhePage from "@/pages/PromocaoConsultorDetalhePage";
 import NovoRegistroPromocaoPage from "@/pages/NovoRegistroPromocaoPage";
 import AberturaUnidadeDetalhePage from "@/pages/AberturaUnidadeDetalhePage";
 import NovoRegistroAberturaPage from "@/pages/NovoRegistroAberturaPage";
+import SocioDetalhe from "@/pages/SocioDetalhe";
 import ConfiguracoesHubPage from "@/pages/ConfiguracoesHubPage";
 import FormTemplatesListPage from "@/pages/FormTemplatesListPage";
 import FormTemplateBuilderPage from "@/pages/FormTemplateBuilderPage";
@@ -58,6 +59,7 @@ const App = () => (
               <Route path="/consultores/:id" element={<ConsultorDetalhe />} />
               <Route path="/pvs" element={<PVsLista />} />
               <Route path="/pvs/:id" element={<PVDetalhe />} />
+              <Route path="/socios/:id" element={<SocioDetalhe />} />
               <Route path="/previas" element={<PreviasPage />} />
               <Route path="/previas/:id" element={<PreviaProcessoPage />} />
               <Route path="/esteira" element={<EsteiraHubPage />} />

@@ -10,6 +10,7 @@ import {
   AlertTriangle,
   MapPin,
   ChevronDown,
+  Eye,
 } from "lucide-react";
 
 import { usePageEntrance } from "@/hooks/use-page-entrance";
@@ -207,6 +208,20 @@ const UnidadeDetalhe = () => {
                   <p className="text-sm font-medium text-foreground">{s.nome}</p>
                   <p className="text-xs text-muted-foreground">{s.nivelLabel}{s.documento ? ` • ${s.documento}` : ""}</p>
                 </div>
+                {s.id && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 shrink-0 text-muted-foreground hover:text-foreground"
+                    onClick={() => {
+                      setSociosModalOpen(false);
+                      navigate(`/socios/${s.id}`);
+                    }}
+                    aria-label={`Ver detalhes de ${s.nome}`}
+                  >
+                    <Eye className="h-4 w-4" />
+                  </Button>
+                )}
               </div>
             ))}
           </div>

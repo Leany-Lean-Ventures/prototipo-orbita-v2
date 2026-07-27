@@ -79,7 +79,7 @@ const PVDetalhe = () => {
         </TabsList>
 
         <TabsContent value="estrutura">
-          <EstruturaConsolidadaPanel organizacional={pv.organizacional} />
+          <EstruturaConsolidadaPanel organizacional={pv.organizacional} hideParticipacaoComissao />
         </TabsContent>
 
         <TabsContent value="carteiras">

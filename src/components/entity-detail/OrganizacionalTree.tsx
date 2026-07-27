@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Eye, ChevronDown, BriefcaseBusiness } from "lucide-react";
+import { Eye, ChevronDown, BriefcaseBusiness, UserRound } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
@@ -42,13 +42,15 @@ const TIPO_CONFIG: Record<OrganizacionalTipo, {
 
 interface OrganizacionalTreeProps {
   nodes: OrganizacionalNode[];
+  /** Oculta as informações de participação e comissão dos sócios (ex.: página de PVs). */
+  hideParticipacaoComissao?: boolean;
 }
 
 /**
  * Hierarchical tree with expand/collapse, Ademicon icon for Loja/PV,
  * avatar photos for consultores, connector lines, and eye button navigation.
  */
-export function OrganizacionalTree({ nodes }: OrganizacionalTreeProps) {
+export function OrganizacionalTree({ nodes, hideParticipacaoComissao }: OrganizacionalTreeProps) {
   if (nodes.length === 0) {
     return (
       <p className="py-8 text-center text-sm text-muted-foreground">
@@ -60,7 +62,13 @@ export function OrganizacionalTree({ nodes }: OrganizacionalTreeProps) {
   return (
     <div className="space-y-0">
       {nodes.map((node, index) => (
-        <TreeNode key={node.id} node={node} isLast={index === nodes.length - 1} depth={0} />
+        <TreeNode
+          key={node.id}
+          node={node}
+          isLast={index === nodes.length - 1}
+          depth={0}
+          hideParticipacaoComissao={hideParticipacaoComissao}
+        />
       ))}
     </div>
   );
@@ -77,7 +85,9 @@ export function OrganizacionalLegend() {
         <span className="text-[11px] text-muted-foreground">Loja</span>
       </div>
       <div className="flex items-center gap-1.5">
-        <div className="h-5 w-5 rounded-full bg-amber-500/10 border border-amber-500/20" />
+        <div className="flex h-5 w-5 items-center justify-center rounded-full border border-amber-500/20 bg-amber-500/10">
+          <UserRound className="h-3 w-3 text-amber-600" />
+        </div>
         <span className="text-[11px] text-muted-foreground">Sócio</span>
       </div>
       <div className="flex items-center gap-1.5">
@@ -98,9 +108,10 @@ interface TreeNodeProps {
   node: OrganizacionalNode;
   isLast: boolean;
   depth: number;
+  hideParticipacaoComissao?: boolean;
 }
 
-function TreeNode({ node, isLast, depth }: TreeNodeProps) {
+function TreeNode({ node, isLast, depth, hideParticipacaoComissao }: TreeNodeProps) {
   const navigate = useNavigate();
   const [expanded, setExpanded] = useState(true);
   const hasChildren = node.children && node.children.length > 0;
@@ -109,6 +120,7 @@ function TreeNode({ node, isLast, depth }: TreeNodeProps) {
   const handleView = () => {
     if (node.tipo === "pv") navigate(`/pvs/${node.id}`);
     else if (node.tipo === "consultor") navigate(`/consultores/${node.id}`);
+    else if (node.tipo === "socio") navigate(`/socios/${node.id}`);
   };
 
   return (
@@ -166,14 +178,8 @@ function TreeNode({ node, isLast, depth }: TreeNodeProps) {
 
         {/* Icon or Avatar */}
         {node.tipo === "socio" ? (
-          <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full border-2 border-amber-500/20 bg-amber-500/10">
-            {node.avatarUrl ? (
-              <img src={node.avatarUrl} alt={node.nome} className="h-full w-full object-cover" />
-            ) : (
-              <div className="flex h-full w-full items-center justify-center text-xs font-semibold text-amber-600">
-                {node.nome.split(" ").map(w => w[0]).join("").slice(0, 2)}
-              </div>
-            )}
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-amber-500/20 bg-amber-500/10">
+            <UserRound className="h-5 w-5 text-amber-600" />
           </div>
         ) : node.tipo === "consultor" ? (
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-secondary/10">
@@ -208,7 +214,7 @@ function TreeNode({ node, isLast, depth }: TreeNodeProps) {
         </div>
 
         {/* Participação + Comissão — sócios only */}
-        {node.tipo === "socio" && (node.participacaoPct != null || node.comissaoPct != null) && (
+        {!hideParticipacaoComissao && node.tipo === "socio" && (node.participacaoPct != null || node.comissaoPct != null) && (
           <div className="hidden items-center gap-3 sm:flex">
             {node.participacaoPct != null && (
               <span className="text-xs text-muted-foreground">
@@ -228,7 +234,7 @@ function TreeNode({ node, isLast, depth }: TreeNodeProps) {
           {node.nivelLabel}
         </Badge>
 
-        {/* Eye button — navigate to PV or Consultor */}
+        {/* Eye button — navega para PV, Consultor ou Sócio. Loja não tem página própria na árvore. */}
         {node.tipo !== "loja" && (
           <Button
             variant="ghost"
@@ -256,6 +262,7 @@ function TreeNode({ node, isLast, depth }: TreeNodeProps) {
               node={child}
               isLast={index === node.children!.length - 1}
               depth={depth + 1}
+              hideParticipacaoComissao={hideParticipacaoComissao}
             />
           ))}
         </div>

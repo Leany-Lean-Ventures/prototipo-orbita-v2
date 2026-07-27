@@ -192,7 +192,7 @@ export interface UnidadeDetalhe {
   dadosContato: DadosContatoInfo;
   organizacional: OrganizacionalNode[];
   /** Sócios da unidade (exibidos na modal, não na hierarquia). */
-  socios?: { nome: string; nivelLabel: string; documento?: string }[];
+  socios?: { id?: string; nome: string; nivelLabel: string; documento?: string }[];
   financeiro: FinanceiroInfo;
   consultoresVinculados: ConsultorVinculado[];
   carteiras: Carteira[];
@@ -276,9 +276,9 @@ export const unidadesDetalhe: Record<string, UnidadeDetalhe> = {
       },
     ],
     socios: [
-      { nome: "Roberto Almeida", nivelLabel: "Gestor Responsável", documento: "111.222.333/0001-44" },
-      { nome: "Ana Paula Silva", nivelLabel: "Sócio", documento: "222.333.444/0001-55" },
-      { nome: "Ricardo Mendonça", nivelLabel: "Sócio", documento: "333.444.555/0001-66" },
+      { id: "S-PV1042-01", nome: "Roberto Almeida", nivelLabel: "Gestor Responsável", documento: "111.222.333/0001-44" },
+      { id: "S-PV1042-02", nome: "Ana Paula Silva", nivelLabel: "Sócio", documento: "222.333.444/0001-55" },
+      { id: "S-PV1055-01", nome: "Ricardo Mendonça", nivelLabel: "Sócio", documento: "333.444.555/0001-66" },
     ],
     financeiro: {
       faturamentoConsolidado: 512400,

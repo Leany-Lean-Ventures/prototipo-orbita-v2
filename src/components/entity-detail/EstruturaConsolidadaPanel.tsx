@@ -9,6 +9,8 @@ import type { OrganizacionalNode } from "@/lib/mock-data/unidades";
 
 interface EstruturaConsolidadaPanelProps {
   organizacional: OrganizacionalNode[];
+  /** Oculta as informações de participação e comissão dos sócios (ex.: página de PVs). */
+  hideParticipacaoComissao?: boolean;
 }
 
 /**
@@ -16,6 +18,7 @@ interface EstruturaConsolidadaPanelProps {
  */
 export function EstruturaConsolidadaPanel({
   organizacional,
+  hideParticipacaoComissao,
 }: EstruturaConsolidadaPanelProps) {
   const [busca, setBusca] = useState("");
 
@@ -55,7 +58,7 @@ export function EstruturaConsolidadaPanel({
             </div>
           }
         />
-        <OrganizacionalTree nodes={filteredNodes} />
+        <OrganizacionalTree nodes={filteredNodes} hideParticipacaoComissao={hideParticipacaoComissao} />
       </Card>
     </div>
   );
