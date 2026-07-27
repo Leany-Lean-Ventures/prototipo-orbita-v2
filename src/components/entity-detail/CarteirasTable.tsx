@@ -1,28 +1,18 @@
 import { useMemo, useState } from "react";
-import { Briefcase, Check, ChevronsUpDown } from "lucide-react";
+import { Search, SlidersHorizontal } from "lucide-react";
 
 import {
-  Table,
-  TableHeader,
-  TableBody,
-  TableRow,
-  TableHead,
-  TableCell,
+  Table, TableHeader, TableBody, TableRow, TableHead, TableCell,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
-import { SectionHeader } from "@/components/ui/section-header";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import { Slider } from "@/components/ui/slider";
+import { Label } from "@/components/ui/label";
 import {
-  Command,
-  CommandInput,
-  CommandList,
-  CommandEmpty,
-  CommandGroup,
-  CommandItem,
-} from "@/components/ui/command";
+  Select, SelectTrigger, SelectValue, SelectContent, SelectItem,
+} from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import type { Carteira } from "@/lib/mock-data/unidades";
 
@@ -34,160 +24,174 @@ const currencyFormatter = new Intl.NumberFormat("pt-BR", {
 
 interface CarteirasTableProps {
   carteiras: Carteira[];
-  subtitle: string;
 }
 
-/**
- * Aba/seção "Carteiras" (PRD-02 §3.3), com controles de filtro no cabeçalho
- * (toggle "somente órfãs" + filtro por PV em combobox com busca) ao lado do
- * título. Reutilizada por Unidade/PV/Consultor (PRD-04 §5).
- */
-export function CarteirasTable({ carteiras, subtitle }: CarteirasTableProps) {
-  const [somenteOrfas, setSomenteOrfas] = useState(false);
-  const [pvFiltro, setPvFiltro] = useState<string | null>(null);
-  const [pvPopoverOpen, setPvPopoverOpen] = useState(false);
+export function CarteirasTable({ carteiras }: CarteirasTableProps) {
+  const [busca, setBusca] = useState("");
+  const [statusFiltro, setStatusFiltro] = useState("todos");
 
-  const pvOptions = useMemo(() => {
-    const unicos = new Set(
-      carteiras
-        .map((c) => c.pvMatricula)
-        .filter((matricula): matricula is string => matricula !== null)
-    );
-    return Array.from(unicos).sort();
-  }, [carteiras]);
+  // Range values
+  const maxClientes = useMemo(() => Math.max(...carteiras.map((c) => c.qtdClientes), 1), [carteiras]);
+  const maxValor = useMemo(() => Math.max(...carteiras.map((c) => c.valor), 1), [carteiras]);
 
-  const filtradas = carteiras.filter((c) => {
-    if (somenteOrfas && !c.orfa) return false;
-    if (pvFiltro && c.pvMatricula !== pvFiltro) return false;
-    return true;
-  });
+  const [clientesRange, setClientesRange] = useState<[number, number]>([0, maxClientes]);
+  const [valorRange, setValorRange] = useState<[number, number]>([0, maxValor]);
+
+  const clientesActive = clientesRange[0] > 0 || clientesRange[1] < maxClientes;
+  const valorActive = valorRange[0] > 0 || valorRange[1] < maxValor;
+
+  const filtradas = useMemo(() => {
+    const termo = busca.trim().toLowerCase();
+    return carteiras.filter((c) => {
+      if (termo && !c.cliente.toLowerCase().includes(termo) && !(c.consultor?.toLowerCase().includes(termo) ?? false) && !(c.pvMatricula?.toLowerCase().includes(termo) ?? false)) return false;
+      if (statusFiltro !== "todos" && c.status !== statusFiltro) return false;
+      if (c.qtdClientes < clientesRange[0] || c.qtdClientes > clientesRange[1]) return false;
+      if (c.valor < valorRange[0] || c.valor > valorRange[1]) return false;
+      return true;
+    });
+  }, [carteiras, busca, statusFiltro, clientesRange, valorRange]);
 
   return (
     <div className="space-y-4">
-      <SectionHeader
-        icon={Briefcase}
-        title="Carteiras"
-        subtitle={subtitle}
-        actions={
-          <div className="flex flex-wrap items-center justify-end gap-3">
-            <Popover open={pvPopoverOpen} onOpenChange={setPvPopoverOpen}>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  role="combobox"
-                  aria-expanded={pvPopoverOpen}
-                  className="w-[180px] justify-between font-normal"
-                >
-                  <span className="truncate">
-                    {pvFiltro ?? "Todos os PVs"}
-                  </span>
-                  <ChevronsUpDown className="ml-2 h-3.5 w-3.5 shrink-0 opacity-50" />
+      {/* Filtros */}
+      <div className="flex flex-wrap items-center gap-3">
+        <div className="relative min-w-[200px] flex-1">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            placeholder="Buscar por cliente, PV ou consultor…"
+            className="pl-9"
+            value={busca}
+            onChange={(e) => setBusca(e.target.value)}
+            aria-label="Buscar carteira"
+          />
+        </div>
+
+        <Select value={statusFiltro} onValueChange={setStatusFiltro}>
+          <SelectTrigger className="w-[130px]" aria-label="Status">
+            <SelectValue placeholder="Status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="todos">Todos</SelectItem>
+            <SelectItem value="Ativa">Ativa</SelectItem>
+            <SelectItem value="Inativa">Inativa</SelectItem>
+            <SelectItem value="Órfã">Órfã</SelectItem>
+          </SelectContent>
+        </Select>
+
+        {/* Range clientes — Popover com slider */}
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button variant="outline" size="sm" className={cn("gap-1.5", clientesActive && "border-primary/50 text-primary")}>
+              <SlidersHorizontal className="h-3.5 w-3.5" />
+              Clientes
+              {clientesActive && <Badge variant="outline" className="ml-1 h-4 px-1 text-[9px]">{clientesRange[0]}–{clientesRange[1]}</Badge>}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-72 p-5" align="end">
+            <div className="space-y-5">
+              <div>
+                <Label className="text-xs font-semibold text-foreground">Quantidade de clientes</Label>
+                <p className="mt-0.5 text-[11px] text-muted-foreground">Filtre pelo número de clientes na carteira</p>
+              </div>
+              <div className="px-2">
+                <Slider
+                  min={0}
+                  max={maxClientes}
+                  step={1}
+                  value={clientesRange}
+                  onValueChange={(v) => setClientesRange(v as [number, number])}
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="rounded-md bg-muted px-2 py-1 text-xs font-medium text-foreground">{clientesRange[0]}</span>
+                <span className="text-[10px] text-muted-foreground">até</span>
+                <span className="rounded-md bg-muted px-2 py-1 text-xs font-medium text-foreground">{clientesRange[1]}</span>
+              </div>
+              {clientesActive && (
+                <Button variant="ghost" size="sm" className="w-full text-xs" onClick={() => setClientesRange([0, maxClientes])}>
+                  Limpar filtro
                 </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-[220px]" align="end">
-                <Command>
-                  <CommandInput placeholder="Buscar PV..." />
-                  <CommandList>
-                    <CommandEmpty>Nenhum PV encontrado.</CommandEmpty>
-                    <CommandGroup>
-                      <CommandItem
-                        onSelect={() => {
-                          setPvFiltro(null);
-                          setPvPopoverOpen(false);
-                        }}
-                      >
-                        <Check
-                          className={cn(
-                            "h-3.5 w-3.5",
-                            pvFiltro === null ? "opacity-100" : "opacity-0"
-                          )}
-                        />
-                        Todos os PVs
-                      </CommandItem>
-                      {pvOptions.map((matricula) => (
-                        <CommandItem
-                          key={matricula}
-                          value={matricula}
-                          onSelect={() => {
-                            setPvFiltro(matricula);
-                            setPvPopoverOpen(false);
-                          }}
-                        >
-                          <Check
-                            className={cn(
-                              "h-3.5 w-3.5",
-                              pvFiltro === matricula ? "opacity-100" : "opacity-0"
-                            )}
-                          />
-                          {matricula}
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  </CommandList>
-                </Command>
-              </PopoverContent>
-            </Popover>
-
-            <div className="flex items-center gap-2">
-              <Switch
-                id="toggle-carteiras-orfas"
-                checked={somenteOrfas}
-                onCheckedChange={setSomenteOrfas}
-              />
-              <Label
-                htmlFor="toggle-carteiras-orfas"
-                className="cursor-pointer whitespace-nowrap font-normal text-muted-foreground"
-              >
-                Somente órfãs
-              </Label>
+              )}
             </div>
-          </div>
-        }
-      />
+          </PopoverContent>
+        </Popover>
 
+        {/* Range valor — Popover com slider */}
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button variant="outline" size="sm" className={cn("gap-1.5", valorActive && "border-primary/50 text-primary")}>
+              <SlidersHorizontal className="h-3.5 w-3.5" />
+              Valor (R$)
+              {valorActive && <Badge variant="outline" className="ml-1 h-4 px-1 text-[9px]">{currencyFormatter.format(valorRange[0])}–{currencyFormatter.format(valorRange[1])}</Badge>}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-80 p-5" align="end">
+            <div className="space-y-5">
+              <div>
+                <Label className="text-xs font-semibold text-foreground">Tamanho da carteira</Label>
+                <p className="mt-0.5 text-[11px] text-muted-foreground">Filtre pelo valor total da carteira (R$)</p>
+              </div>
+              <div className="px-2">
+                <Slider
+                  min={0}
+                  max={maxValor}
+                  step={1000}
+                  value={valorRange}
+                  onValueChange={(v) => setValorRange(v as [number, number])}
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="rounded-md bg-muted px-2 py-1 text-xs font-medium text-foreground">{currencyFormatter.format(valorRange[0])}</span>
+                <span className="text-[10px] text-muted-foreground">até</span>
+                <span className="rounded-md bg-muted px-2 py-1 text-xs font-medium text-foreground">{currencyFormatter.format(valorRange[1])}</span>
+              </div>
+              {valorActive && (
+                <Button variant="ghost" size="sm" className="w-full text-xs" onClick={() => setValorRange([0, maxValor])}>
+                  Limpar filtro
+                </Button>
+              )}
+            </div>
+          </PopoverContent>
+        </Popover>
+      </div>
+
+      {/* Tabela */}
       {filtradas.length === 0 ? (
         <p className="py-8 text-center text-sm text-muted-foreground">
-          {somenteOrfas || pvFiltro
-            ? "Nenhuma carteira encontrada para os filtros selecionados."
-            : "Nenhuma carteira associada."}
+          Nenhuma carteira encontrada para os filtros selecionados.
         </p>
       ) : (
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead>ID</TableHead>
+              <TableHead>Cliente</TableHead>
               <TableHead>PV</TableHead>
-              <TableHead>Qtd. Clientes</TableHead>
-              <TableHead>Valor da Carteira</TableHead>
+              <TableHead className="text-right">Clientes</TableHead>
+              <TableHead className="text-right">Valor</TableHead>
+              <TableHead>Consultor</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead>Consultor Responsável</TableHead>
-              <TableHead>Órfã</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {filtradas.map((carteira) => (
-              <TableRow key={carteira.id}>
-                <TableCell className="font-medium text-foreground">
-                  {carteira.id}
-                </TableCell>
-                <TableCell className="text-muted-foreground">
-                  {carteira.pvMatricula ?? "—"}
-                </TableCell>
-                <TableCell className="text-muted-foreground">{carteira.qtdClientes}</TableCell>
-                <TableCell className="text-muted-foreground">
-                  {currencyFormatter.format(carteira.valor)}
-                </TableCell>
+              <TableRow
+                key={carteira.id}
+                className={cn(
+                  carteira.status === "Órfã" && "bg-destructive/[0.04]",
+                  carteira.status === "Inativa" && "bg-muted/40"
+                )}
+              >
+                <TableCell className="font-medium text-foreground">{carteira.id}</TableCell>
+                <TableCell className="text-foreground">{carteira.cliente}</TableCell>
+                <TableCell className="text-muted-foreground">{carteira.pvMatricula ?? "—"}</TableCell>
+                <TableCell className="text-right text-muted-foreground">{carteira.qtdClientes}</TableCell>
+                <TableCell className="text-right text-muted-foreground">{currencyFormatter.format(carteira.valor)}</TableCell>
+                <TableCell className="text-muted-foreground">{carteira.consultor ?? "—"}</TableCell>
                 <TableCell>
-                  <Badge variant={carteira.status === "Ativa" ? "success" : "outline"}>
+                  <Badge variant={carteira.status === "Ativa" ? "success" : carteira.status === "Órfã" ? "destructive" : "outline"}>
                     {carteira.status}
                   </Badge>
-                </TableCell>
-                <TableCell className="text-muted-foreground">
-                  {carteira.consultor ?? "—"}
-                </TableCell>
-                <TableCell>
-                  {carteira.orfa && <Badge variant="warning">Órfã</Badge>}
                 </TableCell>
               </TableRow>
             ))}

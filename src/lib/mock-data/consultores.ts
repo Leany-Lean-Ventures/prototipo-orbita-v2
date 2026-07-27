@@ -145,10 +145,10 @@ export const consultoresDetalhe: Record<string, ConsultorDetalhe> = {
       penalidades: [],
     },
     carteiras: [
-      { id: "CRT-50", cliente: "Empresa Z", status: "Ativa", consultor: "MS Assessoria Ltda", pvMatricula: "M-20042", qtdClientes: 24, valor: 125300, orfa: false },
-      { id: "CRT-51", cliente: "Tech Solutions", status: "Ativa", consultor: "MS Assessoria Ltda", pvMatricula: "M-20042", qtdClientes: 21, valor: 109600, orfa: false },
-      { id: "CRT-52", cliente: "Consórcio Alfa", status: "Ativa", consultor: "MS Assessoria Ltda", pvMatricula: "M-20042", qtdClientes: 16, valor: 83500, orfa: false },
-      { id: "CRT-53", cliente: "Grupo Beta", status: "Inativa", consultor: "MS Assessoria Ltda", pvMatricula: "M-20042", qtdClientes: 5, valor: 26100, orfa: false },
+      { id: "CRT-50", cliente: "Empresa Z", status: "Ativa", consultor: "MS Assessoria Ltda", pvMatricula: "M-20042", qtdClientes: 24, valor: 125300 },
+      { id: "CRT-51", cliente: "Tech Solutions", status: "Ativa", consultor: "MS Assessoria Ltda", pvMatricula: "M-20042", qtdClientes: 21, valor: 109600 },
+      { id: "CRT-52", cliente: "Consórcio Alfa", status: "Ativa", consultor: "MS Assessoria Ltda", pvMatricula: "M-20042", qtdClientes: 16, valor: 83500 },
+      { id: "CRT-53", cliente: "Grupo Beta", status: "Órfã", consultor: "MS Assessoria Ltda", pvMatricula: "M-20042", qtdClientes: 5, valor: 26100 },
     ],
     historico: [
       { data: "Jun 2026", icon: Trophy, color: "green", titulo: "Top 1 faturamento do PV", desc: "Maior faturamento individual no trimestre.", tipo: "promocao", detalhe: { responsavel: "Sistema", observacao: "Faturamento de R$ 108.000 no Q2 2026.", acao: "Bonificação aplicada." } },
@@ -199,9 +199,9 @@ export const consultoresDetalhe: Record<string, ConsultorDetalhe> = {
       penalidades: [],
     },
     carteiras: [
-      { id: "CRT-60", cliente: "Capital Invest", status: "Ativa", consultor: "Alpha Consórcios LTDA", pvMatricula: "M-20042", qtdClientes: 31, valor: 162800, orfa: false },
-      { id: "CRT-61", cliente: "Prime Assets", status: "Ativa", consultor: "Alpha Consórcios LTDA", pvMatricula: "M-20042", qtdClientes: 19, valor: 99800, orfa: false },
-      { id: "CRT-62", cliente: "Oliveira & Filhos", status: "Ativa", consultor: "Alpha Consórcios LTDA", pvMatricula: "M-20042", qtdClientes: 14, valor: 73500, orfa: false },
+      { id: "CRT-60", cliente: "Capital Invest", status: "Ativa", consultor: "Alpha Consórcios LTDA", pvMatricula: "M-20042", qtdClientes: 31, valor: 162800 },
+      { id: "CRT-61", cliente: "Prime Assets", status: "Ativa", consultor: "Alpha Consórcios LTDA", pvMatricula: "M-20042", qtdClientes: 19, valor: 99800 },
+      { id: "CRT-62", cliente: "Oliveira & Filhos", status: "Ativa", consultor: "Alpha Consórcios LTDA", pvMatricula: "M-20042", qtdClientes: 14, valor: 73500 },
     ],
     historico: [
       { data: "Mai 2026", icon: ClipboardCheck, color: "gray", titulo: "Avaliação semestral", desc: "Score de 92/100. Performance excepcional.", tipo: "avaliacao", detalhe: { responsavel: "Roberto Almeida", observacao: "Líder em faturamento e mentoria de equipe.", acao: "Análise de promoção para 2.7 em andamento." } },
@@ -251,8 +251,8 @@ export const consultoresDetalhe: Record<string, ConsultorDetalhe> = {
       penalidades: [],
     },
     carteiras: [
-      { id: "CRT-70", cliente: "Investe Mais LTDA", status: "Ativa", consultor: "BS Investimentos Ltda", pvMatricula: "M-20055", qtdClientes: 18, valor: 95100, orfa: false },
-      { id: "CRT-71", cliente: "Costa & Filhos", status: "Ativa", consultor: "BS Investimentos Ltda", pvMatricula: "M-20055", qtdClientes: 15, valor: 79200, orfa: false },
+      { id: "CRT-70", cliente: "Investe Mais LTDA", status: "Ativa", consultor: "BS Investimentos Ltda", pvMatricula: "M-20055", qtdClientes: 18, valor: 95100 },
+      { id: "CRT-71", cliente: "Costa & Filhos", status: "Ativa", consultor: "BS Investimentos Ltda", pvMatricula: "M-20055", qtdClientes: 15, valor: 79200 },
     ],
     historico: [
       { data: "Mai 2026", icon: Flag, color: "green", titulo: "Meta mensal atingida", desc: "Faturamento acima de 100% da meta.", tipo: "evento", detalhe: { responsavel: "Beatriz Souza", observacao: "R$ 50.000 contra meta de R$ 45.000.", acao: "Bonificação aplicada." } },

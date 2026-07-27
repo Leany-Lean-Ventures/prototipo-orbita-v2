@@ -121,10 +121,10 @@ export const pvsDetalhe: Record<string, PVDetalhe> = {
       { id: "C005", nome: "Fernanda Lima", razaoSocial: "FL Participações ME", cnpj: "55.234.567/0001-02", matricula: "M-30005", nivel: "Consultor", carteiraQtd: 18, faturamento: 90500 },
     ],
     carteiras: [
-      { id: "CRT-10", cliente: "Empresa Z", status: "Ativa", consultor: "MS Assessoria Ltda", pvMatricula: "M-20042", qtdClientes: 24, valor: 122300, orfa: false },
-      { id: "CRT-11", cliente: "Cliente W", status: "Inativa", consultor: null, pvMatricula: "M-20042", qtdClientes: 3, valor: 6100, orfa: true },
-      { id: "CRT-12", cliente: "Tech Solutions", status: "Ativa", consultor: "FL Participações ME", pvMatricula: "M-20042", qtdClientes: 21, valor: 107000, orfa: false },
-      { id: "CRT-13", cliente: "Consórcio Alfa", status: "Ativa", consultor: "MS Assessoria Ltda", pvMatricula: "M-20042", qtdClientes: 16, valor: 81600, orfa: false },
+      { id: "CRT-10", cliente: "Empresa Z", status: "Ativa", consultor: "MS Assessoria Ltda", pvMatricula: "M-20042", qtdClientes: 24, valor: 122300 },
+      { id: "CRT-11", cliente: "Cliente W", status: "Órfã", consultor: null, pvMatricula: "M-20042", qtdClientes: 3, valor: 6100 },
+      { id: "CRT-12", cliente: "Tech Solutions", status: "Ativa", consultor: "FL Participações ME", pvMatricula: "M-20042", qtdClientes: 21, valor: 107000 },
+      { id: "CRT-13", cliente: "Consórcio Alfa", status: "Ativa", consultor: "MS Assessoria Ltda", pvMatricula: "M-20042", qtdClientes: 16, valor: 81600 },
     ],
     comissionamento: {
       basePct: 0.8,
@@ -198,9 +198,9 @@ export const pvsDetalhe: Record<string, PVDetalhe> = {
       { id: "C006", nome: "Rafael Costa", razaoSocial: "RC Consórcios ME", cnpj: "55.456.789/0001-04", matricula: "M-30006", nivel: "Consultor", carteiraQtd: 14, faturamento: 63600 },
     ],
     carteiras: [
-      { id: "CRT-20", cliente: "Investe Mais LTDA", status: "Ativa", consultor: "BS Investimentos Ltda", pvMatricula: "M-20055", qtdClientes: 18, valor: 92300, orfa: false },
-      { id: "CRT-21", cliente: "Costa & Filhos", status: "Ativa", consultor: "RC Consórcios ME", pvMatricula: "M-20055", qtdClientes: 15, valor: 76900, orfa: false },
-      { id: "CRT-22", cliente: "Patrimônio Seguro", status: "Inativa", consultor: null, pvMatricula: "M-20055", qtdClientes: 4, valor: 8200, orfa: true },
+      { id: "CRT-20", cliente: "Investe Mais LTDA", status: "Ativa", consultor: "BS Investimentos Ltda", pvMatricula: "M-20055", qtdClientes: 18, valor: 92300 },
+      { id: "CRT-21", cliente: "Costa & Filhos", status: "Ativa", consultor: "RC Consórcios ME", pvMatricula: "M-20055", qtdClientes: 15, valor: 76900 },
+      { id: "CRT-22", cliente: "Patrimônio Seguro", status: "Órfã", consultor: null, pvMatricula: "M-20055", qtdClientes: 4, valor: 8200 },
     ],
     comissionamento: {
       basePct: 0.5,
@@ -269,8 +269,8 @@ export const pvsDetalhe: Record<string, PVDetalhe> = {
       { id: "C004", nome: "Diego Farias", razaoSocial: "DF Consórcios ME", cnpj: "55.567.890/0001-05", matricula: "M-30004", nivel: "Consultor", carteiraQtd: 12, faturamento: 108000 },
     ],
     carteiras: [
-      { id: "CRT-30", cliente: "Grupo Farias", status: "Ativa", consultor: "DF Consórcios ME", pvMatricula: "M-20091", qtdClientes: 12, valor: 61900, orfa: false },
-      { id: "CRT-31", cliente: "Capital Norte", status: "Ativa", consultor: "DF Consórcios ME", pvMatricula: "M-20091", qtdClientes: 8, valor: 41300, orfa: false },
+      { id: "CRT-30", cliente: "Grupo Farias", status: "Ativa", consultor: "DF Consórcios ME", pvMatricula: "M-20091", qtdClientes: 12, valor: 61900 },
+      { id: "CRT-31", cliente: "Capital Norte", status: "Ativa", consultor: "DF Consórcios ME", pvMatricula: "M-20091", qtdClientes: 8, valor: 41300 },
     ],
     comissionamento: {
       basePct: 0.4,

@@ -135,10 +135,7 @@ const UnidadeDetalhe = () => {
 
         <TabsContent value="carteiras">
           <Card className="p-6">
-            <CarteirasTable
-              carteiras={unidade.carteiras}
-              subtitle="Gestão de carteiras vinculadas à unidade"
-            />
+            <CarteirasTable carteiras={unidade.carteiras} />
           </Card>
         </TabsContent>
 

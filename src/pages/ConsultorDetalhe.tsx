@@ -99,10 +99,7 @@ const ConsultorDetalhe = () => {
 
         <TabsContent value="carteiras">
           <Card className="p-6">
-            <CarteirasTable
-              carteiras={consultor.carteiras}
-              subtitle="Carteiras geridas por este consultor"
-            />
+            <CarteirasTable carteiras={consultor.carteiras} />
           </Card>
         </TabsContent>
 

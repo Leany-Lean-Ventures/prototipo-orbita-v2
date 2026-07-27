@@ -84,10 +84,7 @@ const PVDetalhe = () => {
 
         <TabsContent value="carteiras">
           <Card className="p-6">
-            <CarteirasTable
-              carteiras={pv.carteiras}
-              subtitle="Gestão de carteiras vinculadas ao PV"
-            />
+            <CarteirasTable carteiras={pv.carteiras} />
           </Card>
         </TabsContent>
 
