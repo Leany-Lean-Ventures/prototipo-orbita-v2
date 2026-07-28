@@ -1,0 +1,10 @@
+services:
+  orbita:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: prototipo-orbita:local
+    container_name: prototipo-orbita
+    ports:
+      - "8080:80"
+    restart: unless-stopped

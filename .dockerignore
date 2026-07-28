@@ -1,0 +1,40 @@
+# Dependências e artefatos locais (reinstalados/rebuildados dentro da imagem)
+node_modules
+dist
+dist-ssr
+.vite
+
+# Git e metadados
+.git
+.gitignore
+
+# Editores / IDE / agentes
+.vscode
+.idea
+.kiro
+.claude
+.agents
+
+# Documentação e material de referência (não entra no build)
+*.md
+!README.md
+PRD
+design-system
+orbita-v1-paginas-exportadas
+scripts
+skills-lock.json
+
+# Logs, cache e env
+logs
+*.log
+npm-debug.log*
+__pycache__
+*.pyc
+*.local
+.env
+.env.*
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose.yml
