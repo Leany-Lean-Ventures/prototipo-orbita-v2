@@ -1,32 +1,19 @@
-# syntax=docker/dockerfile:1
-
-# ---------- Stage 1: build ----------
-FROM node:24-alpine AS build
+FROM node:22-alpine
 
 WORKDIR /app
 
-# Instala dependências primeiro (camada cacheada enquanto o lockfile não muda)
 COPY package.json package-lock.json ./
-RUN npm ci
 
-# Código-fonte e configs de build
+ARG VITE_BASE_URL=/
+ENV VITE_BASE_URL=${VITE_BASE_URL}
+
+RUN npm install
+RUN npm install -g serve
+
 COPY . .
 
-# Build de produção do Vite -> /app/dist
 RUN npm run build
 
-# ---------- Stage 2: runtime ----------
-FROM nginx:1.27-alpine AS runtime
+EXPOSE 3000
 
-# Config de SPA (fallback para index.html + cache de assets)
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-# Artefatos estáticos do build
-COPY --from=build /app/dist /usr/share/nginx/html
-
-EXPOSE 80
-
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD wget --spider -q http://localhost/ || exit 1
-
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["serve", "-s", "dist", "-l", "3000"]
